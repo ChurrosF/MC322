@@ -1,0 +1,12 @@
+# Java compiled output
+*. class
+*. jar
+# IntelliJ IDEA
+. idea /
+*. iml
+# Maven / Gradle build output
+target /
+build /
+. gradle /
+# macOS metadata
+. DS_Store
