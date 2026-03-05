@@ -1,13 +1,13 @@
-public class Hero {
+public class Enemy {
     String name;
     int life;
     int shield;
 
-
-    public Hero(String name) {
+    
+    public Enemy(String name, int life, int shield) {
         this.name = name;
-        this.life = 10;
-        this.shield = 0;
+        this.life = life;
+        this.shield = shield;
     }
 
 
@@ -21,9 +21,9 @@ public class Hero {
         }
     }
 
-    
-    public void gainShield(int shield) {
-        this.shield += shield;
+
+    public void attackHero(int damage, Hero hero) {
+        hero.receiveDamage(damage);
     }
 
 
@@ -31,3 +31,4 @@ public class Hero {
         return (this.life > 0);
     }
 }
+
