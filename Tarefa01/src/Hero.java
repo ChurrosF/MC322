@@ -1,8 +1,8 @@
 public class Hero {
-    String name;
-    int life;
-    int energy;
-    int shield;
+    private String name;
+    private int life;
+    private int energy;
+    private int shield;
 
 
     public Hero(String name) {
@@ -24,6 +24,11 @@ public class Hero {
     }
 
 
+    public int getShield() {
+        return this.shield;
+    }
+
+    
     public void gainShield(int shield) {
         this.shield += shield;
     }
@@ -31,5 +36,20 @@ public class Hero {
 
     public boolean isAlive() {
         return (this.life > 0);
+    }
+
+
+    public String getName() {
+        return this.name;
+    }
+
+
+    public int getEnergy() {
+        return this.energy;
+    }
+
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 }

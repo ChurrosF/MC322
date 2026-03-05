@@ -1,7 +1,7 @@
 public class DamageCard {
-    String name;
-    int damage;
-    int cost;
+    private String name;
+    private int damage;
+    private int cost;
 
 
     public DamageCard(String name, int cost, int damage) {
@@ -13,12 +13,20 @@ public class DamageCard {
 
     public boolean useCard(Hero user, Enemy target) {
         /* Uses Damage card and returns boolean based on success */
-        if (user.energy < this.cost) {
+
+        int user_energy = user.getEnergy(); 
+
+        if (user_energy < this.cost) {
             return false;
         }
 
-        user.energy = user.energy - this.cost;
+        user.setEnergy(user_energy - this.cost);
         target.receiveDamage(this.damage);
         return true;
+    }
+
+    
+    public String getName() {
+        return this.name;
     }
 }

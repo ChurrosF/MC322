@@ -1,9 +1,9 @@
 public class Enemy {
-    String name;
-    int life;
-    int shield;
+    private String name;
+    private int life;
+    private int shield;
 
-    
+
     public Enemy(String name, int life, int shield) {
         this.name = name;
         this.life = life;
@@ -29,6 +29,21 @@ public class Enemy {
 
     public boolean isAlive() {
         return (this.life > 0);
+    }
+
+
+    public String getName() {
+        return this.name;
+    }
+
+
+    public int getLife() {
+        return this.life;
+    }
+
+
+    public int getShield() {
+        return this.shield;
     }
 }
 

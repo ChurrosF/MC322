@@ -1,7 +1,7 @@
 public class ShieldCard {
-    String name;
-    int shield;
-    int cost;
+    private String name;
+    private int shield;
+    private int cost;
 
 
     public ShieldCard(String name, int cost, int shield) {
@@ -13,12 +13,20 @@ public class ShieldCard {
 
     public boolean useCard(Hero user) {
         /* Uses Shield card and returns boolean based on success */
-        if (user.energy < this.cost) {
+
+        int user_energy = user.getEnergy(); 
+
+        if (user_energy < this.cost) {
             return false;
         }
 
-        user.energy = user.energy - this.cost;
+        user.setEnergy(user_energy - this.cost); 
         user.gainShield(shield);
         return true;
+    }
+
+    
+    public String getName() {
+        return this.name;
     }
 }
