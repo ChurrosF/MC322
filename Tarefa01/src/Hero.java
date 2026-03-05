@@ -1,12 +1,14 @@
 public class Hero {
     String name;
     int life;
+    int energy;
     int shield;
 
 
     public Hero(String name) {
         this.name = name;
         this.life = 10;
+        this.energy = 3;
         this.shield = 0;
     }
 
@@ -21,7 +23,7 @@ public class Hero {
         }
     }
 
-    
+
     public void gainShield(int shield) {
         this.shield += shield;
     }
