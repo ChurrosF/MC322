@@ -12,7 +12,7 @@ public class DamageCard {
 
 
     public boolean useCard(Hero user, Enemy target) {
-        /* Uses card and returns boolean based on success */
+        /* Uses Damage card and returns boolean based on success */
         if (user.energy < this.cost) {
             return false;
         }
