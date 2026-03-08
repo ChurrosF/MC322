@@ -28,6 +28,11 @@ public class Hero {
         return this.shield;
     }
 
+
+    public void setShield(int shield) {
+        this.shield = shield;
+    }
+
     
     public void gainShield(int shield) {
         this.shield += shield;
@@ -39,8 +44,18 @@ public class Hero {
     }
 
 
+    public int getLife() {
+        return this.life;
+    }
+
+
     public String getName() {
         return this.name;
+    }
+
+    
+    public void setName(String name) {
+        this.name = name;
     }
 
 
