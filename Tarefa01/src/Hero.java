@@ -22,7 +22,10 @@ public class Hero {
             this.shield -= damage;
         }
     }
-
+    
+    public int getLife() {
+        return this.life;
+    }
 
     public int getShield() {
         return this.shield;
