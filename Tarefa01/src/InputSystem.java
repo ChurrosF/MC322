@@ -1,0 +1,32 @@
+import java.util.Scanner;
+
+public class InputSystem {
+    private final Scanner inputReader = new Scanner(System.in);
+
+    
+    public Action readInput() {
+
+        try {
+            int input = inputReader.nextInt();
+
+            switch (input) {
+                case 1 -> {
+                    return Action.ATTACK;
+                }
+                case 2 -> {
+                    return Action.DEFEND;
+                }
+                case 3 -> {
+                    return Action.SKIP;
+                }
+                default -> {
+                    return Action.SKIP;
+                }
+            }
+        }
+        catch (java.util.InputMismatchException e){
+            return Action.SKIP;
+        }
+    }
+
+}
