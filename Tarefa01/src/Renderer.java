@@ -39,6 +39,10 @@ public class Renderer {
         Hero hero = gameData.getHero();
         Enemy enemy = gameData.getEnemy();
 
+        if (gameData.getBattle_rounds() == 1) {
+            System.out.println("Uma batalha formidável contra um rato começou!");
+        }
+
         System.out.println();
         System.out.println("=-=");
         System.out.printf("Herói (%d/10 de vida) (%d de escudo)\n", hero.getLife(), hero.getShield());
@@ -48,6 +52,10 @@ public class Renderer {
         System.out.println("1 - Usar carta de dano");
         System.out.println("2 - Usar carta de escudo");
         System.out.println("3 - Encerrar turno\n");
+        
+        if (hero.getEnergy() == 0) {
+            System.out.println("Você está sem energia!\n");
+        }
         System.out.print("Escolha: ");
     }
 

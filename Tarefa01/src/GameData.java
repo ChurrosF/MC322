@@ -4,6 +4,7 @@ public class GameData {
     private DamageCard strike = new DamageCard("Strike", 1, 4);
     private ShieldCard defend = new ShieldCard("Defend", 1, 2);
     private boolean game_over = false;
+    private int battle_rounds = 1;
 
 
     public Hero getHero() {
@@ -33,5 +34,15 @@ public class GameData {
     
     public void setGame_over(boolean game_over) {
         this.game_over = game_over;
+    }
+
+
+    public int getBattle_rounds() {
+        return this.battle_rounds;
+    }
+
+
+    public void addBattle_round() {
+        this.battle_rounds += 1;
     }
 }

@@ -26,6 +26,7 @@ public class GameManager {
                     enemy.attackHero(4, hero);
                     hero.setEnergy(3);
                     hero.setShield(0);
+                    gameData.addBattle_round();
                 }
             }
   
