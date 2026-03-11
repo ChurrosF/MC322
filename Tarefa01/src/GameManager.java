@@ -1,5 +1,6 @@
 public class GameManager {
     private final GameData gameData = new GameData();
+    private boolean game_ended = false;
 
 
     public void update(Action action) {
@@ -7,23 +8,22 @@ public class GameManager {
         Enemy enemy = gameData.getEnemy();
         DamageCard strike = gameData.getDamageCard();
         ShieldCard defend = gameData.getShieldCard();
-        boolean game_over = gameData.isGame_over();
+        boolean battle_over = gameData.isBattle_over();
 
 
-        if (!game_over) {
-
+        if (!battle_over) {
             switch(action) {
                 case ATTACK -> {
                     strike.useCard(hero, enemy);
                     if (!enemy.isAlive()) {
-                        gameData.setGame_over(true);
+                        gameData.setBattle_over(true);
                     }
                 }
                 case DEFEND -> {
                     defend.useCard(hero);
                 }
                 case SKIP -> {
-                    enemy.attackHero(4, hero);
+                    enemy.attackHero(5, hero);
                     hero.setEnergy(3);
                     hero.setShield(0);
                     gameData.addBattle_round();
@@ -31,18 +31,22 @@ public class GameManager {
             }
   
             if (!hero.isAlive()) {
-                gameData.setGame_over(true);
+                gameData.setBattle_over(true);
             }
+        }
+        else {
+            this.game_ended = true;
         }
     }
 
 
-    public boolean gameEnded() {
-        return gameData.isGame_over();
+    public boolean isGame_Ended() {
+        return this.game_ended;
     }
 
 
     public GameData getGameData() {
         return this.gameData;
     }
+
 }
