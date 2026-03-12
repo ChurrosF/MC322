@@ -4,12 +4,13 @@ public class App {
         Renderer renderer = new Renderer();
         InputSystem inputSystem = new InputSystem();
 
-        renderer.place_borders();
-        while (!gameManager.gameEnded()) {
+        while (true) {
             renderer.render(gameManager.getGameData());
+            if (gameManager.getGameData().isBattle_over()) {
+                break;
+            }
             Action action = inputSystem.readInput();
             gameManager.update(action);
+            }
         }
-        renderer.drawEndScreen(gameManager.getGameData());
     }
-}

@@ -7,6 +7,7 @@ public class InputSystem {
     public Action readInput() {
 
         try {
+            System.out.print("Escolha: ");
             int input = inputReader.nextInt();
 
             switch (input) {

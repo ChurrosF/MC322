@@ -3,6 +3,18 @@ public class Hero {
     private int life;
     private int energy;
     private int shield;
+    private final String hero_sprite = """
+    |
+    |
+    + \\
+    \\.G_.*=.
+    `(H'/.|
+    .>' (_--.
+_=/d   ,^\\
+~~ \\)-'   '
+    / |
+    '  '  
+""";
 
 
     public Hero(String name) {
@@ -15,7 +27,7 @@ public class Hero {
 
     public void receiveDamage(int damage) {
         if (damage >= this.shield) {
-            this.life -= (damage - this.shield);
+            this.life = Math.max(this.life - (damage - this.shield), 0);
             this.shield = 0;
         }
         else {
@@ -66,5 +78,10 @@ public class Hero {
 
     public void setEnergy(int energy) {
         this.energy = energy;
+    }
+
+    
+    public String getHero_sprite() {
+        return hero_sprite;
     }
 }

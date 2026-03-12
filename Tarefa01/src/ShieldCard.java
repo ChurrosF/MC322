@@ -29,4 +29,14 @@ public class ShieldCard {
     public String getName() {
         return this.name;
     }
+
+    
+    public int getCost() {
+        return cost;
+    }
+
+
+    public int getShield() {
+        return shield;
+    }
 }

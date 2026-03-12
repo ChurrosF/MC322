@@ -29,4 +29,14 @@ public class DamageCard {
     public String getName() {
         return this.name;
     }
+
+
+    public int getCost() {
+        return cost;
+    }
+
+    
+    public int getDamage() {
+        return damage;
+    }
 }

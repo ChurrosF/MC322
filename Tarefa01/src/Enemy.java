@@ -2,6 +2,13 @@ public class Enemy {
     private String name;
     private int life;
     private int shield;
+    private final String enemy_sprite = """
+        _
+  ,-(_)-\"\"\"\"\"--,,
+<  "             ";===""==,.
+ `-../ )__... (  ,'        "==
+   ==="    ,,==="
+                """;
 
 
     public Enemy(String name, int life, int shield) {
@@ -13,7 +20,7 @@ public class Enemy {
 
     public void receiveDamage(int damage) {
         if (damage >= this.shield) {
-            this.life -= (damage - this.shield);
+            this.life = Math.max(this.life - (damage - this.shield), 0);
             this.shield = 0;
         }
         else {
@@ -44,6 +51,10 @@ public class Enemy {
 
     public int getShield() {
         return this.shield;
+    }
+
+    public String getEnemy_sprite() {
+        return enemy_sprite;
     }
 }
 
