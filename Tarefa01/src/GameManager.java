@@ -4,6 +4,7 @@ public class GameManager {
 
 
     public void update(Action action) {
+        // Logic to be update every frame
         Hero hero = gameData.getHero();
         Enemy enemy = gameData.getEnemy();
         DamageCard strike = gameData.getDamageCard();
@@ -12,6 +13,7 @@ public class GameManager {
 
 
         if (!battle_over) {
+            // Battle logic
             switch(action) {
                 case ATTACK -> {
                     strike.useCard(hero, enemy);

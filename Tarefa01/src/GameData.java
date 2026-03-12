@@ -1,4 +1,5 @@
 public class GameData {
+    // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero");
     private Enemy enemy = new Enemy("Rat", 20, 0);
     private DamageCard strike = new DamageCard("Golpe", 1, 3);
