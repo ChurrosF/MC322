@@ -23,7 +23,7 @@ public class GameManager {
                     defend.useCard(hero);
                 }
                 case SKIP -> {
-                    enemy.attackHero(5, hero);
+                    enemy.attackHero(6, hero);
                     hero.setEnergy(3);
                     hero.setShield(0);
                     gameData.addBattle_round();
