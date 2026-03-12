@@ -5,7 +5,16 @@ public class Renderer {
     private StringBuilder frame = new StringBuilder();
 
 
+    private String str_color_red(String text) {
+        String ANSI_RED = "\u001B[31m";
+        String ANSI_RESET = "\u001B[0m";
+
+        return ANSI_RED + text + ANSI_RESET;
+    }
+
+
     private void place_text(int[] position, String text) {
+        // place any text (single or multi line) in a given position (line, column)
         int line = position[0];
         int row = position[1];
         int start_pos = line * (WIDTH + 1) + row;
@@ -15,6 +24,7 @@ public class Renderer {
             
             char letter = text.charAt(count); 
             count++;
+            
 
             if (letter == '\n') {
                 i = (line + 1) * (WIDTH + 1) + position[1] - 1;
@@ -28,6 +38,7 @@ public class Renderer {
 
 
     private void place_borders() {
+        // places borders on game screen (frame)
         for (int i = 0; i < this.HEIGHT; i++) {
             for (int j = 0; j < this.WIDTH; j++) {
 
@@ -70,6 +81,7 @@ public class Renderer {
 
 
     private void place_enemy_sprite(GameData gameData, int[] position) {
+        // places enemy sprite with info
         int line = position[0];
         int column = position[1];
 
@@ -85,6 +97,8 @@ public class Renderer {
 
 
     private void place_hero_info(GameData gameData) {
+        // places hero info (hp, shield, energy) on frame
+        
         // Getting Hero Data
         int hero_life = gameData.getHero().getLife();
         int hero_shield = gameData.getHero().getShield();
@@ -142,6 +156,7 @@ public class Renderer {
 
 
     public void drawEndScreen(GameData gameData) {
+        // Directly prints end screen
         if (gameData.getHero().isAlive()) {
             System.out.println("\nVOCÊ GANHOU!\n");
         }
@@ -152,6 +167,7 @@ public class Renderer {
 
 
     public void render(GameData gameData) {
+        // places text (sprites, UI) on frame and prints it
         clearScreen();
         place_borders();
         placeBattleScreen(gameData);

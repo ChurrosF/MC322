@@ -5,7 +5,7 @@ public class InputSystem {
 
     
     public Action readInput() {
-
+        // Reads player input and returns an action (enum class)
         try {
             System.out.print("Escolha: ");
             int input = inputReader.nextInt();
