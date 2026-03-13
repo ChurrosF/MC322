@@ -22,5 +22,5 @@ O jogo é baseado em turnos, onde você deve derrotar o formidável Grande Rato,
 # Interface do Jogo
 
 
-![imagem exemplo](image.png)
+![imagem exemplo](imageREADME.png)
 
