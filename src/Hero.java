@@ -1,8 +1,5 @@
-public class Hero {
-    private String name;
-    private int life;
+public class Hero extends Entity {
     private int energy;
-    private int shield;
     private final String hero_sprite = """
     |
     |
@@ -17,57 +14,11 @@ _=/d   ,^\\
 """;
 
 
-    public Hero(String name) {
+    public Hero(String name, int life, int energy, int shield) {
         this.name = name;
-        this.life = 10;
-        this.energy = 3;
-        this.shield = 0;
-    }
-
-
-    public void receiveDamage(int damage) {
-        if (damage >= this.shield) {
-            this.life = Math.max(this.life - (damage - this.shield), 0);
-            this.shield = 0;
-        }
-        else {
-            this.shield -= damage;
-        }
-    }
-
-
-    public int getShield() {
-        return this.shield;
-    }
-
-
-    public void setShield(int shield) {
+        this.life = life;
+        this.energy = energy;
         this.shield = shield;
-    }
-
-    
-    public void gainShield(int shield) {
-        this.shield += shield;
-    }
-
-
-    public boolean isAlive() {
-        return (this.life > 0);
-    }
-
-
-    public int getLife() {
-        return this.life;
-    }
-
-
-    public String getName() {
-        return this.name;
-    }
-
-    
-    public void setName(String name) {
-        this.name = name;
     }
 
 

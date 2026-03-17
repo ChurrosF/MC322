@@ -6,28 +6,23 @@ public class InputSystem {
     
     public Action readInput() {
         // Reads player input and returns an action (enum class)
+        Action action = new Action();
+        action.setAction_type(Action.ActionType.SKIP);
         try {
             System.out.print("Escolha: ");
             int input = inputReader.nextInt();
 
-            switch (input) {
-                case 1 -> {
-                    return Action.ATTACK;
-                }
-                case 2 -> {
-                    return Action.DEFEND;
-                }
-                case 3 -> {
-                    return Action.SKIP;
-                }
-                default -> {
-                    return Action.SKIP;
-                }
+            if (input <= 5 || input > 0) {
+                action.setAction_type(Action.ActionType.CARD);
+                action.setCard_used_index(input);
+                return action;
             }
+
+            action.setAction_type(Action.ActionType.SKIP);
+            return action;
         }
         catch (java.util.InputMismatchException e){
-            return Action.SKIP;
+            return action;
         }
     }
-
 }
