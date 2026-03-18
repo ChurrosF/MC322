@@ -6,6 +6,7 @@ public class ShieldCard extends Card {
         this.name = name;
         this.cost = cost;
         this.shield = shield;
+        this.description = "Carta " + this.name + " |" + " SHD:" + this.shield + " CUSTO:" + this.cost;
     }
 
 

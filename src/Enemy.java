@@ -11,6 +11,7 @@ public class Enemy extends Entity {
     public Enemy(String name, int life, int shield) {
         this.name = name;
         this.life = life;
+        this.max_life = life;
         this.shield = shield;
     }
 

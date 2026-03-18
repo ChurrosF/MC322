@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Stack;
 
-public class GameData {
+public final class GameData {
     // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero", 10, 3, 0);
     private Enemy enemy = new Enemy("Rat", 20, 0);
@@ -27,6 +27,13 @@ public class GameData {
 
     private boolean battle_over = false;
     private int battle_rounds = 1;
+
+
+    public GameData() {
+        generateRandomBuyPile();
+        buyRoundCards();
+    }
+
 
 
     public Hero getHero() {
@@ -135,7 +142,7 @@ public class GameData {
     }
 
 
-    public boolean Card_failed_use() {
+    public boolean card_failed_use() {
         return card_failed_use;
     }
 

@@ -8,6 +8,7 @@ public class DamageCard extends Card {
         this.cost = cost;
         this.damage = damage;
         this.target = target;
+        this.description = "Carta " + this.name + "  |" + " DMG:" + this.damage + " CUSTO:" + this.cost;
     }
 
 

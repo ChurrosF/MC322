@@ -10,18 +10,19 @@ public class InputSystem {
         action.setAction_type(Action.ActionType.SKIP);
         try {
             System.out.print("Escolha: ");
-            int input = inputReader.nextInt();
+            String input_str = inputReader.nextLine();
+            int input_int = Integer.parseInt(input_str);
 
-            if (input <= 5 || input > 0) {
+            if (input_int <= 5 || input_int > 0) {
                 action.setAction_type(Action.ActionType.CARD);
-                action.setCard_used_index(input);
+                action.setCard_used_index(input_int);
                 return action;
             }
 
             action.setAction_type(Action.ActionType.SKIP);
             return action;
         }
-        catch (java.util.InputMismatchException e){
+        catch (java.lang.NumberFormatException e){
             return action;
         }
     }

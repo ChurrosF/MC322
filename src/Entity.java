@@ -1,7 +1,8 @@
 public abstract class Entity {
-    protected  String name;
-    protected  int life;
-    protected  int shield;
+    protected String name;
+    protected int life;
+    protected int max_life;
+    protected int shield;
 
 
     public void receiveDamage(int damage) {
@@ -37,6 +38,11 @@ public abstract class Entity {
 
     public int getLife() {
         return this.life;
+    }
+
+
+    public int getMaxLife() {
+        return this.max_life;
     }
 
 

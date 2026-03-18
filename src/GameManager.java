@@ -7,8 +7,6 @@ public class GameManager {
 
     Hero hero = data.getHero();
     Enemy enemy = data.getEnemy();
-    DamageCard strike = data.getDamageCard();
-    ShieldCard defend = data.getShieldCard();
     ArrayList<Integer> player_hand = data.getPlayer_hand();
     Stack<Integer> buy_pile = data.getBuy_pile();
     Stack<Integer> discard_pile = data.getDiscard_pile();
@@ -19,11 +17,6 @@ public class GameManager {
 
         boolean battle_over = data.isBattle_over();
         Action.ActionType actionType = action.getAction_type();
-
-        if (data.getBattle_rounds() == 1) {
-            data.generateRandomBuyPile();
-            data.buyRoundCards();
-        }
 
         if (!battle_over) {
             // Battle logic
@@ -39,16 +32,20 @@ public class GameManager {
                     if (player_hand.size() < card_index || player_hand.isEmpty()) {
                         this.data.setCard_failed_use(true);
                     }
+
                     else {
                         int card_type = this.player_hand.get(card_index);
                         Card card = this.data.getPossible_cards()[card_type];
-                        card.useCard(this.hero);
-                        this.data.discardCard(card_index);
+                        if (card.useCard(this.hero)) {
+                            this.data.discardCard(card_index);
+                            if (!enemy.isAlive()) {
+                                this.data.setBattle_over(true);
+                            }
+                        }
                         this.data.addBattle_round();
                     }
                 }
                 case SKIP -> {
-                    System.out.println("eu sou o fim de jogo");
                     endTurn();
                 }
             }
