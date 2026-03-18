@@ -5,7 +5,8 @@ import java.util.Stack;
 public final class GameData {
     // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero", 10, 3, 0);
-    private Enemy enemy = new Enemy("Rat", 20, 0);
+    int[] enemy_damage_range = {4, 8};
+    private final Enemy enemy = new Enemy("Rat", 20, 0, enemy_damage_range);
     private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
 

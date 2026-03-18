@@ -76,7 +76,7 @@ public class GameManager {
             this.data.resetBuyPile();
         }
         this.data.buyRoundCards();
-        this.enemy.attackHero(1, hero);
+        this.enemy.attackHero(hero);
         this.hero.setEnergy(3);
         this.hero.setShield(0);
         this.data.addBattle_round();

@@ -87,12 +87,17 @@ public class Renderer {
         // Getting Enemy Data
         int enemy_life = gameData.getEnemy().getLife();
         int enemy_max_life = gameData.getEnemy().getMaxLife();
+        int[] enemy_damage_range = gameData.getEnemy().getDamage_range();
+        int min_damage = enemy_damage_range[0];
+        int max_damage = enemy_damage_range[1];
+
         String rat_sprite = gameData.getEnemy().getEnemy_sprite();
 
         String rat_hp_bar_sprite = create_hp_bar(enemy_life, enemy_max_life);
 
         place_text(new int[] {line - 7, column - 2}, "Grande Rato:");
         place_text(new int[] {line - 5, column - 2}, rat_hp_bar_sprite);
+        place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte -> %d a %d de dano", min_damage, max_damage));
         place_text(new int[] {line, column}, rat_sprite);
     }
 
