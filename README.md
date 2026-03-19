@@ -10,6 +10,7 @@ Esse é um jogo feito inteiramente em Java como parte da disciplina MC322 da Uni
 na pasta do repositório cole ou escreva:
 
 javac -d bin $(find src -name "*.java")
+
 java -cp bin App
 
 # Como Jogar?
