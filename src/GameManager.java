@@ -1,39 +1,52 @@
+import java.util.ArrayList;
+import java.util.Stack;
+
 public class GameManager {
-    private final GameData gameData = new GameData();
+    private final GameData data = new GameData();
     private boolean game_ended = false;
+
+    Hero hero = data.getHero();
+    Enemy enemy = data.getEnemy();
+    ArrayList<Integer> player_hand = data.getPlayer_hand();
+    Stack<Integer> buy_pile = data.getBuy_pile();
+    Stack<Integer> discard_pile = data.getDiscard_pile();
 
 
     public void update(Action action) {
         // Logic to be update every frame
-        Hero hero = gameData.getHero();
-        Enemy enemy = gameData.getEnemy();
-        DamageCard strike = gameData.getDamageCard();
-        ShieldCard defend = gameData.getShieldCard();
-        boolean battle_over = gameData.isBattle_over();
 
+        boolean battle_over = data.isBattle_over();
+        Action.ActionType actionType = action.getAction_type();
 
         if (!battle_over) {
             // Battle logic
-            switch(action) {
-                case ATTACK -> {
-                    strike.useCard(hero, enemy);
-                    if (!enemy.isAlive()) {
-                        gameData.setBattle_over(true);
+            switch(actionType) {
+                case CARD -> {
+                    int card_index = action.getCard_used_index();
+
+                    if (player_hand.size() <= card_index || player_hand.isEmpty()) {
+                        this.data.setCard_failed_use(true);
+                    }
+                    else {
+                        this.data.setCard_failed_use(false);
+                        int card_type = this.player_hand.get(card_index);
+                        Card card = this.data.getPossible_cards()[card_type];
+                        if (card.useCard(this.hero)) {
+                            this.data.discardCard(card_index);
+                            if (!enemy.isAlive()) {
+                                this.data.setBattle_over(true);
+                            }
+                        }
+                        this.data.addBattle_round();
                     }
                 }
-                case DEFEND -> {
-                    defend.useCard(hero);
-                }
                 case SKIP -> {
-                    enemy.attackHero(6, hero);
-                    hero.setEnergy(3);
-                    hero.setShield(0);
-                    gameData.addBattle_round();
+                    endTurn();
                 }
             }
   
             if (!hero.isAlive()) {
-                gameData.setBattle_over(true);
+                this.data.setBattle_over(true);
             }
         }
         else {
@@ -48,7 +61,22 @@ public class GameManager {
 
 
     public GameData getGameData() {
-        return this.gameData;
+        return this.data;
     }
+
+
+    public void endTurn() {
+        this.data.discardHand();
+        if (this.data.getBuy_pile().isEmpty()) {
+            this.data.resetBuyPile();
+        }
+        this.data.buyRoundCards();
+        this.enemy.attackHero(hero);
+        this.hero.setEnergy(3);
+        this.hero.setShield(0);
+        this.data.addBattle_round();
+    }
+
+
 
 }

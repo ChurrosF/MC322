@@ -1,7 +1,8 @@
-public class Enemy {
-    private String name;
-    private int life;
-    private int shield;
+import java.util.Random;
+
+public class Enemy extends Entity {
+    private int[] damage_range;
+    private int round_damage;
     private final String enemy_sprite = """
         _
   ,-(_)-\"\"\"\"\"--,,
@@ -11,50 +12,39 @@ public class Enemy {
                 """;
 
 
-    public Enemy(String name, int life, int shield) {
+    public Enemy(String name, int life, int shield, int[] damage_range) {
         this.name = name;
         this.life = life;
+        this.max_life = life;
         this.shield = shield;
+        this.damage_range = damage_range;
+        this.round_damage = new Random().nextInt(damage_range[0], damage_range[1]);
     }
 
 
-    public void receiveDamage(int damage) {
-        if (damage >= this.shield) {
-            this.life = Math.max(this.life - (damage - this.shield), 0);
-            this.shield = 0;
-        }
-        else {
-            this.shield -= damage;
-        }
+    public void attackHero(Hero hero) {
+        hero.receiveDamage(round_damage);
+        this.round_damage = new Random().nextInt(this.damage_range[0], this.damage_range[1]);
     }
 
-
-    public void attackHero(int damage, Hero hero) {
-        hero.receiveDamage(damage);
-    }
-
-
-    public boolean isAlive() {
-        return (this.life > 0);
-    }
-
-
-    public String getName() {
-        return this.name;
-    }
-
-
-    public int getLife() {
-        return this.life;
-    }
-
-
-    public int getShield() {
-        return this.shield;
-    }
 
     public String getEnemy_sprite() {
         return enemy_sprite;
+    }
+
+
+    public int[] getDamage_range() {
+        return damage_range;
+    }
+
+    
+    public void setDamage_range(int[] damage_range) {
+        this.damage_range = damage_range;
+    }
+
+
+    public int getRound_damage() {
+        return round_damage;
     }
 }
 
