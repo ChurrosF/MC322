@@ -23,6 +23,7 @@ public class Enemy extends Entity {
 
 
     public void attackHero(Hero hero) {
+        /*Attacks hero with randomized round_damage, then randomizes damage for next round */
         hero.receiveDamage(round_damage);
         this.round_damage = new Random().nextInt(this.damage_range[0], this.damage_range[1]);
     }

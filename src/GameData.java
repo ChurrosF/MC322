@@ -86,6 +86,16 @@ public final class GameData {
     }
 
 
+        public boolean isAction_invalid() {
+        return invalid_action;
+    }
+
+
+    public void setInvalid_action(boolean card_failed_use) {
+        this.invalid_action = card_failed_use;
+    }
+
+
     public void generateRandomBuyPile() {
         Random generator = new Random();
         for (int i = 0; i < this.buy_pile_size; i++) {
@@ -135,15 +145,5 @@ public final class GameData {
 
     public ArrayList<Integer> getPlayer_hand() {
         return this.player_hand;
-    }
-
-
-    public boolean isAction_invalid() {
-        return invalid_action;
-    }
-
-
-    public void setInvalid_action(boolean card_failed_use) {
-        this.invalid_action = card_failed_use;
     }
 }

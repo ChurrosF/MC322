@@ -6,7 +6,7 @@ public class Renderer {
 
 
     private void place_text(int[] position, String text) {
-        // place any text (single or multi line) in a given position (line, column)
+        // Place any text (single or multi line) in a given position (line, column)
         int line = position[0];
         int row = position[1];
         int start_pos = line * (WIDTH + 1) + row;
@@ -30,7 +30,7 @@ public class Renderer {
 
 
     private void place_borders() {
-        // places borders on game screen (frame)
+        // Places borders on game screen (frame)
         for (int i = 0; i < this.HEIGHT; i++) {
             for (int j = 0; j < this.WIDTH; j++) {
 
@@ -80,7 +80,7 @@ public class Renderer {
 
 
     private void place_enemy_sprite(GameData gameData, int[] position) {
-        // places enemy sprite with info
+        // Places enemy sprite with info
         int line = position[0];
         int column = position[1];
 
@@ -101,7 +101,7 @@ public class Renderer {
 
 
     private void place_hero_info(GameData gameData) {
-        // places hero info (hp, shield, energy) on frame
+        // Places hero info (hp, shield, energy) on frame
         
         // Getting Hero Data
         int hero_life = gameData.getHero().getLife();
@@ -215,7 +215,7 @@ public class Renderer {
 
 
     public void render(GameData gameData) {
-        // places text (sprites, UI) on frame and prints it
+        // Places text (sprites, UI) on frame and prints it
         clearScreen();
         place_borders();
         placeBattleScreen(gameData);
