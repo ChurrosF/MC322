@@ -87,9 +87,7 @@ public class Renderer {
         // Getting Enemy Data
         int enemy_life = gameData.getEnemy().getLife();
         int enemy_max_life = gameData.getEnemy().getMaxLife();
-        int[] enemy_damage_range = gameData.getEnemy().getDamage_range();
-        int min_damage = enemy_damage_range[0];
-        int max_damage = enemy_damage_range[1];
+        int enemy_round_damage = gameData.getEnemy().getRound_damage();
 
         String rat_sprite = gameData.getEnemy().getEnemy_sprite();
 
@@ -97,7 +95,7 @@ public class Renderer {
 
         place_text(new int[] {line - 7, column - 2}, "Grande Rato:");
         place_text(new int[] {line - 5, column - 2}, rat_hp_bar_sprite);
-        place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte -> %d a %d de dano", min_damage, max_damage));
+        place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte: %d DMG", enemy_round_damage));
         place_text(new int[] {line, column}, rat_sprite);
     }
 
@@ -113,19 +111,35 @@ public class Renderer {
         int buy_pile_size = gameData.getBuy_pile().size();
         int discard_pile_size = gameData.getDiscard_pile().size();
         
-        String hero_hp_bar_sprite = create_hp_bar(hero_life, hero_max_life);//"Vida: [" + "█".repeat(hero_life) + "░".repeat(10-hero_life) + "]" + " " + hero_life + "/10";
+        String hero_hp_bar_sprite = create_hp_bar(hero_life, hero_max_life);
         String shield_counter = "(+" + hero_shield + ")";
         String energy_bar_sprite = "Energia: " + "■ ".repeat(hero_energy) + hero_energy + "/3";
         String vertical_bar = "║\n".repeat(HEIGHT - 2);
 
-        place_text(new int[] {4, 38}, hero_hp_bar_sprite);
+
+        int[] HP_BAR_POSITION = {4, 38};
+        int[] SHIELD_COUNTER_POSITION = {4, 63}; 
+        int[] ENERGY_BAR_POSITION = {1, 2};
+        int[] NO_ENERGY_WARNING_POSITION = {1, 15};
+
+        place_text(HP_BAR_POSITION, hero_hp_bar_sprite);
         if (hero_shield > 0) {
-            place_text(new  int[] {4, 63}, shield_counter);
+            place_text(SHIELD_COUNTER_POSITION, shield_counter);
         }
-        place_text(new int[] {1, 2}, energy_bar_sprite);
-        place_text(new int[] {3, 2}, "Pilha de Compra: x" + buy_pile_size);
-        place_text(new int[] {4, 2}, "Pilha de Descarte: x" + discard_pile_size);
-        place_text(new int[] {1, VERTICAL_BAR_SIZE}, vertical_bar);
+        place_text(ENERGY_BAR_POSITION, energy_bar_sprite);
+
+
+        if (hero_energy == 0) { 
+            place_text(NO_ENERGY_WARNING_POSITION, "| Sem energia!");
+        }
+
+        int[] BUY_PILE_POSITION = {3, 2};
+        int[] DISCARD_PILE_POSITION = {4, 2};
+        int[] VERTICAL_BAR_POSITION = {1, VERTICAL_BAR_SIZE};
+
+        place_text(BUY_PILE_POSITION, "Pilha de Compra: x" + buy_pile_size);
+        place_text(DISCARD_PILE_POSITION, "Pilha de Descarte: x" + discard_pile_size);
+        place_text(VERTICAL_BAR_POSITION, vertical_bar);
     }
 
 
@@ -135,14 +149,16 @@ public class Renderer {
             place_text(new int[] {position[0] + 1, position[1]}, "-".repeat(VERTICAL_BAR_SIZE - 1));
         }
     }
-    
 
+    
     private void place_card_UI(GameData gameData) {
         int hand_size = gameData.getPlayer_hand().size();
+
+        int DECK_TEXT_LINE = 6;
         
-        place_text(new int[] {5, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
-        place_text(new int[] {6, 1}, "              Deck:");
-        place_text(new int[] {7, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
+        place_text(new int[] {DECK_TEXT_LINE - 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
+        place_text(new int[] {DECK_TEXT_LINE, 1}, "              Deck:");
+        place_text(new int[] {DECK_TEXT_LINE + 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         
         int start_line = 8;
         int line = 0;
@@ -162,6 +178,9 @@ public class Renderer {
 
         place_text(new int[] {HEIGHT - 3, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         place_text(new int[] {HEIGHT - 2, 1}, "(P) Passar Turno (+3 energia)");
+        if (gameData.card_Failed_Use()) {
+            place_text(new int[] {HEIGHT - 2, 37}, "AVISO: AÇÃO INVÁLIDA");
+        }
     }
 
 

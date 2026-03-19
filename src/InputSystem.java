@@ -15,7 +15,7 @@ public class InputSystem {
 
             if (input_int <= 5 || input_int > 0) {
                 action.setAction_type(Action.ActionType.CARD);
-                action.setCard_used_index(input_int);
+                action.setCard_used_index(input_int - 1);
                 return action;
             }
 

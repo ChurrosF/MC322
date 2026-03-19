@@ -22,18 +22,13 @@ public class GameManager {
             // Battle logic
             switch(actionType) {
                 case CARD -> {
-                    System.out.println(discard_pile);
-                    System.out.println(buy_pile);
-                    System.out.println(player_hand);
+                    int card_index = action.getCard_used_index();
 
-                    int card_index = action.getCard_used_index() - 1;
-                    System.out.print(card_index);
-                    
-                    if (player_hand.size() < card_index || player_hand.isEmpty()) {
+                    if (player_hand.size() <= card_index || player_hand.isEmpty()) {
                         this.data.setCard_failed_use(true);
                     }
-
                     else {
+                        this.data.setCard_failed_use(false);
                         int card_type = this.player_hand.get(card_index);
                         Card card = this.data.getPossible_cards()[card_type];
                         if (card.useCard(this.hero)) {

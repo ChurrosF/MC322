@@ -143,7 +143,7 @@ public final class GameData {
     }
 
 
-    public boolean card_failed_use() {
+    public boolean card_Failed_Use() {
         return card_failed_use;
     }
 
