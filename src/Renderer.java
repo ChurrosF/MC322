@@ -157,7 +157,7 @@ public class Renderer {
         int DECK_TEXT_LINE = 6;
         
         place_text(new int[] {DECK_TEXT_LINE - 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
-        place_text(new int[] {DECK_TEXT_LINE, 1}, "              Deck:");
+        place_text(new int[] {DECK_TEXT_LINE, 1}, "              Hand:");
         place_text(new int[] {DECK_TEXT_LINE + 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         
         int start_line = 8;
