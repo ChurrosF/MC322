@@ -4,7 +4,9 @@ public class Action {
 
     public enum ActionType {
         CARD,
-        SKIP;
+        SKIP,
+        QUIT,
+        INVALID;
     }
 
     

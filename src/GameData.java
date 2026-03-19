@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
 
@@ -18,14 +19,7 @@ public final class GameData {
     private Stack<Integer> buy_pile = new Stack<>();
     private Stack<Integer> discard_pile = new Stack<>();
 
-    private boolean card_failed_use = false;
-
-    // Cartas possíveis :{Strike, Defend, Poison}
-    // Mão: {0, 1, 1, 2}
-    // Pilha de compra: {0, 1, 2, 2, 1...}
-    // Pilha de descarte: {...}
-
-
+    private boolean invalid_action = false;
     private boolean battle_over = false;
     private int battle_rounds = 1;
 
@@ -134,6 +128,7 @@ public final class GameData {
 
     public void resetBuyPile() {
         this.buy_pile.addAll(discard_pile);
+        Collections.shuffle(this.buy_pile);
         this.discard_pile.clear();
     }
 
@@ -143,12 +138,12 @@ public final class GameData {
     }
 
 
-    public boolean card_Failed_Use() {
-        return card_failed_use;
+    public boolean isAction_invalid() {
+        return invalid_action;
     }
 
 
-    public void setCard_failed_use(boolean card_failed_use) {
-        this.card_failed_use = card_failed_use;
+    public void setInvalid_action(boolean card_failed_use) {
+        this.invalid_action = card_failed_use;
     }
 }

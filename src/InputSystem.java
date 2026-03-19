@@ -8,11 +8,10 @@ public class InputSystem {
         // Reads player input and returns an action (enum class)
         Action action = new Action();
         action.setAction_type(Action.ActionType.SKIP);
-        try {
-            System.out.print("Escolha: ");
-            String input_str = inputReader.nextLine();
+        System.out.print("Escolha: ");
+        String input_str = inputReader.nextLine();
+        try {            
             int input_int = Integer.parseInt(input_str);
-
             if (input_int <= 5 || input_int > 0) {
                 action.setAction_type(Action.ActionType.CARD);
                 action.setCard_used_index(input_int - 1);
@@ -23,6 +22,15 @@ public class InputSystem {
             return action;
         }
         catch (java.lang.NumberFormatException e){
+            if (input_str.toUpperCase().equals("Q")) {
+                action.setAction_type(Action.ActionType.QUIT);
+            }
+            else if (input_str.toUpperCase().equals("P")) {
+                action.setAction_type(Action.ActionType.SKIP);
+            }
+            else {
+                action.setAction_type(Action.ActionType.INVALID);
+            }
             return action;
         }
     }

@@ -74,7 +74,7 @@ public class Renderer {
 
         String hero_sprite = gameData.getHero().getHero_sprite();
 
-        place_text(new int[] {line - 4, column}, "Cavaleiro:");
+        place_text(new int[] {line - 4, column}, "Cavaleiro (Player):");
         place_text(new int[] {line, column + 3}, hero_sprite);
     }
 
@@ -169,16 +169,11 @@ public class Renderer {
             place_card(new int[] {line + start_line, 1}, card, i);
             line += 2;
         }
-        
-        
-        // place_text(new int[] {4, 1}, "(1) " + "Carta " + damage_card_name +"  |" + " DMG:" + damage_card_damage + " CUSTO:" + damage_card_cost);
-        // place_text(new int[] {5, 1}, "-".repeat(VERTICAL_BAR_SIZE - 1));
-        // place_text(new int[] {6, 1}, "(2) " +  "Carta " + shield_card_name +" |" + " SHD:" + shield_card_defense + " CUSTO:" + shield_card_cost);
-        // place_text(new int[] {7, 1}, "-".repeat(VERTICAL_BAR_SIZE - 1));
+
 
         place_text(new int[] {HEIGHT - 3, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         place_text(new int[] {HEIGHT - 2, 1}, "(P) Passar Turno (+3 energia)");
-        if (gameData.card_Failed_Use()) {
+        if (gameData.isAction_invalid()) {
             place_text(new int[] {HEIGHT - 2, 37}, "AVISO: AÇÃO INVÁLIDA");
         }
     }
@@ -207,11 +202,14 @@ public class Renderer {
 
     public void drawEndScreen(GameData gameData) {
         // Directly prints end screen
-        if (gameData.getHero().isAlive()) {
-            System.out.println("\nVOCÊ GANHOU!\n");
+        if (!gameData.getHero().isAlive()) {
+            System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
+        }
+        else if (!gameData.getEnemy().isAlive()) {
+            System.out.println("\n--- VOCÊ GANHOU! ---\n");
         }
         else {
-            System.out.println("\nVOCÊ FOI DERROTADO...\n");
+            System.out.println("\n--- JOGO ENCERRADO ---\n");
         }
     }
 

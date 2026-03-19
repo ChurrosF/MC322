@@ -25,10 +25,10 @@ public class GameManager {
                     int card_index = action.getCard_used_index();
 
                     if (player_hand.size() <= card_index || player_hand.isEmpty()) {
-                        this.data.setCard_failed_use(true);
+                        this.data.setInvalid_action(true);
                     }
                     else {
-                        this.data.setCard_failed_use(false);
+                        this.data.setInvalid_action(false);
                         int card_type = this.player_hand.get(card_index);
                         Card card = this.data.getPossible_cards()[card_type];
                         if (card.useCard(this.hero)) {
@@ -42,6 +42,12 @@ public class GameManager {
                 }
                 case SKIP -> {
                     endTurn();
+                }
+                case QUIT -> {
+                    this.data.setBattle_over(true);
+                }
+                case INVALID -> {
+                    this.data.setInvalid_action(true);
                 }
             }
   
@@ -70,6 +76,7 @@ public class GameManager {
         if (this.data.getBuy_pile().isEmpty()) {
             this.data.resetBuyPile();
         }
+        this.data.setInvalid_action(false);
         this.data.buyRoundCards();
         this.enemy.attackHero(hero);
         this.hero.setEnergy(3);
