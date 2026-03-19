@@ -2,7 +2,7 @@
 
 Esse é um jogo feito inteiramente em Java como parte da disciplina MC322 da Unicamp. Sua parte gráfica é inteiramente feita em terminal, usando como inspiração jogos feitos em ASCII ART, além de outras inspirações em jogos de carta e RPG.
 
-# Dependencias
+# Dependências
 
 + JDK (Java Development Kit), que é o que contém o compilador javac para criar os programas.
 
