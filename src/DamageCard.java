@@ -16,14 +16,18 @@ public class DamageCard extends Card {
     public boolean useCard(Hero user) {
         // Uses Damage card and returns boolean based on success
 
-        int user_energy = user.getEnergy(); 
+         
+        // Applying strength to dmg
+        int strengthBonus = user.getStatusValue("STRENGTH");
+        int finalDamage = this.damage + strengthBonus;
+        int user_energy = user.getEnergy();
 
         if (user_energy < this.cost) {
             return false;
         }
 
         user.setEnergy(user_energy - this.cost);
-        target.receiveDamage(this.damage);
+        target.receiveDamage(finalDamage);
         return true;
     }
 
