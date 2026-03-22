@@ -1,8 +1,11 @@
+import java.util.ArrayList;
+
 public abstract class Entity {
     protected String name;
     protected int life;
     protected int max_life;
     protected int shield;
+    protected ArrayList<StatusEffect> effects = new ArrayList<>();
 
 
     public void receiveDamage(int damage) {
@@ -53,5 +56,25 @@ public abstract class Entity {
     
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getStatusValue(String type) {
+        for (StatusEffect effect : effects) {
+            if (effect.getType().equals(type)) {
+                return effect.getAmount();
+            }
+        }
+        return 0;
+    }
+
+    public void applyStatus(String type, int amount) {
+        for (StatusEffect effect : effects) {
+            if (effect.getType().equals(type)) {
+                effect.addAmount(amount);
+                return;
+            }
+        }
+        // If the aplly effect isn't in the array yet, creates it
+        effects.add(new StatusEffect(type, amount));
     }
 }
