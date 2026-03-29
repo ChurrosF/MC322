@@ -9,9 +9,11 @@ Esse é um jogo feito inteiramente em Java como parte da disciplina MC322 da Uni
 # Como compilar esse projeto?
 Na pasta do repositório cole ou escreva:
 
+```sh
 javac -d bin $(find src -name "*.java")
 
 java -cp bin App
+```
 
 # Como Jogar?
 
@@ -20,6 +22,11 @@ O jogo é baseado em turnos, onde você deve derrotar o formidável Grande Rato,
 + Vocẽ recebe um deck com 20 cartas, recebendo 5 cartas cada turno para sua hand, que ao final de sua jogada são descartadas.
 + Escolha uma carta dos indices de 1 até 5, + Enter. A carta de Golpe dá dano no inimigo e a carta escudo lhe concede proteção contra um ataque.
 + Para recuperar sua energia e acabar seu turno aperte a tecla "P" + Enter 
+
+Patch Notes Version 0.1.3
+
+    Agora com  effeitos!!
++ Use a Carta Poison para aplicar envenenamento nos monstros!!
 
 # Interface do Jogo
 
