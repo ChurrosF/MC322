@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public abstract class Entity {
     protected String name;
     protected int life;
-    protected int max_life;
+    protected int maxLife;
     protected int shield;
     protected ArrayList<StatusEffect> effects = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public abstract class Entity {
 
 
     public int getMaxLife() {
-        return this.max_life;
+        return this.maxLife;
     }
 
 
@@ -58,23 +58,18 @@ public abstract class Entity {
         this.name = name;
     }
 
-    public int getStatusValue(String type) {
-        for (StatusEffect effect : effects) {
-            if (effect.getType().equals(type)) {
-                return effect.getAmount();
-            }
-        }
-        return 0;
-    }
 
-    public void applyStatus(String type, int amount) {
-        for (StatusEffect effect : effects) {
-            if (effect.getType().equals(type)) {
+    public void applyEffect(Entity target, StatusEffect effectToApply, int amount) {
+        boolean found = false;
+        for (StatusEffect effect: target.effects) {
+            if (effect.getClass() == effectToApply.getClass()) {
                 effect.addAmount(amount);
-                return;
+                found = true;
             }
         }
-        // If the aplly effect isn't in the array yet, creates it
-        effects.add(new StatusEffect(type, amount));
+        if (!found) {
+            target.effects.add(effectToApply);
+            effectToApply.setOwner(target);
+        }
     }
 }

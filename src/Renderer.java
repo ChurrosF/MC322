@@ -87,16 +87,16 @@ public class Renderer {
         // Getting Enemy Data
         int enemy_life = gameData.getEnemy().getLife();
         int enemy_max_life = gameData.getEnemy().getMaxLife();
-        int enemy_round_damage = gameData.getEnemy().getRound_damage();
+        int enemy_round_damage = gameData.getEnemy().getRoundDamage();
 
-        String rat_sprite = gameData.getEnemy().getEnemy_sprite();
+        String rat_sprite = gameData.getEnemy().getEnemySprite();
 
         String rat_hp_bar_sprite = create_hp_bar(enemy_life, enemy_max_life);
 
-        place_text(new int[] {line - 7, column - 2}, "Grande Rato:");
+        place_text(new int[] {line - 7, column - 2}, "Aranha Maligna:");
         place_text(new int[] {line - 5, column - 2}, rat_hp_bar_sprite);
         place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte: %d DMG", enemy_round_damage));
-        place_text(new int[] {line, column}, rat_sprite);
+        place_text(new int[] {line + 1, column}, rat_sprite);
     }
 
 
@@ -109,7 +109,7 @@ public class Renderer {
         int hero_shield = gameData.getHero().getShield();
         int hero_energy = gameData.getHero().getEnergy();
         int buy_pile_size = gameData.getBuy_pile().size();
-        int discard_pile_size = gameData.getDiscard_pile().size();
+        int discard_pile_size = gameData.getDiscardPile().size();
         
         String hero_hp_bar_sprite = create_hp_bar(hero_life, hero_max_life);
         String shield_counter = "(+" + hero_shield + ")";
@@ -152,19 +152,19 @@ public class Renderer {
 
     
     private void place_card_UI(GameData gameData) {
-        int hand_size = gameData.getPlayer_hand().size();
+        int hand_size = gameData.getPlayerHand().size();
 
         int DECK_TEXT_LINE = 6;
         
         place_text(new int[] {DECK_TEXT_LINE - 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
-        place_text(new int[] {DECK_TEXT_LINE, 1}, "              Hand:");
+        place_text(new int[] {DECK_TEXT_LINE, 1}, "               Mão:");
         place_text(new int[] {DECK_TEXT_LINE + 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         
         int start_line = 8;
         int line = 0;
         for (int i = 0; i < hand_size; i++) {
 
-            int card_index = gameData.getPlayer_hand().get(i);
+            int card_index = gameData.getPlayerHand().get(i);
             Card card = gameData.getPossible_cards()[card_index];
             place_card(new int[] {line + start_line, 1}, card, i);
             line += 2;
@@ -179,8 +179,6 @@ public class Renderer {
     }
 
 
-
-
     private void clearScreen() {
         this.frame.delete(0, frame.length());
         System.out.print("\033[H\033[2J");
@@ -190,7 +188,7 @@ public class Renderer {
 
     public void placeBattleScreen(GameData gameData) {
         int[] HERO_POSITION = {6, 38};
-        int[] ENEMY_POSITION = {9, 78};
+        int[] ENEMY_POSITION = {9, 77};
 
 
         place_hero_sprite(gameData, HERO_POSITION);

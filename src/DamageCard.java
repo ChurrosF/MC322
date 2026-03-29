@@ -15,11 +15,6 @@ public class DamageCard extends Card {
     @Override
     public boolean useCard(Hero user) {
         // Uses Damage card and returns boolean based on success
-
-         
-        // Applying strength to dmg
-        int strengthBonus = user.getStatusValue("STRENGTH");
-        int finalDamage = this.damage + strengthBonus;
         int user_energy = user.getEnergy();
 
         if (user_energy < this.cost) {
@@ -27,7 +22,7 @@ public class DamageCard extends Card {
         }
 
         user.setEnergy(user_energy - this.cost);
-        target.receiveDamage(finalDamage);
+        target.receiveDamage(damage);
         return true;
     }
 

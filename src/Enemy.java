@@ -1,51 +1,50 @@
 import java.util.Random;
 
 public class Enemy extends Entity {
-    private int[] damage_range;
-    private int round_damage;
-    private final String enemy_sprite = """
-        _
-  ,-(_)-\"\"\"\"\"--,,
-<  "             ";===""==,.
- `-../ )__... (  ,'        "==
-   ==="    ,,==="
+    private int[] damageRange;
+    private int roundDamage;
+    private final String enemySprite = """
+ /\\ \\  / /\\
+//\\\\ .. //\\\\
+//\\((  ))/\\\\
+/  < `' >  \\
                 """;
 
 
     public Enemy(String name, int life, int shield, int[] damage_range) {
         this.name = name;
         this.life = life;
-        this.max_life = life;
+        this.maxLife = life;
         this.shield = shield;
-        this.damage_range = damage_range;
-        this.round_damage = new Random().nextInt(damage_range[0], damage_range[1]);
+        this.damageRange = damage_range;
+        this.roundDamage = new Random().nextInt(damage_range[0], damage_range[1]);
     }
 
 
     public void attackHero(Hero hero) {
         /*Attacks hero with randomized round_damage, then randomizes damage for next round */
-        hero.receiveDamage(round_damage);
-        this.round_damage = new Random().nextInt(this.damage_range[0], this.damage_range[1]);
+        hero.receiveDamage(roundDamage);
+        this.roundDamage = new Random().nextInt(this.damageRange[0], this.damageRange[1]);
     }
 
 
-    public String getEnemy_sprite() {
-        return enemy_sprite;
+    public String getEnemySprite() {
+        return enemySprite;
     }
 
 
-    public int[] getDamage_range() {
-        return damage_range;
+    public int[] getDamageRange() {
+        return damageRange;
     }
 
     
-    public void setDamage_range(int[] damage_range) {
-        this.damage_range = damage_range;
+    public void setDamageRange(int[] damage_range) {
+        this.damageRange = damage_range;
     }
 
 
-    public int getRound_damage() {
-        return round_damage;
+    public int getRoundDamage() {
+        return roundDamage;
     }
 }
 
