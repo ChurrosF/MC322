@@ -10,11 +10,12 @@ public final class GameData {
     private final Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
     private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
+    private PoisonCard poison = new PoisonCard("Veneno", 1, 5, enemy);
 
 
     private int buyPileSize = 20;
     private int handSize = 5;
-    private Card[] possible_cards = {strike, defend};
+    private Card[] possible_cards = {strike, defend, poison};
     private ArrayList<Integer> playerHand = new ArrayList<>();
     private Stack<Integer> buyPile = new Stack<>();
     private Stack<Integer> discardPile = new Stack<>();

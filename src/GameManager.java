@@ -16,8 +16,13 @@ public class GameManager {
     public void update(Action action) {
         // Logic to be update every frame
 
+        // Notifies to GM the effects
+        this.notify_effects(action);
+
         boolean battle_over = data.isBattle_over();
         Action.ActionType actionType = action.getAction_type();
+        
+
 
         if (!battle_over) {
             // Battle logic
