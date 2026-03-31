@@ -1,16 +1,15 @@
 public class PoisonEffect extends StatusEffect {
-    private int potency;
 
-    public PoisonEffect(String name, Entity owner, int amount, int potency) {
+    public PoisonEffect(String name, Entity owner, int amount) {
         this.name = name;
         this.owner = owner;
         this.amount = amount;
-        this.potency = potency;
     }
 
+
     @Override
-    public void beNotified(Action action) {
-    // Como o slay the spire quando acaba o turno aplica o dano e depois diminui 1 stack
+    public void beNotified(Action action, GameData data) {
+    // Como o slay the spire, quando acaba o turno aplica o dano e depois diminui 1 stack (amount)
         if (action.getAction_type() == Action.ActionType.SKIP) {
             if (this.amount > 0) {
 

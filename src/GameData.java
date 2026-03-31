@@ -6,20 +6,23 @@ import java.util.Stack;
 public final class GameData {
     // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero", 10, 3, 0);
-    int[] enemyDamageRange = {4, 8};
+    int[] enemyDamageRange = {3, 7};
     private final Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
+
     private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
-    private PoisonCard poison = new PoisonCard("Veneno", 1, 5, enemy);
+    private PoisonCard poison = new PoisonCard("Veneno", 2, enemy);
+    private StrengthCard strength = new StrengthCard("Força", 1, hero);
 
 
     private int buyPileSize = 20;
     private int handSize = 5;
-    private Card[] possible_cards = {strike, defend, poison};
+    private Card[] possible_cards = {strike, defend, poison, strength};
     private ArrayList<Integer> playerHand = new ArrayList<>();
     private Stack<Integer> buyPile = new Stack<>();
     private Stack<Integer> discardPile = new Stack<>();
 
+    
     private boolean invalidAction = false;
     private boolean battleOver = false;
     private int battleRounds = 1;

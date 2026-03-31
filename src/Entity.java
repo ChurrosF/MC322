@@ -5,7 +5,7 @@ public abstract class Entity {
     protected int life;
     protected int maxLife;
     protected int shield;
-    protected ArrayList<StatusEffect> effects = new ArrayList<>();
+    private ArrayList<StatusEffect> effects = new ArrayList<>();
 
 
     public void receiveDamage(int damage) {
@@ -72,4 +72,10 @@ public abstract class Entity {
             effectToApply.setOwner(target);
         }
     }
+
+    
+    public ArrayList<StatusEffect> getEffects() {
+        return effects;
+    }
+
 }

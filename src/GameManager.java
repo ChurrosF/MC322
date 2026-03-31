@@ -1,34 +1,29 @@
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class GameManager {
     private final GameData data = new GameData();
-    private ArrayList<StatusEffect> effectSubscribers = new ArrayList<StatusEffect>();
+    private final ArrayList<StatusEffect> effectSubscribers = new ArrayList<>();
     private boolean gameEnded = false;
 
     Hero hero = data.getHero();
     Enemy enemy = data.getEnemy();
     ArrayList<Integer> player_hand = data.getPlayerHand();
-    Stack<Integer> buyPile = data.getBuy_pile();
-    Stack<Integer> discardPile = data.getDiscardPile();
+    boolean battle_over = data.isBattle_over();
 
 
     public void update(Action action) {
         // Logic to be update every frame
 
-        // Notifies to GM the effects
-        this.notify_effects(action);
-
-        boolean battle_over = data.isBattle_over();
+        // Notifies effects the current action and unsubscribes expired effects
+        updateEffects(action);
         Action.ActionType actionType = action.getAction_type();
         
-
-
         if (!battle_over) {
             // Battle logic
             switch(actionType) {
                 case CARD -> {
                     int card_index = action.getCard_used_index();
+
 
                     if (player_hand.size() <= card_index || player_hand.isEmpty()) {
                         this.data.setInvalidAction(true);
@@ -37,10 +32,16 @@ public class GameManager {
                         this.data.setInvalidAction(false);
                         int card_type = this.player_hand.get(card_index);
                         Card card = this.data.getPossible_cards()[card_type];
+
                         if (card.useCard(this.hero)) {
                             this.data.discardCard(card_index);
-                            if (!enemy.isAlive()) {
-                                this.data.setBattle_over(true);
+
+                            if (card instanceof EffectCard effectCard) {
+                                StatusEffect effect = effectCard.getEffect();
+
+                                if (notSubscribed(effect)) {
+                                    subscribe(effect);
+                                }
                             }
                         }
                         this.data.addBattle_round();
@@ -57,7 +58,7 @@ public class GameManager {
                 }
             }
   
-            if (!hero.isAlive()) {
+            if (!hero.isAlive() || !enemy.isAlive()) {
                 this.data.setBattle_over(true);
             }
         }
@@ -77,36 +78,49 @@ public class GameManager {
     }
 
 
-    public void endTurn() {
+    private void endTurn() {
         this.data.discardHand();
         if (this.data.getBuy_pile().isEmpty()) {
             this.data.resetBuyPile();
         }
         this.data.setInvalidAction(false);
         this.data.buyRoundCards();
-        this.enemy.attackHero(hero);
+        this.enemy.setShield(0);
+        this.enemy.executeAction(hero, effectSubscribers);
         this.hero.setEnergy(3);
         this.hero.setShield(0);
         this.data.addBattle_round();
     }
 
 
-    public void subscribe(StatusEffect effect) {
-        effectSubscribers.add(effect);
+    private void subscribe(StatusEffect effect) {
+        this.effectSubscribers.add(effect);
     }
 
 
     public void unsubscribe(StatusEffect effect) {
-        effectSubscribers.remove(effect);
+        this.effectSubscribers.remove(effect);
     }
 
 
-    public void notify_effects(Action action) {
+    private void notifyEffects(Action action) {
         for (StatusEffect effectSubscriber : effectSubscribers) {
-            effectSubscriber.beNotified(action);
-            if (effectSubscriber.amount == 0) {
-                unsubscribe(effectSubscriber);
+            effectSubscriber.beNotified(action, this.data);
+            if (effectSubscriber.getAmount() == 0) {
+                effectSubscriber.owner.getEffects().remove(effectSubscriber);
             }
         }
     }
+
+    
+    private void updateEffects(Action action)  {
+        notifyEffects(action);
+        effectSubscribers.removeIf(effect -> effect.getAmount() == 0);
+    }
+
+
+    private boolean notSubscribed(StatusEffect effect) {
+        return !effectSubscribers.contains(effect);
+    }
+
 }

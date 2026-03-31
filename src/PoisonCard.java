@@ -1,13 +1,14 @@
-public class PoisonCard extends Card {
-    private int poisonAmount;
+public class PoisonCard extends EffectCard {
     private Enemy target;
+    private final int amountToAdd = 3;
+    private final PoisonEffect poisonEffect = new PoisonEffect("Veneno", target, amountToAdd);
 
-    public PoisonCard(String name, int cost, int poisonAmount, Enemy target) {
+    public PoisonCard(String name, int cost, Enemy target) {
         this.name = name;
         this.cost = cost;
-        this.poisonAmount = poisonAmount;
         this.target = target;
-        this.description = "Carta " + this.name + "  |" + " PSN:" + this.poisonAmount + " CUSTO:" + this.cost;
+        this.effect = poisonEffect;
+        this.description = "Carta " + this.name + " |" + " PSN:" + poisonEffect.getAmount() + " CUSTO:" + this.cost;
     }
 
     @Override
@@ -19,10 +20,12 @@ public class PoisonCard extends Card {
         }
 
         user.setEnergy(user_energy - this.cost);
+
+        if (poisonEffect.getAmount() == 0) {
+            poisonEffect.setAmount(amountToAdd);
+        }
         
-        // Creates the contition and call the apply
-        PoisonEffect effect = new PoisonEffect("Veneno", target, poisonAmount);
-        target.applyEffect(target, effect, poisonAmount);
+        target.applyEffect(target, poisonEffect, amountToAdd);
         
         return true;
     }

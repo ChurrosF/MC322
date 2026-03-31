@@ -4,7 +4,7 @@ public abstract class StatusEffect {
     protected int amount;
     
 
-    public abstract void beNotified(Action action);
+    public abstract void beNotified(Action action, GameData data);
 
 
     public String getString() {

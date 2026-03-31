@@ -1,8 +1,11 @@
+
+import java.util.ArrayList;
+
 public class Renderer {
     private final int HEIGHT = 20;
     private final int WIDTH = 120;
     private final int VERTICAL_BAR_SIZE = 35;
-    private StringBuilder frame = new StringBuilder();
+    private final StringBuilder frame = new StringBuilder();
 
 
     private void place_text(int[] position, String text) {
@@ -72,10 +75,15 @@ public class Renderer {
         int line = position[0];
         int column = position[1];
 
-        String hero_sprite = gameData.getHero().getHero_sprite();
+        String heroSprite = gameData.getHero().getHero_sprite();
+        ArrayList<StatusEffect> effects = gameData.getHero().getEffects();
 
         place_text(new int[] {line - 4, column}, "Cavaleiro (Player):");
-        place_text(new int[] {line, column + 3}, hero_sprite);
+        place_text(new int[] {line, column + 3}, heroSprite);
+        for (int i = 0; i < effects.size(); i++) {
+            StatusEffect effect = effects.get(i);
+            place_text(new int[] {line + 10 + i, column - 1}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
+        }
     }
 
 
@@ -85,18 +93,43 @@ public class Renderer {
         int column = position[1];
 
         // Getting Enemy Data
-        int enemy_life = gameData.getEnemy().getLife();
-        int enemy_max_life = gameData.getEnemy().getMaxLife();
-        int enemy_round_damage = gameData.getEnemy().getRoundDamage();
+        int enemyLife = gameData.getEnemy().getLife();
+        int enemyShield = gameData.getEnemy().getShield();
+        int enemyMaxLife = gameData.getEnemy().getMaxLife();
+        int enemyRoundDamage = gameData.getEnemy().getRoundDamage();
+        int enemyShieldtoAdd = gameData.getEnemy().getShieldToAdd();
+        int enemyPoisonAmount = gameData.getEnemy().getPoisonAmount();
 
-        String rat_sprite = gameData.getEnemy().getEnemySprite();
+        EnemyAction enemyAction = gameData.getEnemy().getEnemyAction();
+        String shieldCounter = "(+" + enemyShield + ")";
+        ArrayList<StatusEffect> effects = gameData.getEnemy().getEffects();
 
-        String rat_hp_bar_sprite = create_hp_bar(enemy_life, enemy_max_life);
+        String ratSprite = gameData.getEnemy().getEnemySprite();
+
+        String ratHpBarSprite = create_hp_bar(enemyLife, enemyMaxLife);
 
         place_text(new int[] {line - 7, column - 2}, "Aranha Maligna:");
-        place_text(new int[] {line - 5, column - 2}, rat_hp_bar_sprite);
-        place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte: %d DMG", enemy_round_damage));
-        place_text(new int[] {line + 1, column}, rat_sprite);
+        place_text(new int[] {line - 5, column - 2}, ratHpBarSprite);
+        if (enemyShield > 0) {
+            place_text(new int[] {line - 5, column + 23}, shieldCounter);
+        }
+
+        switch (enemyAction) {
+            case ATTACK -> {
+                place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte: %d DMG", enemyRoundDamage));
+            }
+            case DEFEND -> {
+                place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte: %d SHD", enemyShieldtoAdd));
+            }
+            case POISON -> {
+                place_text(new int[] {line - 4, column - 2}, String.format("Turno Seguinte: %d PSN", enemyPoisonAmount));
+            }
+        }
+        for (int i = 0; i < effects.size(); i++) {
+            StatusEffect effect = effects.get(i);
+            place_text(new int[] {line + 7 + i, column - 2}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
+        }
+        place_text(new int[] {line + 2, column}, ratSprite);
     }
 
 

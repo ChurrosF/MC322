@@ -1,14 +1,16 @@
 public class DamageCard extends Card {
-    private int damage;
+    private int baseDamage;
+    private int finalDamage;
     private Enemy target;
 
 
-    public DamageCard(String name, int cost, int damage, Enemy target) {
+    public DamageCard(String name, int cost, int baseDamage, Enemy target) {
         this.name = name;
         this.cost = cost;
-        this.damage = damage;
+        this.baseDamage = baseDamage;
+        this.finalDamage = this.baseDamage;
         this.target = target;
-        this.description = "Carta " + this.name + "  |" + " DMG:" + this.damage + " CUSTO:" + this.cost;
+        this.description = "Carta " + this.name + "  |" + " DMG:" + this.baseDamage + " CUSTO:" + this.cost;
     }
 
 
@@ -22,17 +24,32 @@ public class DamageCard extends Card {
         }
 
         user.setEnergy(user_energy - this.cost);
-        target.receiveDamage(damage);
+        target.receiveDamage(finalDamage);
         return true;
     }
 
 
-    public int getDamage() {
-        return damage;
+    public int getBaseDamage() {
+        return baseDamage;
+    }
+
+
+    public void setBaseDamage(int damage) {
+        this.baseDamage = damage;
     }
 
 
     public void setTarget(Enemy target) {
         this.target = target;
+    }
+
+
+    public int getFinalDamage() {
+        return finalDamage;
+    }
+
+
+    public void setFinalDamage(int finalDamage) {
+        this.finalDamage = finalDamage;
     }
 }
