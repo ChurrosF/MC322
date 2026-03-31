@@ -25,13 +25,19 @@ O jogo é baseado em turnos, onde você deve derrotar o formidável Grande Rato,
 
 Patch Notes Version 0.1.3
 
-    Agora com  effeitos!!
-+ Use a Carta Poison para aplicar envenenamento nos monstros!!
+Agora com efeitos!
++ Use a Carta Poison para aplicar envenenamento nos monstros! (Sigla PSN representa a quantidade de acúmulos infligidos. Decai a cada rodada dando 1 de dano.)
++ Use a Carta Força para aumentar o dano dos seus ataques! (Sigla STR representa a quantidade de acúmulos ganhos, cada acúmulo dá mais 1 de dano. Decai a cada uso de Carta de ataque.)
 
 # Interface do Jogo
 
 
-![imagem exemplo](imageREADME.png)
+![imagem exemplo](/assets/imageREADME.png)
 
 + DMG: Dano causado
 + SHD: Escudo recebido
++ PSN: Quantidade de veneno infligida
++ STR: Quantidade de buff de força ganho
+
+Nome: Felipe Pedral Cruz de Oliveira RA: 220826
+Nome: Mateus Carioca RA: 282046
