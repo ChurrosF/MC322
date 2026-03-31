@@ -6,22 +6,26 @@ import java.util.Stack;
 public final class GameData {
     // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero", 10, 3, 0);
-    int[] enemy_damage_range = {4, 8};
-    private final Enemy enemy = new Enemy("Rat", 20, 0, enemy_damage_range);
+    int[] enemyDamageRange = {3, 7};
+    private final Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
+
     private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
+    private PoisonCard poison = new PoisonCard("Veneno", 2, enemy);
+    private StrengthCard strength = new StrengthCard("Força", 1, hero);
 
 
-    private int buy_pile_size = 20;
-    private int hand_size = 5;
-    private Card[] possible_cards = {strike, defend};
-    private ArrayList<Integer> player_hand = new ArrayList<>();
-    private Stack<Integer> buy_pile = new Stack<>();
-    private Stack<Integer> discard_pile = new Stack<>();
+    private int buyPileSize = 20;
+    private int handSize = 5;
+    private Card[] possible_cards = {strike, defend, poison, strength};
+    private ArrayList<Integer> playerHand = new ArrayList<>();
+    private Stack<Integer> buyPile = new Stack<>();
+    private Stack<Integer> discardPile = new Stack<>();
 
-    private boolean invalid_action = false;
-    private boolean battle_over = false;
-    private int battle_rounds = 1;
+    
+    private boolean invalidAction = false;
+    private boolean battleOver = false;
+    private int battleRounds = 1;
 
 
     public GameData() {
@@ -52,22 +56,22 @@ public final class GameData {
 
     
     public boolean isBattle_over() {
-        return this.battle_over;
+        return this.battleOver;
     }
 
     
     public void setBattle_over(boolean game_over) {
-        this.battle_over = game_over;
+        this.battleOver = game_over;
     }
 
 
     public int getBattle_rounds() {
-        return this.battle_rounds;
+        return this.battleRounds;
     }
 
 
     public void addBattle_round() {
-        this.battle_rounds += 1;
+        this.battleRounds += 1;
     }
 
 
@@ -82,68 +86,68 @@ public final class GameData {
 
 
     public Stack<Integer> getBuy_pile() {
-        return this.buy_pile;
+        return this.buyPile;
     }
 
 
         public boolean isAction_invalid() {
-        return invalid_action;
+        return invalidAction;
     }
 
 
-    public void setInvalid_action(boolean card_failed_use) {
-        this.invalid_action = card_failed_use;
+    public void setInvalidAction(boolean card_failed_use) {
+        this.invalidAction = card_failed_use;
     }
 
 
     public void generateRandomBuyPile() {
         Random generator = new Random();
-        for (int i = 0; i < this.buy_pile_size; i++) {
+        for (int i = 0; i < this.buyPileSize; i++) {
             int random_card_index = generator.nextInt(0, possible_cards.length);
-            this.buy_pile.push(random_card_index);  
+            this.buyPile.push(random_card_index);  
         }
     }
 
 
-    public Stack<Integer> getDiscard_pile() {
-        return this.discard_pile;
+    public Stack<Integer> getDiscardPile() {
+        return this.discardPile;
     }
 
 
     public void discardCard(int position) {
-        int card = player_hand.remove(position);
-        this.discard_pile.push(card);
+        int card = playerHand.remove(position);
+        this.discardPile.push(card);
     }
 
 
     public void discardHand() {
-        this.discard_pile.addAll(player_hand);
-        this.player_hand.clear();
+        this.discardPile.addAll(playerHand);
+        this.playerHand.clear();
     }
 
 
     public void buyCard() {
-        if (!this.buy_pile.isEmpty()) {
-            this.player_hand.add(this.buy_pile.pop());
+        if (!this.buyPile.isEmpty()) {
+            this.playerHand.add(this.buyPile.pop());
         }
     }
 
 
     public void buyRoundCards() {
-        for (int i = 0; i < hand_size; i++) {
+        for (int i = 0; i < handSize; i++) {
             buyCard();
         }
     }
 
 
     public void resetBuyPile() {
-        this.buy_pile.addAll(discard_pile);
-        Collections.shuffle(this.buy_pile);
-        this.discard_pile.clear();
+        this.buyPile.addAll(discardPile);
+        Collections.shuffle(this.buyPile);
+        this.discardPile.clear();
     }
 
 
-    public ArrayList<Integer> getPlayer_hand() {
-        return this.player_hand;
+    public ArrayList<Integer> getPlayerHand() {
+        return this.playerHand;
     }
 }

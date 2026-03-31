@@ -17,7 +17,7 @@ _=/d   ,^\\
     public Hero(String name, int life, int energy, int shield) {
         this.name = name;
         this.life = life;
-        this.max_life = life;
+        this.maxLife = life;
         this.energy = energy;
         this.shield = shield;
     }
