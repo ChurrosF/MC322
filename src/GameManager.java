@@ -8,67 +8,40 @@ public class GameManager {
     Hero hero = data.getHero();
     Enemy enemy = data.getEnemy();
     ArrayList<Integer> player_hand = data.getPlayerHand();
-    boolean battle_over = data.isBattle_over();
+    boolean battleOver = data.isBattle_over();
 
 
     public void update(Action action) {
         // Logic to be update every frame
 
-        // Notifies effects the current action and unsubscribes expired effects
         updateEffects(action);
         Action.ActionType actionType = action.getAction_type();
+        this.data.setInvalidAction(false);
         
-        if (!battle_over) {
-            // Battle logic
-            switch(actionType) {
-                case CARD -> {
-                    int card_index = action.getCard_used_index();
-
-
-                    if (player_hand.size() <= card_index || player_hand.isEmpty()) {
-                        this.data.setInvalidAction(true);
-                    }
-                    else {
-                        this.data.setInvalidAction(false);
-                        int card_type = this.player_hand.get(card_index);
-                        Card card = this.data.getPossible_cards()[card_type];
-
-                        if (card.useCard(this.hero)) {
-                            this.data.discardCard(card_index);
-
-                            if (card instanceof EffectCard effectCard) {
-                                StatusEffect effect = effectCard.getEffect();
-
-                                if (notSubscribed(effect)) {
-                                    subscribe(effect);
-                                }
-                            }
-                        }
-                        this.data.addBattle_round();
-                    }
-                }
-                case SKIP -> {
-                    endTurn();
-                }
-                case QUIT -> {
-                    this.data.setBattle_over(true);
-                }
-                case INVALID -> {
-                    this.data.setInvalidAction(true);
-                }
-            }
-  
-            if (!hero.isAlive() || !enemy.isAlive()) {
-                this.data.setBattle_over(true);
-            }
-        }
-        else {
+        if (battleOver) {
             this.gameEnded = true;
+            return;
         }
+
+        switch(actionType) {
+            case CARD -> {
+                handleCardUse(action);
+            }
+            case SKIP -> {
+                turnSkip();
+            }
+            case QUIT -> {
+                this.data.setBattleOver(true);
+            }
+            case INVALID -> {
+                this.data.setInvalidAction(true);
+            }
+        }
+        checkBattleOver();
     }
 
 
-    public boolean isGame_Ended() {
+    public boolean isGameEnded() {
         return this.gameEnded;
     }
 
@@ -78,7 +51,7 @@ public class GameManager {
     }
 
 
-    private void endTurn() {
+    private void turnSkip() {
         this.data.discardHand();
         if (this.data.getBuy_pile().isEmpty()) {
             this.data.resetBuyPile();
@@ -93,6 +66,54 @@ public class GameManager {
     }
 
 
+    private void handleCardUse(Action action) {
+        int cardIndex = action.getCard_used_index();
+
+        if (isCardInvalid(cardIndex)) {
+            this.data.setInvalidAction(true);
+            return;
+        }
+        
+        Card card = getCardFromIndex(cardIndex);
+
+        if (card.useCard(this.hero)) {
+            this.data.discardCard(cardIndex);
+            handleEffectCards(card);
+        }
+        this.data.addBattle_round();
+        }
+
+
+    private void handleEffectCards(Card card) {
+        if (!(card instanceof EffectCard effectCard)) return;
+
+        StatusEffect effect = effectCard.getEffect();
+
+        if (notSubscribed(effect)) {
+            subscribe(effect);
+        }
+    }
+
+
+    private Card getCardFromIndex(int cardIndex) {
+        int card_type = this.player_hand.get(cardIndex);
+        Card card = this.data.getPossible_cards()[card_type];
+        return card;
+    }
+
+    
+    private boolean isCardInvalid(int cardIndex) {
+        return (player_hand.size() <= cardIndex || player_hand.isEmpty());
+    }
+
+
+    private void checkBattleOver() {
+        if (!hero.isAlive() || !enemy.isAlive()) {
+            this.data.setBattleOver(true);
+        }
+    }
+
+
     private void subscribe(StatusEffect effect) {
         this.effectSubscribers.add(effect);
     }
@@ -103,24 +124,24 @@ public class GameManager {
     }
 
 
+    private boolean notSubscribed(StatusEffect effect) {
+        return !effectSubscribers.contains(effect);
+    }
+
+
     private void notifyEffects(Action action) {
         for (StatusEffect effectSubscriber : effectSubscribers) {
             effectSubscriber.beNotified(action, this.data);
             if (effectSubscriber.getAmount() == 0) {
-                effectSubscriber.owner.getEffects().remove(effectSubscriber);
+                effectSubscriber.getOwner().getEffects().remove(effectSubscriber);
             }
         }
     }
 
     
     private void updateEffects(Action action)  {
+        // Notifies effects of the current action and unsubscribes expired effects
         notifyEffects(action);
         effectSubscribers.removeIf(effect -> effect.getAmount() == 0);
     }
-
-
-    private boolean notSubscribed(StatusEffect effect) {
-        return !effectSubscribers.contains(effect);
-    }
-
 }

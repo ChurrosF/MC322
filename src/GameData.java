@@ -7,7 +7,7 @@ public final class GameData {
     // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero", 10, 3, 0);
     int[] enemyDamageRange = {3, 7};
-    private final Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
+    private final Enemy enemy = new Enemy("Rat", 25, 0, enemyDamageRange);
 
     private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
@@ -60,7 +60,7 @@ public final class GameData {
     }
 
     
-    public void setBattle_over(boolean game_over) {
+    public void setBattleOver(boolean game_over) {
         this.battleOver = game_over;
     }
 
