@@ -67,18 +67,9 @@ public class Enemy extends Entity {
 
 
     public void poisonHero(Hero hero, ArrayList<StatusEffect> effectSubscribers) {
-        boolean found = false;
-        for (StatusEffect effect: hero.getEffects()) {
-            if (effect instanceof PoisonEffect) {
-                effect.addAmount(this.poisonAmount);
-                found = true;
-            }
-        }
-        if (!found) {
-            PoisonEffect poisonEffect = new PoisonEffect("Veneno", hero, this.poisonAmount);
-            hero.applyEffect(hero, poisonEffect, this.poisonAmount);
-            effectSubscribers.add(poisonEffect);
-        }
+        PoisonEffect poisonEffect = new PoisonEffect("Veneno", hero, this.poisonAmount);
+        hero.applyEffect(hero, poisonEffect, this.poisonAmount);
+        effectSubscribers.add(poisonEffect);
     }
 
 
