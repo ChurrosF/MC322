@@ -37,6 +37,7 @@ public class GameManager {
                 this.data.setInvalidAction(true);
             }
         }
+        
         checkBattleOver();
     }
 

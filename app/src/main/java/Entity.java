@@ -5,7 +5,7 @@ public abstract class Entity {
     protected int life;
     protected int maxLife;
     protected int shield;
-    private ArrayList<StatusEffect> effects = new ArrayList<>();
+    private final ArrayList<StatusEffect> effects = new ArrayList<>();
 
 
     public void receiveDamage(int damage) {
