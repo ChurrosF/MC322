@@ -9,10 +9,10 @@ public class StrengthEffect extends StatusEffect {
 
     @Override
     public void beNotified(Action action, GameData data) {
-        if (action.getAction_type() == Action.ActionType.CARD) {
-            int card_index = action.getCard_used_index();
+        if (action.getActionType() == Action.ActionType.CARD) {
+            int card_index = action.getCardUsedIndex();
             int card_type = data.getPlayerHand().get(card_index);
-            Card card = data.getPossible_cards()[card_type];
+            Card card = data.getPossibleCards()[card_type];
 
             if (card instanceof DamageCard damageCard) {
                 if (this.amount > 0) {
