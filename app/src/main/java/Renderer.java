@@ -1,65 +1,70 @@
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextGraphics;
+import com.googlecode.lanterna.screen.Screen;
+
 public class Renderer {
-    private final int HEIGHT = 20;
-    private final int WIDTH = 120;
+    private final TerminalManager terminalManager = TerminalManager.getInstance();
+
+    // Getting Window constants from TerminalManager
+    private final int HEIGHT = terminalManager.getHeight();
+    private final int WIDTH = terminalManager.getWidth();
+
+    // Renderer position and length constants
     private final int VERTICAL_BAR_SIZE = 35;
-    private final StringBuilder frame = new StringBuilder();
+    private final int[] VERTICAL_BAR_POSITION = {1, VERTICAL_BAR_SIZE};
+
+    private final int[] HP_BAR_POSITION = {4, 38};
+    private final int[] SHIELD_COUNTER_POSITION = {4, 63}; 
+    private final int[] ENERGY_BAR_POSITION = {1, 2};
+    private final int[] NO_ENERGY_WARNING_POSITION = {1, 15};
+
+    private final int[] BUY_PILE_POSITION = {3, 2};
+    private final int[] DISCARD_PILE_POSITION = {4, 2};
+
+    private final int[] HERO_POSITION = {6, 38};
+    private final int[] ENEMY_POSITION = {9, 77};
+    
+    
+    // Initializing screen and textGraphics from Lanterna Lib
+    private final Screen screen = terminalManager.getScreen();
+    private final TextGraphics textGraphics = terminalManager.getTextGraphics();
 
 
     private void place_text(int[] position, String text) {
         // Place any text (single or multi line) in a given position (line, column)
         int line = position[0];
-        int row = position[1];
-        int start_pos = line * (WIDTH + 1) + row;
+        int column = position[1];
 
-        int count = 0;
-        for (int i = start_pos; count < text.length(); i++) {
-            
-            char letter = text.charAt(count); 
-            count++;
-            
+        String[] lines = text.split("\n");
 
-            if (letter == '\n') {
-                i = (line + 1) * (WIDTH + 1) + position[1] - 1;
-                line++;
-            }
-            else {
-                this.frame.setCharAt(i, letter);
-            }      
+        for (int i = 0; i < lines.length; i++) {
+            textGraphics.putString(column, line + i, lines[i]);
         }
     }
 
+    
+    private void place_text(int[] position, String text, TextColor color) {
+        textGraphics.setForegroundColor(color);
+        place_text(position, text);
+        textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
+    }
 
-    private void place_borders() {
+
+    private void placeBorders() {
         // Places borders on game screen (frame)
-        for (int i = 0; i < this.HEIGHT; i++) {
-            for (int j = 0; j < this.WIDTH; j++) {
 
-                if (j == 0 && i == 0) {
-                    this.frame.append("╔");
-                }
-                else if (j == 0 && i == this.HEIGHT - 1) {
-                    this.frame.append("╚");
-                }
-                else if (j == this.WIDTH - 1 && i == 0) {
-                    this.frame.append("╗");
-                }
-                else if (j == this.WIDTH - 1 && i ==  this.HEIGHT - 1) {
-                    this.frame.append("╝");
-                }
-                else if (i == 0 || i == this.HEIGHT - 1) {
-                    this.frame.append("═");
-            }
-                else if (j == 0 || j >= this.WIDTH - 1) {
-                    this.frame.append("║");
-                }
-                else {
-                    this.frame.append(" ");
-                }
-            }
-            this.frame.append("\n");
-        }
+        textGraphics.drawLine(1, 0, WIDTH  - 2, 0, '═');
+        textGraphics.drawLine(1, HEIGHT - 1, WIDTH  - 2, HEIGHT - 1, '═');
+        textGraphics.drawLine(0, 1, 0, HEIGHT - 2, '║');
+        textGraphics.drawLine(WIDTH - 1, 1, WIDTH - 1, HEIGHT - 2, '║');
+
+        textGraphics.putString(0, 0, "╔");
+        textGraphics.putString(WIDTH - 1, 0, "╗");
+        textGraphics.putString(0, HEIGHT - 1, "╚");
+        textGraphics.putString(WIDTH - 1, HEIGHT - 1, "╝");
     }
 
 
@@ -70,7 +75,7 @@ public class Renderer {
     }
 
 
-    private void place_hero_sprite(GameData gameData, int[] position) {
+    private void placeHeroSprite(GameData gameData, int[] position) {
         int line = position[0];
         int column = position[1];
 
@@ -86,7 +91,7 @@ public class Renderer {
     }
 
 
-    private void place_enemy_sprite(GameData gameData, int[] position) {
+    private void placeEnemySprite(GameData gameData, int[] position) {
         // Places enemy sprite with info
         int line = position[0];
         int column = position[1];
@@ -108,7 +113,7 @@ public class Renderer {
         String ratHpBarSprite = create_hp_bar(enemyLife, enemyMaxLife);
 
         place_text(new int[] {line - 7, column - 2}, "Aranha Maligna:");
-        place_text(new int[] {line - 5, column - 2}, ratHpBarSprite);
+        place_text(new int[] {line - 5, column - 2}, ratHpBarSprite, TextColor.ANSI.RED_BRIGHT);
         if (enemyShield > 0) {
             place_text(new int[] {line - 5, column + 23}, shieldCounter);
         }
@@ -132,7 +137,7 @@ public class Renderer {
     }
 
 
-    private void place_hero_info(GameData gameData) {
+    private void placeHeroInfo(GameData gameData) {
         // Places hero info (hp, shield, energy) on frame
         
         // Getting Hero Data
@@ -149,25 +154,22 @@ public class Renderer {
         String vertical_bar = "║\n".repeat(HEIGHT - 2);
 
 
-        int[] HP_BAR_POSITION = {4, 38};
-        int[] SHIELD_COUNTER_POSITION = {4, 63}; 
-        int[] ENERGY_BAR_POSITION = {1, 2};
-        int[] NO_ENERGY_WARNING_POSITION = {1, 15};
+        
 
-        place_text(HP_BAR_POSITION, hero_hp_bar_sprite);
+        place_text(HP_BAR_POSITION, hero_hp_bar_sprite, TextColor.ANSI.RED_BRIGHT);
+
         if (hero_shield > 0) {
-            place_text(SHIELD_COUNTER_POSITION, shield_counter);
+            place_text(SHIELD_COUNTER_POSITION, shield_counter, TextColor.ANSI.BLUE_BRIGHT);
         }
-        place_text(ENERGY_BAR_POSITION, energy_bar_sprite);
+
+        place_text(ENERGY_BAR_POSITION, energy_bar_sprite, TextColor.ANSI.YELLOW_BRIGHT);
 
 
         if (hero_energy == 0) { 
             place_text(NO_ENERGY_WARNING_POSITION, "| Sem energia!");
         }
 
-        int[] BUY_PILE_POSITION = {3, 2};
-        int[] DISCARD_PILE_POSITION = {4, 2};
-        int[] VERTICAL_BAR_POSITION = {1, VERTICAL_BAR_SIZE};
+        
 
         place_text(BUY_PILE_POSITION, "Pilha de Compra: x" + buy_pile_size);
         place_text(DISCARD_PILE_POSITION, "Pilha de Descarte: x" + discard_pile_size);
@@ -183,7 +185,7 @@ public class Renderer {
     }
 
     
-    private void place_card_UI(GameData gameData) {
+    private void placeCardUI(GameData gameData) {
         int hand_size = gameData.getPlayerHand().size();
 
         int DECK_TEXT_LINE = 6;
@@ -211,22 +213,14 @@ public class Renderer {
     }
 
 
-    private void clearScreen() {
-        this.frame.delete(0, frame.length());
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
-
-
     public void placeBattleScreen(GameData gameData) {
-        int[] HERO_POSITION = {6, 38};
-        int[] ENEMY_POSITION = {9, 77};
+        
 
 
-        place_hero_sprite(gameData, HERO_POSITION);
-        place_enemy_sprite(gameData, ENEMY_POSITION);
-        place_hero_info(gameData);
-        place_card_UI(gameData);
+        placeHeroSprite(gameData, HERO_POSITION);
+        placeEnemySprite(gameData, ENEMY_POSITION);
+        placeHeroInfo(gameData);
+        placeCardUI(gameData);
     }
 
 
@@ -246,12 +240,18 @@ public class Renderer {
 
     public void render(GameData gameData) {
         // Places text (sprites, UI) on frame and prints it
-        clearScreen();
-        place_borders();
-        placeBattleScreen(gameData);
-        System.out.print(frame);
-        if (gameData.isBattle_over()) {
-            drawEndScreen(gameData);
+        try {
+            screen.clear();
+            screen.setCursorPosition(null);
+            placeBorders();
+            placeBattleScreen(gameData);
+            screen.refresh();
+            if (gameData.isBattle_over()) {
+                drawEndScreen(gameData);
+                screen.close();
+            }  
+        }
+        catch (IOException e) {
         }
     }
 }
