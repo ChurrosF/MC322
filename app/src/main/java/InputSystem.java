@@ -1,37 +1,82 @@
-import java.util.Scanner;
+import java.io.IOException;
+
+import com.googlecode.lanterna.input.KeyStroke;
+import com.googlecode.lanterna.input.KeyType;
+import com.googlecode.lanterna.screen.Screen;
 
 public class InputSystem {
-    private final Scanner inputReader = new Scanner(System.in);
+    private final  Screen screen = TerminalManager.getInstance().getScreen();
 
     
     public Action readInput() {
-        // Reads player input and returns an action (enum class)
+        // Reads player input and returns an action
         Action action = new Action();
-        action.setAction_type(Action.ActionType.SKIP);
-        System.out.print("Escolha: ");
-        String input_str = inputReader.nextLine();
-        try {            
-            int input_int = Integer.parseInt(input_str);
-            if (input_int <= 5 || input_int > 0) {
-                action.setAction_type(Action.ActionType.CARD);
-                action.setCard_used_index(input_int - 1);
-                return action;
+        action.setActionType(Action.ActionType.SKIP);
+
+
+        try { 
+            KeyStroke key = screen.readInput();
+            convertInputToAction(key, action);
+        }
+        catch (IOException e){
+        }
+
+        return action;
+    }
+
+
+    private void convertInputToAction(KeyStroke key, Action action) {
+        if (isKeySpecial(key)) {
+            handleSpecialInput(key, action);
+        }
+        else if (isKeyNumeric(key)) {
+            handleNumericalInput(key, action);
+        }
+        else {
+            handleAlphabeticInput(key, action);
+        }
+    }
+
+
+    private void handleAlphabeticInput(KeyStroke key, Action action) {
+        String inputStr = key.getCharacter().toString();
+        switch (inputStr.toUpperCase()) {
+                case "Q" -> action.setActionType(Action.ActionType.QUIT);
+                case "P" -> action.setActionType(Action.ActionType.SKIP);
+                default -> action.setActionType(Action.ActionType.INVALID);
+        }
+    }
+
+
+    private void handleNumericalInput(KeyStroke key, Action action) {
+        String inputStr = key.getCharacter().toString();
+        int inputInt = Integer.parseInt(inputStr);
+
+        if (inputInt <= 5 || inputInt > 0) {
+                action.setActionType(Action.ActionType.CARD);
+                action.setCardUsedIndex(inputInt - 1);
+                return;
             }
 
-            action.setAction_type(Action.ActionType.SKIP);
-            return action;
+        action.setActionType(Action.ActionType.SKIP);
+    }
+
+
+    private void handleSpecialInput(KeyStroke key, Action action) {
+        switch (key.getKeyType()) {
+            case KeyType.Enter -> action.setActionType(Action.ActionType.SKIP);
+            case KeyType.EOF -> action.setActionType(Action.ActionType.QUIT);
+            default -> action.setActionType(Action.ActionType.INVALID);
         }
-        catch (java.lang.NumberFormatException e){
-            if (input_str.toUpperCase().equals("Q")) {
-                action.setAction_type(Action.ActionType.QUIT);
-            }
-            else if (input_str.toUpperCase().equals("P")) {
-                action.setAction_type(Action.ActionType.SKIP);
-            }
-            else {
-                action.setAction_type(Action.ActionType.INVALID);
-            }
-            return action;
-        }
+    }
+
+
+    private boolean isKeySpecial(KeyStroke key) {
+        return !(key.getKeyType() == KeyType.Character);
+    }
+
+
+    private boolean isKeyNumeric(KeyStroke key) {
+        return Character.isDigit(key.getCharacter());
     }
 }

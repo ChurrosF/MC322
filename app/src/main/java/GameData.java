@@ -3,11 +3,23 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
 
+/**
+ * Central repository for the data and state of the game "Slay the Tuff Rat".
+ * <p>
+ * This class acts as the "Model" in the game's architecture, storing the 
+ * main entities (Hero and Enemy), the battle state, and managing all the 
+ * structural logic of the DeckBuilder (draw pile, player's hand, and discard pile).
+ * </p>
+ * <p>
+ * <b>Architecture Note:</b> For memory optimization, the piles and the player's hand 
+ * do not store objects of type {@code Card}. Instead, they store Integer numbers 
+ * that represent the indices of the {@code possible_cards} array (Flyweight pattern approach).
+ * </p>
+ */
 public final class GameData {
-    // Class with the single purpose on storing data
     private Hero hero = new Hero("Hero", 10, 3, 0);
     int[] enemyDamageRange = {3, 7};
-    private final Enemy enemy = new Enemy("Rat", 25, 0, enemyDamageRange);
+    private Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
 
     private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
@@ -28,6 +40,11 @@ public final class GameData {
     private int battleRounds = 1;
 
 
+    /**
+     * Default constructor for the data manager.
+     * Upon starting the battle, it generates the random initial deck and draws 
+     * the first hand of cards for the hero.
+     */
     public GameData() {
         generateRandomBuyPile();
         buyRoundCards();
@@ -55,42 +72,42 @@ public final class GameData {
     }
 
     
-    public boolean isBattle_over() {
+    public boolean isBattleOver() {
         return this.battleOver;
     }
 
     
-    public void setBattleOver(boolean game_over) {
-        this.battleOver = game_over;
+    public void setBattleOver(boolean gameOver) {
+        this.battleOver = gameOver;
     }
 
 
-    public int getBattle_rounds() {
+    public int getBattleRounds() {
         return this.battleRounds;
     }
 
 
-    public void addBattle_round() {
+    public void addBattleRound() {
         this.battleRounds += 1;
     }
 
 
-    public Card[] getPossible_cards() {
+    public Card[] getPossibleCards() {
         return possible_cards;
     }
 
 
-    public void setPossible_cards(Card[] possible_cards) {
+    public void setPossibleCards(Card[] possible_cards) {
         this.possible_cards = possible_cards;
     }
 
 
-    public Stack<Integer> getBuy_pile() {
+    public Stack<Integer> getBuyPile() {
         return this.buyPile;
     }
 
 
-        public boolean isAction_invalid() {
+        public boolean isActionInvalid() {
         return invalidAction;
     }
 

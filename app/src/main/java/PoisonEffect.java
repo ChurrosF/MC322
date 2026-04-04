@@ -10,7 +10,7 @@ public class PoisonEffect extends StatusEffect {
     @Override
     public void beNotified(Action action, GameData data) {
     // Como o slay the spire, quando acaba o turno aplica o dano e depois diminui 1 stack (amount)
-        if (action.getAction_type() == Action.ActionType.SKIP) {
+        if (action.getActionType() == Action.ActionType.SKIP) {
             if (this.amount > 0) {
 
                 this.owner.receiveDamage(this.amount);
