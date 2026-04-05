@@ -58,21 +58,19 @@ public abstract class Entity {
         this.name = name;
     }
 
-
-    public void applyEffect(Entity target, StatusEffect effectToApply, int amount) {
-        boolean found = false;
+    public StatusEffect applyEffect(Entity target, StatusEffect effectToApply, int amount) {
         for (StatusEffect effect: target.effects) {
+            // Se já tem esse efeito (ex: já tá envenenado)
             if (effect.getClass() == effectToApply.getClass()) {
                 effect.addAmount(amount);
-                found = true;
+                return effect; // Retorna o efeito que já existia com o acúmulo novo
             }
         }
-        if (!found) {
-            target.effects.add(effectToApply);
-            effectToApply.setOwner(target);
-        }
+        // Se é um efeito novo
+        target.effects.add(effectToApply);
+        effectToApply.setOwner(target);
+        return effectToApply; // Retorna o efeito recém-criado
     }
-
     
     public ArrayList<StatusEffect> getEffects() {
         return effects;

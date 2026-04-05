@@ -8,11 +8,12 @@ public class Enemy extends Entity {
     private final int shieldToAdd = 8;
     private EnemyAction action;
     private final String enemySprite = """
- /\\ \\  / /\\
-//\\\\ .. //\\\\
-//\\((  ))/\\\\
-/  < `' >  \\
+        _
+  ,-(_)-\"\"
+<  "         
+ `-../ )__.
                 """;
+
 
 
     public Enemy(String name, int life, int shield, int[] damage_range) {
@@ -68,8 +69,12 @@ public class Enemy extends Entity {
 
     public void poisonHero(Hero hero, ArrayList<StatusEffect> effectSubscribers) {
         PoisonEffect poisonEffect = new PoisonEffect("Veneno", hero, this.poisonAmount);
-        hero.applyEffect(hero, poisonEffect, this.poisonAmount);
-        effectSubscribers.add(poisonEffect);
+        StatusEffect activeEffect = hero.applyEffect(hero, poisonEffect, this.poisonAmount);
+        
+        // Só se inscreve se for um efeito novo
+        if (!effectSubscribers.contains(activeEffect)) {
+            effectSubscribers.add(activeEffect);
+        }
     }
 
 
