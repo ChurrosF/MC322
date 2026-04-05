@@ -19,12 +19,12 @@ import java.util.Stack;
 public final class GameData {
     private Hero hero = new Hero("Hero", 10, 3, 0);
     int[] enemyDamageRange = {3, 7};
-    private Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
-
-    private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
+    // Lista de inimigos
+    private ArrayList<Enemy> enemies = new ArrayList<>();
+    private DamageCard strike = new DamageCard("Golpe", 1, 3);
     private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
-    private PoisonCard poison = new PoisonCard("Veneno", 2, enemy);
-    private StrengthCard strength = new StrengthCard("Força", 1, hero);
+    private PoisonCard poison = new PoisonCard("Veneno", 2);
+    private StrengthCard strength = new StrengthCard("Força", 1);
 
 
     private int buyPileSize = 20;
@@ -46,6 +46,9 @@ public final class GameData {
      * the first hand of cards for the hero.
      */
     public GameData() {
+
+        enemies.add(new Enemy("Thug Rat", 20, 0, enemyDamageRange));
+        enemies.add(new Enemy("Rat-a-tuili", 15, 0, enemyDamageRange));
         generateRandomBuyPile();
         buyRoundCards();
     }
@@ -57,11 +60,10 @@ public final class GameData {
     }
 
 
-    public Enemy getEnemy() {
-        return this.enemy;
+    public ArrayList<Enemy> getEnemies() {
+        return this.enemies;
     }
-
-
+    
     public DamageCard getDamageCard() {
         return this.strike;
     }
