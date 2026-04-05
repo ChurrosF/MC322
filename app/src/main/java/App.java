@@ -33,7 +33,7 @@ public class App {
             if (gameManager.getGameData().isBattleOver()) {
                 break;
             }
-            Action action = inputSystem.readInput();
+            Action action = inputSystem.readInput(gameManager.getGameData());
             gameManager.update(action);
             }
         }

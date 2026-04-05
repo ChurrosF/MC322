@@ -30,6 +30,9 @@ public class Action {
      */
     private int card_used_index;
     
+    // Guarda o índice do inimigo que vai receber o ataque (0 para o primeiro, 1 para o segundo, etc)
+    private int target_index = -1; 
+    
     /** The specific category of action the player wants to execute. */
     private ActionType action_type;
 
@@ -49,6 +52,16 @@ public class Action {
      */
     public void setCardUsedIndex(int card_used_index) {
         this.card_used_index = card_used_index;
+    }
+
+    // Método que o GameManager está procurando para saber quem é o alvo!
+    public int getTargetIndex() {
+        return target_index;
+    }
+
+    // Setter para o InputSystem definir o alvo digitado pelo jogador
+    public void setTargetIndex(int target_index) {
+        this.target_index = target_index;
     }
 
     /**

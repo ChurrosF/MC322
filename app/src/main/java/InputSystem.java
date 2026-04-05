@@ -8,7 +8,7 @@ public class InputSystem {
     private final  Screen screen = TerminalManager.getInstance().getScreen();
 
     
-    public Action readInput() {
+    public Action readInput(GameData data) {
         // Reads player input and returns an action
         Action action = new Action();
         action.setActionType(Action.ActionType.SKIP);
@@ -17,6 +17,31 @@ public class InputSystem {
         try { 
             KeyStroke key = screen.readInput();
             convertInputToAction(key, action);
+
+            // NOVO: Lógica de 2 passos (Escolhe a carta -> Escolhe o alvo)
+            if (action.getActionType() == Action.ActionType.CARD) {
+                int cardIndex = action.getCardUsedIndex();
+                
+                // Checa se o jogador não digitou uma carta fora da mão
+                if (cardIndex >= 0 && cardIndex < data.getPlayerHand().size()) {
+                    int cardTypeId = data.getPlayerHand().get(cardIndex);
+                    Card card = data.getPossibleCards()[cardTypeId];
+                    
+                    if (card.requiresTarget()) {
+                        // Carta exige alvo, então espera o próximo input do teclado
+                        KeyStroke targetKey = screen.readInput();
+                        if (isKeyNumeric(targetKey)) {
+                            int targetInt = Integer.parseInt(targetKey.getCharacter().toString());
+                            // O jogador digita 1, mas o índice da lista é 0
+                            action.setTargetIndex(targetInt - 1); 
+                        } else {
+                            action.setActionType(Action.ActionType.INVALID);
+                        }
+                    }
+                } else {
+                    action.setActionType(Action.ActionType.INVALID);
+                }
+            }
         }
         catch (IOException e){
         }
