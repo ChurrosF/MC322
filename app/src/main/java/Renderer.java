@@ -42,7 +42,7 @@ public class Renderer {
     private final int[] DISCARD_PILE_POSITION = {4, 2};
 
     private final int[] HERO_POSITION = {6, 38};
-    private final int[] ENEMY_POSITION = {9, 77};
+    private final int[] ENEMY_POSITION = {9, 110};
     
     
     // ==========================================
@@ -106,9 +106,6 @@ public class Renderer {
 
     /**
      * Generates a visual ASCII health bar string based on current and maximum health.
-     * <p>
-     * Example Output: {@code Vida: [█████░░░░░] 10/20}
-     * </p>
      *
      * @param cur_hp Current health points.
      * @param max_hp Maximum health points.
@@ -146,32 +143,34 @@ public class Renderer {
     /**
      * Renders the Enemy's ASCII sprite, health bar, shield, intended next action, and status effects.
      *
-     * @param gameData The central data repository containing the enemy's state.
+     * @param enemy The specific enemy instance to extract stats from.
      * @param position The base coordinates {@code [line, column]} to anchor the drawing.
+     * @param index The array position of this enemy.
      */
-    private void placeEnemySprite(GameData gameData, int[] position) {
+    private void placeEnemySprite(Enemy enemy, int[] position, int index) {
         // Places enemy sprite with info
         int line = position[0];
         int column = position[1];
 
         // Getting Enemy Data
-        int enemyLife = gameData.getEnemy().getLife();
-        int enemyShield = gameData.getEnemy().getShield();
-        int enemyMaxLife = gameData.getEnemy().getMaxLife();
-        int enemyRoundDamage = gameData.getEnemy().getRoundDamage();
-        int enemyShieldtoAdd = gameData.getEnemy().getShieldToAdd();
-        int enemyPoisonAmount = gameData.getEnemy().getPoisonAmount();
+        int enemyLife = enemy.getLife();
+        int enemyShield = enemy.getShield();
+        int enemyMaxLife = enemy.getMaxLife();
+        int enemyRoundDamage = enemy.getRoundDamage();
+        int enemyShieldtoAdd = enemy.getShieldToAdd();
+        int enemyPoisonAmount = enemy.getPoisonAmount();
 
-        EnemyAction enemyAction = gameData.getEnemy().getEnemyAction();
+        EnemyAction enemyAction = enemy.getEnemyAction();
         String shieldCounter = "(+" + enemyShield + ")";
-        ArrayList<StatusEffect> effects = gameData.getEnemy().getEffects();
+        ArrayList<StatusEffect> effects = enemy.getEffects();
 
-        String ratSprite = gameData.getEnemy().getEnemySprite();
-
+        String ratSprite = enemy.getEnemySprite();
         String ratHpBarSprite = createHpBar(enemyLife, enemyMaxLife);
 
-        placeText(new int[] {line - 7, column - 2}, "Aranha Maligna (do MAL):");
+        // Coloquei o índice (index + 1) do lado do nome pro jogador saber qual número apertar pra mirar a carta nele
+        placeText(new int[] {line - 7, column - 2}, enemy.getName() + " (" + (index + 1) + "):");
         placeText(new int[] {line - 5, column - 2}, ratHpBarSprite, TextColor.ANSI.RED_BRIGHT);
+        
         if (enemyShield > 0) {
             placeText(new int[] {line - 5, column + 23}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
         }
@@ -216,8 +215,6 @@ public class Renderer {
         String vertical_bar = "║\n".repeat(HEIGHT - 2);
 
 
-        
-
         placeText(HP_BAR_POSITION, hero_hp_bar_sprite, TextColor.ANSI.RED_BRIGHT);
 
         if (hero_shield > 0) {
@@ -230,8 +227,6 @@ public class Renderer {
         if (hero_energy == 0) { 
             placeText(NO_ENERGY_WARNING_POSITION, "| Sem energia!");
         }
-
-        
 
         placeText(BUY_PILE_POSITION, "Pilha de Compra: x" + buy_pile_size);
         placeText(DISCARD_PILE_POSITION, "Pilha de Descarte: x" + discard_pile_size);
@@ -296,7 +291,19 @@ public class Renderer {
      */
     public void placeBattleScreen(GameData gameData) {
         placeHeroSprite(gameData, HERO_POSITION);
-        placeEnemySprite(gameData, ENEMY_POSITION);
+        
+        // Pega a lista de inimigos vivos pra desenhar
+        ArrayList<Enemy> enemies = gameData.getEnemies();
+        int baseCol = ENEMY_POSITION[1];
+        
+        // Faz um loop por todos os inimigos. 
+        // O offset 'baseCol - (i * 25)' serve pra empurrar cada monstro um pouco mais pra esquerda, 
+        // senão os desenhos ficariam sobrepostos na mesma coluna.
+        for (int i = 0; i < enemies.size(); i++) {
+            int[] currentPos = {ENEMY_POSITION[0], baseCol - (i * 25)};
+            placeEnemySprite(enemies.get(i), currentPos, i);
+        }
+
         placeHeroInfo(gameData);
         placeCardUI(gameData);
     }
@@ -313,7 +320,8 @@ public class Renderer {
         if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
         }
-        else if (!gameData.getEnemy().isAlive()) {
+        // Atualizei a condição de vitória: agora o jogo acaba quando a lista de inimigos ficar vazia
+        else if (gameData.getEnemies().isEmpty()) {
             System.out.println("\n--- VOCÊ GANHOU! ---\n");
         }
         else {
