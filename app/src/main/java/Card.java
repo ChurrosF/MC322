@@ -17,6 +17,8 @@ public abstract class Card {
     
     /** The amount of energy required from the hero to play this card. */
     protected int cost;
+
+    public abstract boolean requiresTarget();
     
     /**
      * Executes the specific effect of the card when played by the hero.
@@ -30,7 +32,7 @@ public abstract class Card {
      * @return <code>true</code> if the card was successfully used, or <code>false</code> 
      * if the action failed (e.g., insufficient energy).
      */
-    public abstract boolean useCard(Hero user);
+    public abstract boolean useCard(Hero user, Enemy target);
 
     /**
      * Retrieves the display name of the card.

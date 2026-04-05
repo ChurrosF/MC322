@@ -4,7 +4,7 @@ public class DamageCard extends Card {
     private Enemy target;
 
 
-    public DamageCard(String name, int cost, int baseDamage, Enemy target) {
+    public DamageCard(String name, int cost, int baseDamage) {
         this.name = name;
         this.cost = cost;
         this.baseDamage = baseDamage;
@@ -13,9 +13,13 @@ public class DamageCard extends Card {
         this.description = "Carta " + this.name + "  |" + " DMG:" + this.baseDamage + " CUSTO:" + this.cost;
     }
 
+    @Override
+    public boolean requiresTarget() {
+        return true;
+    }
 
     @Override
-    public boolean useCard(Hero user) {
+    public boolean useCard(Hero user, Enemy target) {
         // Uses Damage card and returns boolean based on success
         int user_energy = user.getEnergy();
 
@@ -37,12 +41,6 @@ public class DamageCard extends Card {
     public void setBaseDamage(int damage) {
         this.baseDamage = damage;
     }
-
-
-    public void setTarget(Enemy target) {
-        this.target = target;
-    }
-
 
     public int getFinalDamage() {
         return finalDamage;

@@ -14,7 +14,6 @@ public class GameManager {
     private boolean gameEnded = false;
 
     Hero hero = data.getHero();
-    Enemy enemy = data.getEnemy();
     ArrayList<Integer> player_hand = data.getPlayerHand();
     boolean battleOver = data.isBattleOver();
 
@@ -84,8 +83,11 @@ public class GameManager {
         }
         this.data.setInvalidAction(false);
         this.data.buyRoundCards();
-        this.enemy.setShield(0);
-        this.enemy.executeAction(hero, effectSubscribers);
+        for (Enemy enemy : data.getEnemies()) {
+            enemy.setShield(0);
+            enemy.executeAction(hero, effectSubscribers);
+        }
+
         this.hero.setEnergy(3);
         this.hero.setShield(0);
         this.data.addBattleRound();
@@ -105,13 +107,27 @@ public class GameManager {
         }
         
         Card card = getCardFromIndex(cardIndex);
+        Enemy target = null;
 
-        if (card.useCard(this.hero)) {
+        if (card.requiresTarget()) {
+            int targetIndex = action.getTargetIndex();
+            // Verifica se o jogador digitou um índice de monstro que existe
+            if (targetIndex < 0 || targetIndex >= data.getEnemies().size()) {
+                this.data.setInvalidAction(true); 
+                return;
+            }
+            target = data.getEnemies().get(targetIndex);
+        }
+
+        if (card.useCard(this.hero, target)) {
             this.data.discardCard(cardIndex);
             handleEffectCards(card);
+        } else {
+            this.data.setInvalidAction(true); // Se faltar energia, marca como inválido
+            return;
         }
         this.data.addBattleRound();
-        }
+    }
 
 
     /**
@@ -153,7 +169,8 @@ public class GameManager {
 
 
     private void checkBattleOver() {
-        if (!hero.isAlive() || !enemy.isAlive()) {
+        data.getEnemies().removeIf(enemy -> !enemy.isAlive());
+        if (!hero.isAlive() || data.getEnemies().isEmpty()) {
             this.data.setBattleOver(true);
         }
     }
