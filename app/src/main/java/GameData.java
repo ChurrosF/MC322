@@ -17,7 +17,7 @@ import java.util.Stack;
  * </p>
  */
 public final class GameData {
-    private Hero hero = new Hero("Hero", 10, 3, 0);
+    private Hero hero = new Hero("Hero", 40, 3, 0);
     int[] enemyDamageRange = {3, 7};
     // Lista de inimigos
     private ArrayList<Enemy> enemies = new ArrayList<>();
