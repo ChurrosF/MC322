@@ -27,7 +27,7 @@ public class TerminalManager {
     private final int HEIGHT = 20;
     
     /** Default width of the terminal screen in character columns. */
-    private final int WIDTH = 120;
+    private final int WIDTH = 150;
 
     /** The single, global instance of this class (Singleton). */
     private static TerminalManager instance;
