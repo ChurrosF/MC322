@@ -8,7 +8,8 @@ public class PoisonCard extends EffectCard {
         this.cost = cost;
         this.target = target;
         this.effect = poisonEffect;
-        this.description = "Carta " + this.name + " |" + " PSN:" + poisonEffect.getAmount() + " CUSTO:" + this.cost;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length())
+        + "|" + " PSN:" + poisonEffect.getAmount() + " CUSTO:" + this.cost;
     }
 
     @Override

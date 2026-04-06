@@ -1,5 +1,3 @@
-
-
 public class StrengthCard extends EffectCard {
     private Entity target;
     private final int amountToAdd = 2;
@@ -10,7 +8,7 @@ public class StrengthCard extends EffectCard {
         this.cost = cost;
         this.target = target;
         this.effect = strengthEffect;
-        this.description = "Carta " + this.name + "  |" + " STR:" + strengthEffect.getAmount() + " CUSTO:" + this.cost;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " STR:" + strengthEffect.getAmount() + " CUSTO:" + this.cost;
     }
 
     @Override

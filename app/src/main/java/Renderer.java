@@ -25,24 +25,20 @@ public class Renderer {
     private final int HEIGHT = terminalManager.getHeight();
     private final int WIDTH = terminalManager.getWidth();
 
-    // ==========================================
-    // UI LAYOUT COORDINATES [Line, Column]
-    // ==========================================
-    
-    /** Height of the vertical separator line dividing the UI (Cards) from the Battle Screen. */
-    private final int VERTICAL_BAR_SIZE = 35;
+    private final int VERTICAL_BAR_SIZE = RendererConfig.VERTICAL_BAR_SIZE;
     private final int[] VERTICAL_BAR_POSITION = {1, VERTICAL_BAR_SIZE};
 
-    private final int[] HP_BAR_POSITION = {4, 38};
-    private final int[] SHIELD_COUNTER_POSITION = {4, 63}; 
-    private final int[] ENERGY_BAR_POSITION = {1, 2};
-    private final int[] NO_ENERGY_WARNING_POSITION = {1, 15};
+    private final int[] HP_BAR_POSITION = RendererConfig.HP_BAR_POSITION;
+    private final int[] SHIELD_COUNTER_POSITION = RendererConfig.SHIELD_COUNTER_POSITION; 
+    private final int[] ENERGY_BAR_POSITION = RendererConfig.ENERGY_BAR_POSITION;
+    private final int[] NO_ENERGY_WARNING_POSITION = RendererConfig.NO_ENERGY_WARNING_POSITION;
 
-    private final int[] BUY_PILE_POSITION = {3, 2};
-    private final int[] DISCARD_PILE_POSITION = {4, 2};
+    private final int DECK_TEXT_LINE = RendererConfig.DECK_TEXT_LINE;
+    private final int[] BUY_PILE_POSITION = RendererConfig.BUY_PILE_POSITION;
+    private final int[] DISCARD_PILE_POSITION = RendererConfig.DISCARD_PILE_POSITION;
 
-    private final int[] HERO_POSITION = {6, 38};
-    private final int[] ENEMY_POSITION = {9, 77};
+    private final int[] HERO_POSITION = RendererConfig.HERO_POSITION;
+    private final int[] ENEMY_POSITION = RendererConfig.ENEMY_POSITION;
     
     
     // ==========================================
@@ -138,7 +134,7 @@ public class Renderer {
         placeText(new int[] {line, column + 3}, heroSprite);
         for (int i = 0; i < effects.size(); i++) {
             StatusEffect effect = effects.get(i);
-            placeText(new int[] {line + 10 + i, column - 1}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
+            placeText(new int[] {line + 10 + i, column}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
         }
     }
 
@@ -263,7 +259,6 @@ public class Renderer {
     private void placeCardUI(GameData gameData) {
         int hand_size = gameData.getPlayerHand().size();
 
-        int DECK_TEXT_LINE = 6;
         
         placeText(new int[] {DECK_TEXT_LINE - 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         placeText(new int[] {DECK_TEXT_LINE, 1}, "               Mão:");
@@ -294,7 +289,7 @@ public class Renderer {
      *
      * @param gameData The snapshot of the current game state to render.
      */
-    public void placeBattleScreen(GameData gameData) {
+    private void placeBattleScreen(GameData gameData) {
         placeHeroSprite(gameData, HERO_POSITION);
         placeEnemySprite(gameData, ENEMY_POSITION);
         placeHeroInfo(gameData);
@@ -308,7 +303,7 @@ public class Renderer {
      *
      * @param gameData The game state containing the final health metrics.
      */
-    public void drawEndScreen(GameData gameData) {
+    private void drawEndScreen(GameData gameData) {
         // Directly prints end screen
         if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");

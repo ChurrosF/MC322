@@ -5,7 +5,7 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 
 public class InputSystem {
-    private final  Screen screen = TerminalManager.getInstance().getScreen();
+    private final Screen screen = TerminalManager.getInstance().getScreen();
 
     
     public Action readInput() {

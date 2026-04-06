@@ -21,15 +21,18 @@ public final class GameData {
     int[] enemyDamageRange = {3, 7};
     private Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
 
-    private DamageCard strike = new DamageCard("Golpe", 1, 3, enemy);
-    private ShieldCard defend = new ShieldCard("Escudo", 1, 2);
-    private PoisonCard poison = new PoisonCard("Veneno", 2, enemy);
-    private StrengthCard strength = new StrengthCard("Força", 1, hero);
+    private DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3, enemy);
+    private DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 7, enemy);
+    private ShieldCard partialDefense = new ShieldCard("Defesa Parcial", 1, 2);
+    private ShieldCard totalDefense = new ShieldCard("Defesa Total", 2, 5);
+    private PoisonCard poison = new PoisonCard("Dardo Venenoso", 2, enemy);
+    private StrengthCard strength = new StrengthCard("Focar Ataque", 1, hero);
 
 
     private int buyPileSize = 20;
     private int handSize = 5;
-    private Card[] possible_cards = {strike, defend, poison, strength};
+    private Card[] possible_cards = {lightAttack, heavyAttack, partialDefense, totalDefense, poison, strength};
+
     private ArrayList<Integer> playerHand = new ArrayList<>();
     private Stack<Integer> buyPile = new Stack<>();
     private Stack<Integer> discardPile = new Stack<>();
@@ -62,13 +65,8 @@ public final class GameData {
     }
 
 
-    public DamageCard getDamageCard() {
-        return this.strike;
-    }
-
-
     public ShieldCard getShieldCard() {
-        return this.defend;
+        return this.partialDefense;
     }
 
     

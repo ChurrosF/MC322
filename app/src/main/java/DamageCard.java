@@ -10,7 +10,7 @@ public class DamageCard extends Card {
         this.baseDamage = baseDamage;
         this.finalDamage = this.baseDamage;
         this.target = target;
-        this.description = "Carta " + this.name + "  |" + " DMG:" + this.baseDamage + " CUSTO:" + this.cost;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " DMG:" + this.baseDamage + " CUSTO:" + this.cost;
     }
 
 

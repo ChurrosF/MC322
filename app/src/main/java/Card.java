@@ -17,6 +17,7 @@ public abstract class Card {
     
     /** The amount of energy required from the hero to play this card. */
     protected int cost;
+
     
     /**
      * Executes the specific effect of the card when played by the hero.
