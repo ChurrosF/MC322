@@ -38,7 +38,7 @@ public class Renderer {
     private final int[] DISCARD_PILE_POSITION = RendererConfig.DISCARD_PILE_POSITION;
 
     private final int[] HERO_POSITION = RendererConfig.HERO_POSITION;
-    private final int[] ENEMY_POSITION = RendererConfig.ENEMY_POSITION;
+    private final int[] ENEMIES_POSITION = RendererConfig.ENEMY_POSITION;
     
     
     // ==========================================
@@ -145,7 +145,7 @@ public class Renderer {
      * @param gameData The central data repository containing the enemy's state.
      * @param position The base coordinates {@code [line, column]} to anchor the drawing.
      */
-    private void placeEnemySprite(GameData gameData, int[] position) {
+    private void placeEnemySprite(GameData gameData, int[] position, int index) {
         // Places enemy sprite with info
         int line = position[0];
         int column = position[1];
@@ -166,7 +166,7 @@ public class Renderer {
 
         String ratHpBarSprite = createHpBar(enemyLife, enemyMaxLife);
 
-        placeText(new int[] {line - 7, column - 2}, "Aranha Maligna (do MAL):");
+        placeText(new int[] {line - 7, column - 2}, "Aranha Maligna (" + (index + 1) + ")");
         placeText(new int[] {line - 5, column - 2}, ratHpBarSprite, TextColor.ANSI.RED_BRIGHT);
         if (enemyShield > 0) {
             placeText(new int[] {line - 5, column + 23}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
@@ -188,6 +188,15 @@ public class Renderer {
             placeText(new int[] {line + 7 + i, column - 2}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
         }
         placeText(new int[] {line + 2, column}, ratSprite);
+    }
+
+
+    private void placeEnemies(GameData gameData, int position[]) {
+        ArrayList<Enemy> enemies = gameData.getEnemies();
+        for (int i = 0; i < enemies.size(); i++) {
+            int[] cur_position = {position[0], position[1] + i * 20};
+            placeEnemySprite(gameData, cur_position, i);
+        }
     }
 
 
@@ -278,7 +287,7 @@ public class Renderer {
         placeText(new int[] {HEIGHT - 3, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         placeText(new int[] {HEIGHT - 2, 1}, "(P) Passar Turno (+3 energia)");
         if (gameData.isActionInvalid()) {
-            placeText(new int[] {HEIGHT - 2, 37}, "AVISO: AÇÃO INVÁLIDA");
+            placeText(new int[] {HEIGHT - 2, 38}, "AVISO: AÇÃO INVÁLIDA");
         }
     }
 
@@ -291,7 +300,7 @@ public class Renderer {
      */
     private void placeBattleScreen(GameData gameData) {
         placeHeroSprite(gameData, HERO_POSITION);
-        placeEnemySprite(gameData, ENEMY_POSITION);
+        placeEnemies(gameData, ENEMIES_POSITION);
         placeHeroInfo(gameData);
         placeCardUI(gameData);
     }

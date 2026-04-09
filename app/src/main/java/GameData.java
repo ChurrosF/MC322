@@ -17,25 +17,28 @@ import java.util.Stack;
  * </p>
  */
 public final class GameData {
-    private Hero hero = new Hero("Hero", 10, 3, 0);
+    private final Hero hero = new Hero("Hero", 15, 3, 0);
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
+
     int[] enemyDamageRange = {3, 7};
-    private Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
-
-    private DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3, enemy);
-    private DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 7, enemy);
-    private ShieldCard partialDefense = new ShieldCard("Defesa Parcial", 1, 2);
-    private ShieldCard totalDefense = new ShieldCard("Defesa Total", 2, 5);
-    private PoisonCard poison = new PoisonCard("Dardo Venenoso", 2, enemy);
-    private StrengthCard strength = new StrengthCard("Focar Ataque", 1, hero);
+    private final Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
 
 
-    private int buyPileSize = 20;
-    private int handSize = 5;
+    private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3);
+    private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 7);
+    private final ShieldCard partialDefense = new ShieldCard("Defesa Parcial", 1, 2);
+    private final ShieldCard totalDefense = new ShieldCard("Defesa Total", 2, 5);
+    private final PoisonCard poison = new PoisonCard("Dardo Venenoso", 2, 3);
+    private final StrengthCard strength = new StrengthCard("Focar Ataque", 1, 2);
+
+
+    private final int buyPileSize = 20;
+    private final int handSize = 5;
     private Card[] possible_cards = {lightAttack, heavyAttack, partialDefense, totalDefense, poison, strength};
 
-    private ArrayList<Integer> playerHand = new ArrayList<>();
-    private Stack<Integer> buyPile = new Stack<>();
-    private Stack<Integer> discardPile = new Stack<>();
+    private final ArrayList<Integer> playerHand = new ArrayList<>();
+    private final Stack<Integer> buyPile = new Stack<>();
+    private final Stack<Integer> discardPile = new Stack<>();
 
     
     private boolean invalidAction = false;
@@ -49,6 +52,7 @@ public final class GameData {
      * the first hand of cards for the hero.
      */
     public GameData() {
+        this.enemies.add(this.enemy);
         generateRandomBuyPile();
         buyRoundCards();
     }
@@ -62,6 +66,16 @@ public final class GameData {
 
     public Enemy getEnemy() {
         return this.enemy;
+    }
+
+
+    public ArrayList<Integer> getPlayerHand() {
+        return this.playerHand;
+    }
+
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
     }
 
 
@@ -159,10 +173,5 @@ public final class GameData {
         this.buyPile.addAll(discardPile);
         Collections.shuffle(this.buyPile);
         this.discardPile.clear();
-    }
-
-
-    public ArrayList<Integer> getPlayerHand() {
-        return this.playerHand;
     }
 }

@@ -65,7 +65,7 @@ public class TerminalManager {
             this.textGraphics = screen.newTextGraphics();
         }
         catch (FontFormatException | IOException e) {
-            System.err.println("Terminal Manager: Error creating Screen.");
+            System.err.println("(TerminalManager) Error when creating screen: " + e);
         }
     }
 

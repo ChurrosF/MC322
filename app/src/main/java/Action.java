@@ -8,12 +8,18 @@
  */
 public class Action {
 
+    
+
     /**
      * Defines the possible types of actions a player can perform.
      */
     public enum ActionType {
         /** Represents the intent to play a specific card from the hand. */
-        CARD,
+        CHOOSE_CARD,
+
+        CHOOSE_TARGET,
+
+        BACK,
         
         /** Represents the intent to end the turn early and recover energy. */
         SKIP,
@@ -28,28 +34,41 @@ public class Action {
     /** * The index position of the chosen card in the player's hand array. 
      * Only relevant if the action_type is {@link ActionType#CARD}.
      */
-    private int card_used_index;
+    private Integer CardHandIndex;
+
+    private Integer targetIndex;
     
     /** The specific category of action the player wants to execute. */
-    private ActionType action_type;
+    private ActionType actionType = null;
 
     /**
      * Retrieves the index of the card intended to be played.
      *
      * @return The integer index representing the card's position in the hand.
      */
-    public int getCardUsedIndex() {
-        return card_used_index;
+    public Integer getCardUsedIndex() {
+        return CardHandIndex;
     }
 
     /**
      * Sets the index of the card the player wants to use.
      *
-     * @param card_used_index The position of the card in the hand array (e.g., 0 for the first card).
+     * @param cardHandIndex The position of the card in the hand array (e.g., 0 for the first card).
      */
-    public void setCardUsedIndex(int card_used_index) {
-        this.card_used_index = card_used_index;
+    public void setCardUsedIndex(Integer cardHandIndex) {
+        this.CardHandIndex = cardHandIndex;
     }
+
+
+    public Integer getTargetIndex() {
+        return targetIndex;
+    }
+
+
+    public void setTargetIndex(Integer targetIndex) {
+        this.targetIndex = targetIndex;
+    }
+
 
     /**
      * Retrieves the category of the requested action.
@@ -57,15 +76,15 @@ public class Action {
      * @return The current {@link ActionType} assigned to this action.
      */
     public ActionType getActionType() {
-        return action_type;
+        return actionType;
     }
 
     /**
      * Defines the category of the action based on the player's input.
      *
-     * @param action_type The specific {@link ActionType} to be assigned.
+     * @param actionType The specific {@link ActionType} to be assigned.
      */
-    public void setActionType(ActionType action_type) {
-        this.action_type = action_type;
+    public void setActionType(ActionType actionType) {
+        this.actionType = actionType;
     }
 }

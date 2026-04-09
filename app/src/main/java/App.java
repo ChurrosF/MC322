@@ -29,11 +29,13 @@ public class App {
         InputSystem inputSystem = new InputSystem();
 
         while (true) {
-            renderer.render(gameManager.getGameData());
+            GameData data = gameManager.getGameData();
+            GameState state = gameManager.getState();
+            renderer.render(data);
             if (gameManager.getGameData().isBattleOver()) {
                 break;
             }
-            Action action = inputSystem.readInput();
+            Action action = inputSystem.readInput(state);
             gameManager.update(action);
             }
         }

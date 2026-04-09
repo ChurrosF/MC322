@@ -1,19 +1,18 @@
 public class PoisonCard extends EffectCard {
-    private Enemy target;
-    private final int amountToAdd = 3;
-    private final PoisonEffect poisonEffect = new PoisonEffect("Veneno", target, amountToAdd);
+    private final int amountToAdd;
 
-    public PoisonCard(String name, int cost, Enemy target) {
-        this.name = name;
-        this.cost = cost;
-        this.target = target;
-        this.effect = poisonEffect;
+    public PoisonCard(String name, int cost, int amountToAdd) {
+        super(name, cost);
+        this.amountToAdd = amountToAdd;
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length())
-        + "|" + " PSN:" + poisonEffect.getAmount() + " CUSTO:" + this.cost;
+        + "|" + " PSN:" + amountToAdd + " CUSTO:" + this.cost;
     }
 
     @Override
-    public boolean useCard(Hero user) {
+    public boolean useCard(Hero user, Entity target) {
+        PoisonEffect poisonEffect = new PoisonEffect("Veneno", target, amountToAdd);
+        this.effect = poisonEffect;
+
         int user_energy = user.getEnergy();
 
         if (user_energy < this.cost) {
@@ -28,6 +27,12 @@ public class PoisonCard extends EffectCard {
         
         target.applyEffect(target, poisonEffect, amountToAdd);
         
+        return true;
+    }
+
+
+    @Override
+    public boolean requiresTarget() {
         return true;
     }
 }
