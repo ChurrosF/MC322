@@ -10,43 +10,39 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
 
 /**
- * Main manager for the terminal-based user interface (ASCII).
+ * Gestor principal para a interface de utilizador baseada em terminal (ASCII).
  * <p>
- * Uses the Singleton design pattern to ensure that only a single terminal window 
- * is open during the entire execution of the "Slay the Tuff Rat" game.
- * This class abstracts the Lanterna library configuration, managing the screen size
- * and loading monospaced fonts (essential for keeping the ASCII art of cards 
- * and enemies perfectly aligned).
+ * Utiliza o padrão de desenho Singleton para garantir que apenas uma única janela 
+ * de terminal esteja aberta durante toda a execução do jogo.
+ * Esta classe abstrai a configuração da biblioteca Lanterna, gerindo o tamanho do ecrã
+ * e carregando fontes monoespaçadas (essencial para manter a ASCII art perfeitamente alinhada).
  * </p>
- * @see com.googlecode.lanterna.screen.Screen
- * @see com.googlecode.lanterna.graphics.TextGraphics
  */
 public class TerminalManager {
     
-    /** Default height of the terminal screen in character lines. */
+    /** Altura padrão do ecrã do terminal em linhas de caracteres. */
     private final int HEIGHT = 22;
     
-    /** Default width of the terminal screen in character columns. */
+    /** Largura padrão do ecrã do terminal em colunas de caracteres. */
     private final int WIDTH = 140;
 
-    /** The single, global instance of this class (Singleton). */
+    /** A única instância global desta classe (Singleton). */
     private static TerminalManager instance;
     
-    /** The Lanterna screen, used to refresh and manage the visual buffer. */
+    /** O ecrã (Screen) do Lanterna, utilizado para atualizar e gerir o buffer visual. */
     private Screen screen;
     
-    /** The drawing engine, used to print text, lines, and ASCII arts on the screen. */
+    /** O motor de desenho, utilizado para imprimir texto, linhas e artes ASCII no ecrã. */
     private TextGraphics textGraphics;
 
     /**
-     * Constructs the Terminal Manager.
+     * Construtor do Gestor de Terminal.
      * <p>
-     * Initializes the Lanterna graphical screen, loads the custom font 
-     * {@code DejaVuSansMono.ttf} (to prevent art distortion), and sets 
-     * the title and initial size of the window.
+     * Inicializa o ecrã gráfico do Lanterna, carrega a fonte personalizada 
+     * {@code DejaVuSansMono.ttf} (para evitar distorção da arte), e define 
+     * o título e tamanho inicial da janela. Caso a fonte não seja encontrada,
+     * o erro é capturado e uma mensagem é enviada para a saída de erro (stderr).
      * </p>
-     * <p><b>Implementation Note:</b> If the font is not found or an I/O error occurs, 
-     * the game does not crash, but issues a warning to the standard error stream.</p>
      */
     public TerminalManager() {
         try {
@@ -70,11 +66,11 @@ public class TerminalManager {
     }
 
     /**
-     * Retrieves the single instance of the Terminal Manager.
-     * Implements Lazy Initialization, creating the terminal only when 
-     * this method is called for the first time.
+     * Recupera a única instância do Gestor de Terminal.
+     * Implementa Inicialização Tardia (Lazy Initialization), criando o terminal apenas 
+     * quando este método for chamado pela primeira vez.
      *
-     * @return The active and configured instance of {@link TerminalManager}.
+     * @return A instância ativa e configurada de {@link TerminalManager}.
      */
     public static TerminalManager getInstance() {
         if (instance == null) {
@@ -84,41 +80,37 @@ public class TerminalManager {
     }
 
     /**
-     * Gets the current Screen object.
+     * Recupera o objeto Screen atual.
      * <p>
-     * Generally used within the main Game Loop to call the 
-     * {@code screen.refresh()} method after drawing a frame, 
-     * or {@code screen.clear()} to clear the screen for the next turn.
+     * Geralmente utilizado dentro do loop principal do jogo para atualizar
+     * ou limpar o ecrã a cada novo turno.
      * </p>
-     * @return The {@link Screen} object managed by this class.
+     * @return O objeto {@link Screen} gerido por esta classe.
      */
     public Screen getScreen() {
         return this.screen;
     }
 
     /**
-     * Gets the graphical tool for drawing on the terminal.
+     * Recupera a ferramenta gráfica para desenhar no terminal.
      * <p>
-     * A fundamental object for rendering the interface. Example usage:
-     * <pre>
-     * TextGraphics tg = terminalManager.getTextGraphics();
-     * tg.putString(10, 5, "HP: 50/50");
-     * </pre>
-     * @return The {@link TextGraphics} object ready for character printing.
+     * Objeto fundamental para a renderização de strings, formas e cores na interface.
+     * </p>
+     * @return O objeto {@link TextGraphics} pronto para impressão de caracteres.
      */
     public TextGraphics getTextGraphics() {
         return this.textGraphics;
     }
 
     /**
-     * @return The maximum width of the terminal (in number of columns/characters).
+     * @return A largura máxima do terminal (em número de colunas/caracteres).
      */
     public int getWidth() {
         return this.WIDTH;
     }
 
     /**
-     * @return The maximum height of the terminal (in number of lines).
+     * @return A altura máxima do terminal (em número de linhas).
      */
     public int getHeight(){
         return this.HEIGHT;

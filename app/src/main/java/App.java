@@ -1,29 +1,29 @@
 /**
- * The main entry point for the "Slay the Tuff Rat" application.
+ * O ponto de entrada principal para a aplicação "Slay the Tuff Rat".
  * <p>
- * This class serves as the orchestrator of the entire game. It initializes the core 
- * subsystems (Model, View, Controller) and runs the main <b>Game Loop</b>. 
- * Because this is a turn-based RPG, the game loop is synchronous—it pauses execution 
- * to wait for the user's input before processing the next frame.
+ * Esta classe atua como a orquestradora de todo o jogo. Ela inicializa os 
+ * subsistemas centrais (Modelo, Vista, Controlador) e executa o <b>Game Loop</b> principal. 
+ * Como este é um RPG baseado em turnos, o loop do jogo é síncrono — ele pausa a execução 
+ * para aguardar o input do utilizador antes de processar a próxima frame (quadro).
  * </p>
  */
 public class App {
     /**
-     * The main execution method that starts the game.
+     * O método de execução principal que inicia o jogo.
      * <p>
-     * The execution sequence follows a classic Turn-Based Game Loop pattern:
+     * A sequência de execução segue o padrão clássico de Game Loop por Turnos:
      * <ol>
-     * <li><b>Render:</b> Draws the current game state to the terminal screen.</li>
-     * <li><b>Check State:</b> Evaluates if the battle has concluded (Win/Loss). If so, breaks the loop.</li>
-     * <li><b>Input:</b> Blocks and waits for the player to press a valid key.</li>
-     * <li><b>Update:</b> Passes the player's action to the GameManager to calculate damage, effects, and rules.</li>
+     * <li><b>Renderizar:</b> Desenha o estado atual do jogo no ecrã do terminal.</li>
+     * <li><b>Verificar Estado:</b> Avalia se a batalha foi concluída (Vitória/Derrota). Se sim, quebra o loop.</li>
+     * <li><b>Input:</b> Bloqueia e aguarda que o jogador pressione uma tecla válida.</li>
+     * <li><b>Atualizar:</b> Passa a ação do jogador para o GameManager calcular danos, efeitos e regras.</li>
      * </ol>
      *
-     * @param args Command-line arguments (not utilized in this application).
-     * @throws Exception If an unhandled interruption occurs during terminal initialization or input reading.
+     * @param args Argumentos de linha de comandos (não utilizados nesta aplicação).
+     * @throws Exception Caso ocorra uma interrupção não tratada durante a inicialização do terminal ou leitura de input.
      */
     public static void main(String[] args) throws Exception {
-        // Initialization of Core Subsystems
+        // Inicialização dos Subsistemas Centrais
         GameManager gameManager = new GameManager();
         Renderer renderer = new Renderer();
         InputSystem inputSystem = new InputSystem();
@@ -37,6 +37,6 @@ public class App {
             }
             Action action = inputSystem.readInput(state);
             gameManager.update(action);
-            }
         }
     }
+}
