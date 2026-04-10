@@ -4,22 +4,23 @@ import java.util.Random;
 import java.util.Stack;
 
 /**
- * Central repository for the data and state of the game "Slay the Tuff Rat".
+ * Repositório central para os dados e estado da partida de "Slay the Tuff Rat".
  * <p>
- * This class acts as the "Model" in the game's architecture, storing the 
- * main entities (Hero and Enemy), the battle state, and managing all the 
- * structural logic of the DeckBuilder (draw pile, player's hand, and discard pile).
+ * Esta classe age como o componente "Model" puro na arquitetura do jogo. Ela armazena 
+ * as entidades principais (Herói e Inimigos), o estado de fim de batalha, e gerencia toda 
+ * a lógica estrutural do DeckBuilder (pilha de compra, mão do jogador e pilha de descarte).
  * </p>
  * <p>
- * <b>Architecture Note:</b> For memory optimization, the piles and the player's hand 
- * do not store objects of type {@code Card}. Instead, they store Integer numbers 
- * that represent the indices of the {@code possible_cards} array (Flyweight pattern approach).
+ * <b>Nota de Arquitetura:</b> Para otimização de memória, as pilhas e a mão do jogador 
+ * não armazenam objetos do tipo {@code Card}. Em vez disso, armazenam números Inteiros 
+ * que representam os índices do array {@code possible_cards} (Abordagem do padrão Flyweight).
  * </p>
  */
 public final class GameData {
     private final Hero hero = new Hero("Hero", 20, 3, 0);
     private final ArrayList<Enemy> enemies = new ArrayList<>();
 
+    // Catálogo global de cartas existentes no jogo
     private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3);
     private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 6);
     private final DamageCard superHeavyAttack = new DamageCard("Bomba Nuclear", 3, 9);
@@ -29,25 +30,24 @@ public final class GameData {
     private final StrengthCard strength = new StrengthCard("Focar Ataque", 1, 2);
     private final EnergyRegenCard energyRegen = new EnergyRegenCard("Ganhar Energia", 0, 1);
 
-
     private final int buyPileSize = 20;
     private final int handSize = 5;
+    
+    /** Array com todas as instâncias únicas de cartas (Flyweight). */
     private Card[] possible_cards = {lightAttack, heavyAttack, superHeavyAttack, partialDefense, totalDefense, poison, strength, energyRegen};
 
     private final ArrayList<Integer> playerHand = new ArrayList<>();
     private final Stack<Integer> buyPile = new Stack<>();
     private final Stack<Integer> discardPile = new Stack<>();
 
-    
     private boolean invalidAction = false;
     private boolean battleOver = false;
     private int battleRounds = 1;
 
-
     /**
-     * Default constructor for the data manager.
-     * Upon starting the battle, it generates the random initial deck and draws 
-     * the first hand of cards for the hero.
+     * Construtor padrão do gerenciador de dados.
+     * Ao iniciar a batalha, gera os inimigos, o deck inicial aleatório e compra 
+     * a primeira mão de cartas para o herói.
      */
     public GameData() {
         this.enemies.add(new Enemy("Thug Bat", 20, 0, new int[] {3, 7}));
@@ -56,73 +56,27 @@ public final class GameData {
         buyRoundCards();
     }
 
-
-
-    public Hero getHero() {
-        return this.hero;
-    }
-
-
-    public ArrayList<Integer> getPlayerHand() {
-        return this.playerHand;
-    }
-
-
-    public ArrayList<Enemy> getEnemies() {
-        return enemies;
-    }
-
-
-    public ShieldCard getShieldCard() {
-        return this.partialDefense;
-    }
-
+    // ... Getters básicos
+    public Hero getHero() { return this.hero; }
+    public ArrayList<Integer> getPlayerHand() { return this.playerHand; }
+    public ArrayList<Enemy> getEnemies() { return enemies; }
+    public ShieldCard getShieldCard() { return this.partialDefense; }
+    public boolean isBattleOver() { return this.battleOver; }
+    public void setBattleOver(boolean gameOver) { this.battleOver = gameOver; }
+    public int getBattleRounds() { return this.battleRounds; }
+    public void addBattleRound() { this.battleRounds += 1; }
+    public Card[] getPossibleCards() { return possible_cards; }
+    public void setPossibleCards(Card[] possible_cards) { this.possible_cards = possible_cards; }
+    public Stack<Integer> getBuyPile() { return this.buyPile; }
+    public Stack<Integer> getDiscardPile() { return this.discardPile; }
     
-    public boolean isBattleOver() {
-        return this.battleOver;
-    }
+    /** @return {@code true} se o jogador tentou realizar uma ação bloqueada/inválida. */
+    public boolean isActionInvalid() { return invalidAction; }
+    public void setInvalidAction(boolean card_failed_use) { this.invalidAction = card_failed_use; }
 
-    
-    public void setBattleOver(boolean gameOver) {
-        this.battleOver = gameOver;
-    }
-
-
-    public int getBattleRounds() {
-        return this.battleRounds;
-    }
-
-
-    public void addBattleRound() {
-        this.battleRounds += 1;
-    }
-
-
-    public Card[] getPossibleCards() {
-        return possible_cards;
-    }
-
-
-    public void setPossibleCards(Card[] possible_cards) {
-        this.possible_cards = possible_cards;
-    }
-
-
-    public Stack<Integer> getBuyPile() {
-        return this.buyPile;
-    }
-
-
-        public boolean isActionInvalid() {
-        return invalidAction;
-    }
-
-
-    public void setInvalidAction(boolean card_failed_use) {
-        this.invalidAction = card_failed_use;
-    }
-
-
+    /**
+     * Gera o baralho inicial (Pilha de Compra) sorteando cartas do catálogo.
+     */
     public void generateRandomBuyPile() {
         Random generator = new Random();
         for (int i = 0; i < this.buyPileSize; i++) {
@@ -131,38 +85,45 @@ public final class GameData {
         }
     }
 
-
-    public Stack<Integer> getDiscardPile() {
-        return this.discardPile;
-    }
-
-
+    /**
+     * Descarta uma carta específica da mão para a pilha de descarte.
+     * @param position O índice da carta na lista da mão do jogador.
+     */
     public void discardCard(int position) {
         int card = playerHand.remove(position);
         this.discardPile.push(card);
     }
 
-
+    /**
+     * Joga todas as cartas restantes na mão do jogador na pilha de descarte.
+     */
     public void discardHand() {
         this.discardPile.addAll(playerHand);
         this.playerHand.clear();
     }
 
-
+    /**
+     * Puxa a carta do topo da pilha de compra e a coloca na mão do jogador.
+     */
     public void buyCard() {
         if (!this.buyPile.isEmpty()) {
             this.playerHand.add(this.buyPile.pop());
         }
     }
 
-
+    /**
+     * Compra cartas consecutivamente até encher a mão para o início do turno.
+     */
     public void buyRoundCards() {
         for (int i = 0; i < handSize; i++) {
             buyCard();
         }
     }
 
-
+    /**
+     * Pega todas as cartas da pilha de descarte, embaralha e as devolve
+     * para a pilha de compra.
+     */
     public void resetBuyPile() {
         this.buyPile.addAll(discardPile);
         Collections.shuffle(this.buyPile);

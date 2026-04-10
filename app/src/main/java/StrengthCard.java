@@ -1,3 +1,7 @@
+/**
+ * Representa uma carta de buff que concede Força ao herói.
+ * Aumenta temporariamente o dano da próxima carta de ataque jogada.
+ */
 public class StrengthCard extends EffectCard {
     private final int amountToAdd;
 
@@ -7,7 +11,6 @@ public class StrengthCard extends EffectCard {
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length())
         + "|" + " STR:" + amountToAdd + " CUSTO:" + this.cost;
     }
-
 
     @Override
     public boolean useCard(Hero user, Entity target) {
@@ -29,10 +32,7 @@ public class StrengthCard extends EffectCard {
         
         return true;
     }
-    
 
     @Override
-    public boolean requiresTarget() {
-        return false;
-    }
+    public boolean requiresTarget() { return false; }
 }

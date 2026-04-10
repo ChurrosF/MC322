@@ -1,3 +1,6 @@
+/**
+ * Representa uma carta ofensiva que aplica acúmulos de veneno ao alvo selecionado.
+ */
 public class PoisonCard extends EffectCard {
     private final int amountToAdd;
 
@@ -30,9 +33,6 @@ public class PoisonCard extends EffectCard {
         return true;
     }
 
-
     @Override
-    public boolean requiresTarget() {
-        return true;
-    }
+    public boolean requiresTarget() { return true; }
 }

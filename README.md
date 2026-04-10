@@ -7,12 +7,16 @@ Esse é um jogo feito inteiramente em Java como parte da disciplina MC322 da Uni
 + JDK (Java Development Kit), que é o que contém o compilador javac para criar os programas.
 
 # Como compilar esse projeto?
-Na pasta do repositório cole ou escreva:
+Na pasta do repositório e cole ou escreva:
 
 ```sh
-javac -d bin $(find src -name "*.java")
+gradle wrapper
 
-java -cp bin App
+chmod +x gradlew
+
+./gradlew build
+
+./gradlew run
 ```
 
 # Como Jogar?
@@ -38,6 +42,9 @@ Agora com efeitos!
 + SHD: Escudo recebido
 + PSN: Quantidade de veneno infligida
 + STR: Quantidade de buff de força ganho
+
+# Aviso
+    javadoc implementado com llm
 
 Nome: Felipe Pedral Cruz de Oliveira RA: 220826
 Nome: Mateus Carioca RA: 282046

@@ -1,88 +1,87 @@
 /**
- * Represents a discrete action taken by the player during their turn.
+ * Representa uma ação discreta tomada pelo jogador durante o seu turno.
  * <p>
- * This class acts as a Data Transfer Object (DTO). It encapsulates 
- * the player's intent (captured by the Input System) and safely transports it to 
- * the Game Manager to be processed and executed.
+ * Esta classe atua como um Objeto de Transferência de Dados (DTO). Ela encapsula 
+ * a intenção do jogador (capturada pelo InputSystem) e a transporta de forma segura 
+ * para o GameManager processar e executar.
  * </p>
  */
 public class Action {
 
-    
-
     /**
-     * Defines the possible types of actions a player can perform.
+     * Define os tipos possíveis de ações que um jogador pode realizar.
      */
     public enum ActionType {
-        /** Represents the intent to play a specific card from the hand. */
+        /** Representa a intenção de jogar uma carta específica da mão. */
         CHOOSE_CARD,
-
+        /** Representa a intenção de escolher um alvo para a carta jogada. */
         CHOOSE_TARGET,
-
+        /** Representa o cancelamento de uma seleção (voltar à escolha de cartas). */
         BACK,
-        
-        /** Represents the intent to end the turn early and recover energy. */
+        /** Representa a intenção de encerrar o turno e recuperar energia. */
         SKIP,
-        
-        /** Represents a request to prematurely surrender or exit the battle. */
+        /** Representa um pedido para se render prematuramente ou sair da batalha. */
         QUIT,
-        
-        /** Represents an unrecognized input or an action blocked by game rules. */
+        /** Representa um input não reconhecido ou uma ação bloqueada pelas regras do jogo. */
         INVALID;
     }
 
-    /** * The index position of the chosen card in the player's hand array. 
-     * Only relevant if the action_type is {@link ActionType#CARD}.
+    /** * A posição (índice) da carta escolhida no array da mão do jogador. 
+     * Só é relevante se o actionType for {@link ActionType#CHOOSE_CARD}.
      */
     private Integer CardHandIndex;
 
+    /** * O índice do alvo escolhido (posição do inimigo no array de inimigos). 
+     * Só é relevante se o actionType for {@link ActionType#CHOOSE_TARGET}.
+     */
     private Integer targetIndex;
     
-    /** The specific category of action the player wants to execute. */
+    /** A categoria específica de ação que o jogador deseja executar. */
     private ActionType actionType = null;
 
     /**
-     * Retrieves the index of the card intended to be played.
-     *
-     * @return The integer index representing the card's position in the hand.
+     * Recupera o índice da carta que se pretende jogar.
+     * @return O índice inteiro representando a posição da carta na mão.
      */
     public Integer getCardUsedIndex() {
         return CardHandIndex;
     }
 
     /**
-     * Sets the index of the card the player wants to use.
-     *
-     * @param cardHandIndex The position of the card in the hand array (e.g., 0 for the first card).
+     * Define o índice da carta que o jogador quer usar.
+     * @param cardHandIndex A posição da carta (ex: 0 para a primeira carta).
      */
     public void setCardUsedIndex(Integer cardHandIndex) {
         this.CardHandIndex = cardHandIndex;
     }
 
-
+    /**
+     * Recupera o índice do alvo selecionado.
+     * @return O índice inteiro representando a posição do inimigo.
+     */
     public Integer getTargetIndex() {
         return targetIndex;
     }
 
-
+    /**
+     * Define o índice do alvo que o jogador quer atingir.
+     * @param targetIndex A posição do inimigo alvo.
+     */
     public void setTargetIndex(Integer targetIndex) {
         this.targetIndex = targetIndex;
     }
 
-
     /**
-     * Retrieves the category of the requested action.
-     *
-     * @return The current {@link ActionType} assigned to this action.
+     * Recupera a categoria da ação solicitada.
+     * @return O {@link ActionType} atual atribuído a esta ação.
      */
     public ActionType getActionType() {
         return actionType;
     }
 
     /**
-     * Defines the category of the action based on the player's input.
-     *
-     * @param actionType The specific {@link ActionType} to be assigned.
+     * Define a categoria da ação com base no input do jogador.
+     * @param actionType O {@link ActionType} específico a ser atribuído.
      */
     public void setActionType(ActionType actionType) {
         this.actionType = actionType;
