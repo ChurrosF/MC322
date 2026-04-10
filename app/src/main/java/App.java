@@ -31,7 +31,7 @@ public class App {
         while (true) {
             GameData data = gameManager.getGameData();
             GameState state = gameManager.getState();
-            renderer.render(data);
+            renderer.render(data, state);
             if (gameManager.getGameData().isBattleOver()) {
                 break;
             }

@@ -12,7 +12,6 @@ public class GameManager {
     private final GameData data = new GameData();
     private final ArrayList<StatusEffect> effectSubscribers = new ArrayList<>();
     private final Hero hero = data.getHero();
-    private final Enemy enemy = data.getEnemy();
     private final ArrayList<Integer> player_hand = data.getPlayerHand();
     private GameState state = GameState.CHOOSING_CARD;
     private boolean gameEnded = false;
@@ -54,6 +53,7 @@ public class GameManager {
             }
         }
         
+        this.data.getEnemies().removeIf(enemy -> !enemy.isAlive());
         checkBattleOver();
     }
 
@@ -90,8 +90,10 @@ public class GameManager {
         }
         this.data.setInvalidAction(false);
         this.data.buyRoundCards();
-        this.enemy.setShield(0);
-        this.enemy.executeAction(hero, effectSubscribers);
+        for (Enemy enemy : data.getEnemies()) {
+            enemy.setShield(0);
+            enemy.executeAction(hero, effectSubscribers);
+        }
         this.hero.setEnergy(3);
         this.hero.setShield(0);
         this.data.addBattleRound();
@@ -200,7 +202,7 @@ public class GameManager {
 
 
     private void checkBattleOver() {
-        if (!hero.isAlive() || !enemy.isAlive()) {
+        if (!hero.isAlive() || data.getEnemies().isEmpty()) {
             this.data.setBattleOver(true);
         }
     }

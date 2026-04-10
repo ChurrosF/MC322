@@ -17,12 +17,8 @@ import java.util.Stack;
  * </p>
  */
 public final class GameData {
-    private final Hero hero = new Hero("Hero", 15, 3, 0);
+    private final Hero hero = new Hero("Hero", 20, 3, 0);
     private final ArrayList<Enemy> enemies = new ArrayList<>();
-
-    int[] enemyDamageRange = {3, 7};
-    private final Enemy enemy = new Enemy("Rat", 20, 0, enemyDamageRange);
-
 
     private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3);
     private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 7);
@@ -52,7 +48,8 @@ public final class GameData {
      * the first hand of cards for the hero.
      */
     public GameData() {
-        this.enemies.add(this.enemy);
+        this.enemies.add(new Enemy("Thug Bat", 20, 0, new int[] {3, 7}));
+        this.enemies.add(new Enemy("Tuff Bat", 10, 0, new int[] {3, 6}));
         generateRandomBuyPile();
         buyRoundCards();
     }
@@ -61,11 +58,6 @@ public final class GameData {
 
     public Hero getHero() {
         return this.hero;
-    }
-
-
-    public Enemy getEnemy() {
-        return this.enemy;
     }
 
 
