@@ -11,12 +11,11 @@ import java.util.ArrayList;
 public class GameManager {
     private final GameData data = new GameData();
     private final ArrayList<StatusEffect> effectSubscribers = new ArrayList<>();
+    private final Hero hero = data.getHero();
+    private final ArrayList<Integer> player_hand = data.getPlayerHand();
+    private GameState state = GameState.CHOOSING_CARD;
     private boolean gameEnded = false;
 
-    Hero hero = data.getHero();
-    Enemy enemy = data.getEnemy();
-    ArrayList<Integer> player_hand = data.getPlayerHand();
-    boolean battleOver = data.isBattleOver();
 
     /**
      * Processes the current action and updates the overall state.
@@ -28,14 +27,20 @@ public class GameManager {
         Action.ActionType actionType = action.getActionType();
         this.data.setInvalidAction(false);
         
-        if (battleOver) {
+        if (data.isBattleOver()) {
             this.gameEnded = true;
             return;
         }
 
         switch(actionType) {
-            case CARD -> {
-                handleCardUse(action);
+            case CHOOSE_CARD -> {
+                handleCardChoose(action);
+            }
+            case CHOOSE_TARGET -> {
+                handleTargetChoose(action);
+            }
+            case BACK -> {
+                this.state = GameState.CHOOSING_CARD;
             }
             case SKIP -> {
                 turnSkip();
@@ -48,6 +53,7 @@ public class GameManager {
             }
         }
         
+        this.data.getEnemies().removeIf(enemy -> !enemy.isAlive());
         checkBattleOver();
     }
 
@@ -84,8 +90,10 @@ public class GameManager {
         }
         this.data.setInvalidAction(false);
         this.data.buyRoundCards();
-        this.enemy.setShield(0);
-        this.enemy.executeAction(hero, effectSubscribers);
+        for (Enemy enemy : data.getEnemies()) {
+            enemy.setShield(0);
+            enemy.executeAction(hero, effectSubscribers);
+        }
         this.hero.setEnergy(3);
         this.hero.setShield(0);
         this.data.addBattleRound();
@@ -96,8 +104,12 @@ public class GameManager {
      * Attempts to execute the use of a card based on the player's action.
      * * @param action The action object containing the index of the card in hand.
      */
-    private void handleCardUse(Action action) {
-        int cardIndex = action.getCardUsedIndex();
+    private void handleCardChoose(Action action) {
+        Integer cardIndex = action.getCardUsedIndex();
+
+        if (!isCardChoosen(action)) {
+            return;
+        }
 
         if (isCardInvalid(cardIndex)) {
             this.data.setInvalidAction(true);
@@ -105,13 +117,40 @@ public class GameManager {
         }
         
         Card card = getCardFromIndex(cardIndex);
+        
+        if (card.requiresTarget()) {
+            this.state = GameState.TARGETING;
+            return;
+        }
 
-        if (card.useCard(this.hero)) {
+        handleCardUse(cardIndex, hero);
+        this.data.addBattleRound();
+        }
+
+
+    private void handleTargetChoose(Action action) {
+        int targetIndex = action.getTargetIndex();
+
+        if (isTargetInvalid(targetIndex)) {
+            this.data.setInvalidAction(true);
+            return;
+        }
+
+        Enemy target = data.getEnemies().get(targetIndex);
+
+        handleCardUse(action.getCardUsedIndex(), target);
+        this.state = GameState.CHOOSING_CARD;
+        this.data.addBattleRound();
+    }
+
+
+    private void handleCardUse(int cardIndex, Entity target) {
+        Card card = getCardFromIndex(cardIndex);
+        if (card.useCard(hero, target)) {
             this.data.discardCard(cardIndex);
             handleEffectCards(card);
         }
-        this.data.addBattleRound();
-        }
+    }
 
 
     /**
@@ -148,12 +187,22 @@ public class GameManager {
      * @return {@code true} if it's an invalid play.
      */
     private boolean isCardInvalid(int cardIndex) {
-        return (player_hand.size() <= cardIndex || player_hand.isEmpty());
+        return (player_hand.size() <= cardIndex || player_hand.isEmpty() || cardIndex < 0);
+    }
+
+
+    private boolean isCardChoosen(Action action) {
+        return (action.getCardUsedIndex() != null);
+    }
+
+
+    private boolean isTargetInvalid(int targetIndex) {
+        return (targetIndex < 0 || targetIndex >= data.getEnemies().size());
     }
 
 
     private void checkBattleOver() {
-        if (!hero.isAlive() || !enemy.isAlive()) {
+        if (!hero.isAlive() || data.getEnemies().isEmpty()) {
             this.data.setBattleOver(true);
         }
     }
@@ -196,5 +245,9 @@ public class GameManager {
     private void updateEffects(Action action)  {
         notifyEffects(action);
         effectSubscribers.removeIf(effect -> effect.getAmount() == 0);
+    }
+
+    public GameState getState() {
+        return state;
     }
 }

@@ -5,68 +5,100 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 
 public class InputSystem {
-    private final  Screen screen = TerminalManager.getInstance().getScreen();
+    private final Screen screen = TerminalManager.getInstance().getScreen();
+    private final Action action = new Action();
 
     
-    public Action readInput() {
-        // Reads player input and returns an action
-        Action action = new Action();
-        action.setActionType(Action.ActionType.SKIP);
-
-
+    public Action readInput(GameState state) {
         try { 
             KeyStroke key = screen.readInput();
-            convertInputToAction(key, action);
+            switch (state) {
+                case GameState.CHOOSING_CARD -> CardChooseAction(key);
+                case GameState.TARGETING -> TargetChooseAction(key);
+            }
         }
         catch (IOException e){
+            System.err.println("(InputSystem) Error when trying to read input from player:" + e);
         }
 
-        return action;
+        return this.action;
     }
 
 
-    private void convertInputToAction(KeyStroke key, Action action) {
+    private void CardChooseAction(KeyStroke key) {
         if (isKeySpecial(key)) {
-            handleSpecialInput(key, action);
+            handleSpecialInput(key);
         }
         else if (isKeyNumeric(key)) {
-            handleNumericalInput(key, action);
+            CardChooseNumericalInput(key);
         }
         else {
-            handleAlphabeticInput(key, action);
+            CardChooseAlphabeticInput(key);
         }
     }
 
 
-    private void handleAlphabeticInput(KeyStroke key, Action action) {
-        String inputStr = key.getCharacter().toString();
-        switch (inputStr.toUpperCase()) {
-                case "Q" -> action.setActionType(Action.ActionType.QUIT);
-                case "P" -> action.setActionType(Action.ActionType.SKIP);
-                default -> action.setActionType(Action.ActionType.INVALID);
-        }
-    }
-
-
-    private void handleNumericalInput(KeyStroke key, Action action) {
-        String inputStr = key.getCharacter().toString();
-        int inputInt = Integer.parseInt(inputStr);
-
-        if (inputInt <= 5 || inputInt > 0) {
-                action.setActionType(Action.ActionType.CARD);
-                action.setCardUsedIndex(inputInt - 1);
-                return;
+    private void TargetChooseAction(KeyStroke key) {
+        if (!isKeyNumeric(key)) {
+            if (key.getKeyType() == KeyType.Escape) {
+                this.action.setCardUsedIndex(null);
+                this.action.setActionType(Action.ActionType.BACK);
             }
+            else {
+                this.action.setActionType(Action.ActionType.INVALID);
+            }
+            return;
+        }
 
-        action.setActionType(Action.ActionType.SKIP);
+        TargetingNumericalInput(key);
     }
 
 
-    private void handleSpecialInput(KeyStroke key, Action action) {
+    private void CardChooseAlphabeticInput(KeyStroke key) {
+        String inputStr = key.getCharacter().toString();
+
+        
+        switch (inputStr.toUpperCase()) {
+                case "Q" -> this.action.setActionType(Action.ActionType.QUIT);
+                case "P" -> this.action.setActionType(Action.ActionType.SKIP);
+                default -> this.action.setActionType(Action.ActionType.INVALID);
+        }
+    }
+
+
+    private void CardChooseNumericalInput(KeyStroke key) {
+        String inputStr = key.getCharacter().toString();
+        int cardInt = Integer.parseInt(inputStr);
+
+        if (cardInt <= 5 || cardInt > 0) {
+                this.action.setActionType(Action.ActionType.CHOOSE_CARD);
+                this.action.setCardUsedIndex(cardInt - 1);
+                return;
+        }
+
+        this.action.setActionType(Action.ActionType.SKIP);
+    }
+
+
+    private void TargetingNumericalInput(KeyStroke key) {
+        String inputStr = key.getCharacter().toString();
+        int targetInt = Integer.parseInt(inputStr);
+
+        if (targetInt > 0 || targetInt <= 3) {
+            this.action.setActionType(Action.ActionType.CHOOSE_TARGET);
+            this.action.setTargetIndex(targetInt - 1);
+            return;
+        }
+
+        this.action.setActionType(Action.ActionType.INVALID);
+    }
+
+
+    private void handleSpecialInput(KeyStroke key) {
         switch (key.getKeyType()) {
-            case KeyType.Enter -> action.setActionType(Action.ActionType.SKIP);
-            case KeyType.EOF -> action.setActionType(Action.ActionType.QUIT);
-            default -> action.setActionType(Action.ActionType.INVALID);
+            case KeyType.Enter -> this.action.setActionType(Action.ActionType.SKIP);
+            case KeyType.EOF -> this.action.setActionType(Action.ActionType.QUIT);
+            default -> this.action.setActionType(Action.ActionType.INVALID);
         }
     }
 
@@ -77,6 +109,9 @@ public class InputSystem {
 
 
     private boolean isKeyNumeric(KeyStroke key) {
-        return Character.isDigit(key.getCharacter());
+        if (key.getCharacter() != null) {
+            return Character.isDigit(key.getCharacter());
+        }
+        return false;
     }
 }

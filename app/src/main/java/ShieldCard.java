@@ -3,15 +3,14 @@ public class ShieldCard extends Card {
 
 
     public ShieldCard(String name, int cost, int shield) {
-        this.name = name;
-        this.cost = cost;
+        super(name, cost);
         this.shield = shield;
-        this.description = "Carta " + this.name + " |" + " SHD:" + this.shield + " CUSTO:" + this.cost;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " SHD:" + this.shield + " CUSTO:" + this.cost;
     }
 
 
     @Override
-    public boolean useCard(Hero user) {
+    public boolean useCard(Hero user, Entity target) {
         /* Uses Shield card and returns boolean based on success */
 
         int user_energy = user.getEnergy(); 
@@ -23,6 +22,12 @@ public class ShieldCard extends Card {
         user.setEnergy(user_energy - this.cost); 
         user.gainShield(shield);
         return true;
+    }
+
+
+    @Override
+    public boolean requiresTarget() {
+        return false;
     }
 
 

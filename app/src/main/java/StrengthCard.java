@@ -1,20 +1,18 @@
-
-
 public class StrengthCard extends EffectCard {
-    private Entity target;
-    private final int amountToAdd = 2;
-    private final StrengthEffect strengthEffect = new StrengthEffect("Força", target, amountToAdd);
+    private final int amountToAdd;
 
-    public StrengthCard(String name, int cost, Entity target) {
-        this.name = name;
-        this.cost = cost;
-        this.target = target;
-        this.effect = strengthEffect;
-        this.description = "Carta " + this.name + "  |" + " STR:" + strengthEffect.getAmount() + " CUSTO:" + this.cost;
+    public StrengthCard(String name, int cost, int amountToAdd) {
+        super(name, cost);
+        this.amountToAdd = amountToAdd;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length())
+        + "|" + " STR:" + amountToAdd + " CUSTO:" + this.cost;
     }
 
+
     @Override
-    public boolean useCard(Hero user) {
+    public boolean useCard(Hero user, Entity target) {
+        StrengthEffect strengthEffect = new StrengthEffect("Força", target, amountToAdd);
+        this.effect = strengthEffect;
         int user_energy = user.getEnergy();
 
         if (user_energy < this.cost) {
@@ -32,4 +30,9 @@ public class StrengthCard extends EffectCard {
         return true;
     }
     
+
+    @Override
+    public boolean requiresTarget() {
+        return false;
+    }
 }

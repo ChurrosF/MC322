@@ -24,10 +24,10 @@ import com.googlecode.lanterna.terminal.swing.SwingTerminalFontConfiguration;
 public class TerminalManager {
     
     /** Default height of the terminal screen in character lines. */
-    private final int HEIGHT = 20;
+    private final int HEIGHT = 22;
     
     /** Default width of the terminal screen in character columns. */
-    private final int WIDTH = 120;
+    private final int WIDTH = 140;
 
     /** The single, global instance of this class (Singleton). */
     private static TerminalManager instance;
@@ -65,7 +65,7 @@ public class TerminalManager {
             this.textGraphics = screen.newTextGraphics();
         }
         catch (FontFormatException | IOException e) {
-            System.err.println("Terminal Manager: Error creating Screen.");
+            System.err.println("(TerminalManager) Error when creating screen: " + e);
         }
     }
 

@@ -25,24 +25,20 @@ public class Renderer {
     private final int HEIGHT = terminalManager.getHeight();
     private final int WIDTH = terminalManager.getWidth();
 
-    // ==========================================
-    // UI LAYOUT COORDINATES [Line, Column]
-    // ==========================================
-    
-    /** Height of the vertical separator line dividing the UI (Cards) from the Battle Screen. */
-    private final int VERTICAL_BAR_SIZE = 35;
+    private final int VERTICAL_BAR_SIZE = RendererConfig.VERTICAL_BAR_SIZE;
     private final int[] VERTICAL_BAR_POSITION = {1, VERTICAL_BAR_SIZE};
 
-    private final int[] HP_BAR_POSITION = {4, 38};
-    private final int[] SHIELD_COUNTER_POSITION = {4, 63}; 
-    private final int[] ENERGY_BAR_POSITION = {1, 2};
-    private final int[] NO_ENERGY_WARNING_POSITION = {1, 15};
+    private final int[] HP_BAR_POSITION = RendererConfig.HP_BAR_POSITION;
+    private final int[] SHIELD_COUNTER_POSITION = RendererConfig.SHIELD_COUNTER_POSITION; 
+    private final int[] ENERGY_BAR_POSITION = RendererConfig.ENERGY_BAR_POSITION;
+    private final int[] NO_ENERGY_WARNING_POSITION = RendererConfig.NO_ENERGY_WARNING_POSITION;
 
-    private final int[] BUY_PILE_POSITION = {3, 2};
-    private final int[] DISCARD_PILE_POSITION = {4, 2};
+    private final int DECK_TEXT_LINE = RendererConfig.DECK_TEXT_LINE;
+    private final int[] BUY_PILE_POSITION = RendererConfig.BUY_PILE_POSITION;
+    private final int[] DISCARD_PILE_POSITION = RendererConfig.DISCARD_PILE_POSITION;
 
-    private final int[] HERO_POSITION = {6, 38};
-    private final int[] ENEMY_POSITION = {9, 77};
+    private final int[] HERO_POSITION = RendererConfig.HERO_POSITION;
+    private final int[] ENEMIES_POSITION = RendererConfig.ENEMY_POSITION;
     
     
     // ==========================================
@@ -94,6 +90,7 @@ public class Renderer {
     private void placeBorders() {
         textGraphics.drawLine(1, 0, WIDTH  - 2, 0, '═');
         textGraphics.drawLine(1, HEIGHT - 1, WIDTH  - 2, HEIGHT - 1, '═');
+        textGraphics.drawLine(1, HEIGHT - 3, WIDTH  - 2, HEIGHT - 3, '═');
         textGraphics.drawLine(0, 1, 0, HEIGHT - 2, '║');
         textGraphics.drawLine(WIDTH - 1, 1, WIDTH - 1, HEIGHT - 2, '║');
 
@@ -134,11 +131,11 @@ public class Renderer {
         String heroSprite = gameData.getHero().getHero_sprite();
         ArrayList<StatusEffect> effects = gameData.getHero().getEffects();
 
-        placeText(new int[] {line - 4, column}, "Cavaleiro (Player):");
+        placeText(new int[] {line - 4, column}, "Cavaleiro (Jogador):");
         placeText(new int[] {line, column + 3}, heroSprite);
         for (int i = 0; i < effects.size(); i++) {
             StatusEffect effect = effects.get(i);
-            placeText(new int[] {line + 10 + i, column - 1}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
+            placeText(new int[] {line + 10 + i, column}, effect.getName() + ": " + effect.getAmount() + " Acúmulos");
         }
     }
 
@@ -149,28 +146,29 @@ public class Renderer {
      * @param gameData The central data repository containing the enemy's state.
      * @param position The base coordinates {@code [line, column]} to anchor the drawing.
      */
-    private void placeEnemySprite(GameData gameData, int[] position) {
+    private void placeEnemySprite(Enemy enemy, int[] position, int index) {
         // Places enemy sprite with info
         int line = position[0];
         int column = position[1];
 
         // Getting Enemy Data
-        int enemyLife = gameData.getEnemy().getLife();
-        int enemyShield = gameData.getEnemy().getShield();
-        int enemyMaxLife = gameData.getEnemy().getMaxLife();
-        int enemyRoundDamage = gameData.getEnemy().getRoundDamage();
-        int enemyShieldtoAdd = gameData.getEnemy().getShieldToAdd();
-        int enemyPoisonAmount = gameData.getEnemy().getPoisonAmount();
+        String enemyName = enemy.getName();
+        int enemyLife = enemy.getLife();
+        int enemyShield = enemy.getShield();
+        int enemyMaxLife = enemy.getMaxLife();
+        int enemyRoundDamage = enemy.getRoundDamage();
+        int enemyShieldtoAdd = enemy.getShieldToAdd();
+        int enemyPoisonAmount = enemy.getPoisonAmount();
 
-        EnemyAction enemyAction = gameData.getEnemy().getEnemyAction();
+        EnemyAction enemyAction = enemy.getEnemyAction();
         String shieldCounter = "(+" + enemyShield + ")";
-        ArrayList<StatusEffect> effects = gameData.getEnemy().getEffects();
+        ArrayList<StatusEffect> effects = enemy.getEffects();
 
-        String ratSprite = gameData.getEnemy().getEnemySprite();
+        String ratSprite = enemy.getEnemySprite();
 
         String ratHpBarSprite = createHpBar(enemyLife, enemyMaxLife);
 
-        placeText(new int[] {line - 7, column - 2}, "Aranha Maligna (do MAL):");
+        placeText(new int[] {line - 7, column - 2}, enemyName + " (" + (index + 1) + ")");
         placeText(new int[] {line - 5, column - 2}, ratHpBarSprite, TextColor.ANSI.RED_BRIGHT);
         if (enemyShield > 0) {
             placeText(new int[] {line - 5, column + 23}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
@@ -195,6 +193,15 @@ public class Renderer {
     }
 
 
+    private void placeEnemies(GameData gameData, int position[]) {
+        ArrayList<Enemy> enemies = gameData.getEnemies();
+        for (int i = 0; i < enemies.size(); i++) {
+            int[] cur_position = {position[0], position[1] + i * 29};
+            placeEnemySprite(enemies.get(i), cur_position, i);
+        }
+    }
+
+
     /**
      * Renders the top HUD elements for the hero, including health, shield, energy, 
      * and the size of the draw/discard piles. Also draws the vertical UI separator.
@@ -213,7 +220,7 @@ public class Renderer {
         String hero_hp_bar_sprite = createHpBar(hero_life, hero_max_life);
         String shield_counter = "(+" + hero_shield + ")";
         String energy_bar_sprite = "Energia: " + "■ ".repeat(hero_energy) + hero_energy + "/3";
-        String vertical_bar = "║\n".repeat(HEIGHT - 2);
+        String vertical_bar = "║\n".repeat(HEIGHT - 4);
 
 
         
@@ -263,7 +270,6 @@ public class Renderer {
     private void placeCardUI(GameData gameData) {
         int hand_size = gameData.getPlayerHand().size();
 
-        int DECK_TEXT_LINE = 6;
         
         placeText(new int[] {DECK_TEXT_LINE - 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         placeText(new int[] {DECK_TEXT_LINE, 1}, "               Mão:");
@@ -280,10 +286,10 @@ public class Renderer {
         }
 
 
-        placeText(new int[] {HEIGHT - 3, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
-        placeText(new int[] {HEIGHT - 2, 1}, "(P) Passar Turno (+3 energia)");
+        placeText(new int[] {HEIGHT - 5, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
+        placeText(new int[] {HEIGHT - 4, 1}, "(P) Passar Turno (+3 energia)");
         if (gameData.isActionInvalid()) {
-            placeText(new int[] {HEIGHT - 2, 37}, "AVISO: AÇÃO INVÁLIDA");
+            placeText(new int[] {HEIGHT - 4, 38}, "AVISO: AÇÃO INVÁLIDA");
         }
     }
 
@@ -294,11 +300,21 @@ public class Renderer {
      *
      * @param gameData The snapshot of the current game state to render.
      */
-    public void placeBattleScreen(GameData gameData) {
+    private void placeBattleScreen(GameData gameData) {
         placeHeroSprite(gameData, HERO_POSITION);
-        placeEnemySprite(gameData, ENEMY_POSITION);
+        placeEnemies(gameData, ENEMIES_POSITION);
         placeHeroInfo(gameData);
         placeCardUI(gameData);
+    }
+
+
+    private void placeContextBar(GameState state) {
+        if (state == GameState.CHOOSING_CARD) {
+            placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
+        }
+        else {
+            placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA O ALVO ------------------");
+        }
     }
 
 
@@ -308,12 +324,12 @@ public class Renderer {
      *
      * @param gameData The game state containing the final health metrics.
      */
-    public void drawEndScreen(GameData gameData) {
+    private void drawEndScreen(GameData gameData) {
         // Directly prints end screen
         if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
         }
-        else if (!gameData.getEnemy().isAlive()) {
+        else if (!gameData.getEnemies().isEmpty()) {
             System.out.println("\n--- VOCÊ GANHOU! ---\n");
         }
         else {
@@ -328,12 +344,13 @@ public class Renderer {
      *
      * @param gameData The updated game state to be drawn on the screen.
      */
-    public void render(GameData gameData) {
+    public void render(GameData gameData, GameState state) {
         try {
             screen.clear();
             screen.setCursorPosition(null);
             placeBorders();
             placeBattleScreen(gameData);
+            placeContextBar(state);
             screen.refresh();
             if (gameData.isBattleOver()) {
                 drawEndScreen(gameData);
