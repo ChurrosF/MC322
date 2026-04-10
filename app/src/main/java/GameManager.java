@@ -187,7 +187,7 @@ public class GameManager {
      * @return {@code true} if it's an invalid play.
      */
     private boolean isCardInvalid(int cardIndex) {
-        return (player_hand.size() <= cardIndex || player_hand.isEmpty());
+        return (player_hand.size() <= cardIndex || player_hand.isEmpty() || cardIndex < 0);
     }
 
 

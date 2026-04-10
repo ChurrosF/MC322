@@ -21,16 +21,18 @@ public final class GameData {
     private final ArrayList<Enemy> enemies = new ArrayList<>();
 
     private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3);
-    private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 7);
+    private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 6);
+    private final DamageCard superHeavyAttack = new DamageCard("Bomba Nuclear", 3, 9);
     private final ShieldCard partialDefense = new ShieldCard("Defesa Parcial", 1, 2);
     private final ShieldCard totalDefense = new ShieldCard("Defesa Total", 2, 5);
     private final PoisonCard poison = new PoisonCard("Dardo Venenoso", 2, 3);
     private final StrengthCard strength = new StrengthCard("Focar Ataque", 1, 2);
+    private final EnergyRegenCard energyRegen = new EnergyRegenCard("Ganhar Energia", 0, 1);
 
 
     private final int buyPileSize = 20;
     private final int handSize = 5;
-    private Card[] possible_cards = {lightAttack, heavyAttack, partialDefense, totalDefense, poison, strength};
+    private Card[] possible_cards = {lightAttack, heavyAttack, superHeavyAttack, partialDefense, totalDefense, poison, strength, energyRegen};
 
     private final ArrayList<Integer> playerHand = new ArrayList<>();
     private final Stack<Integer> buyPile = new Stack<>();
