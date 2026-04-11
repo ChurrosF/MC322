@@ -1,10 +1,13 @@
-public class EnergyRegenCard extends Card {
-    private final int regenAmount;
+/**
+ * Representa uma carta de defesa que concede pontos de escudo ao usuário.
+ */
+public class ShieldCard extends Card {
+    private int shield;
 
-    public EnergyRegenCard(String name, int cost, int regenAmount) {
+    public ShieldCard(String name, int cost, int shield) {
         super(name, cost);
-        this.regenAmount = regenAmount;
-        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " DMG:" + this.regenAmount + " CUSTO:" + this.cost;
+        this.shield = shield;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " SHD:" + this.shield + " CUSTO:" + this.cost;
     }
 
     @Override
@@ -15,14 +18,13 @@ public class EnergyRegenCard extends Card {
             return false;
         }
 
-        user.setEnergy(user_energy - this.cost + this.regenAmount);
+        user.setEnergy(user_energy - this.cost); 
+        user.gainShield(shield);
         return true;
     }
 
-    
-    
     @Override
-    public boolean requiresTarget() {
-        return false;
-    }
+    public boolean requiresTarget() { return false; }
+    
+    public int getShield() { return shield; }
 }

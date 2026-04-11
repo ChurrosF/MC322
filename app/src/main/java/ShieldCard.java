@@ -1,6 +1,8 @@
+/**
+ * Representa uma carta de defesa que concede pontos de escudo ao usuário.
+ */
 public class ShieldCard extends Card {
     private int shield;
-
 
     public ShieldCard(String name, int cost, int shield) {
         super(name, cost);
@@ -8,11 +10,8 @@ public class ShieldCard extends Card {
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " SHD:" + this.shield + " CUSTO:" + this.cost;
     }
 
-
     @Override
     public boolean useCard(Hero user, Entity target) {
-        /* Uses Shield card and returns boolean based on success */
-
         int user_energy = user.getEnergy(); 
 
         if (user_energy < this.cost) {
@@ -24,14 +23,8 @@ public class ShieldCard extends Card {
         return true;
     }
 
-
     @Override
-    public boolean requiresTarget() {
-        return false;
-    }
-
-
-    public int getShield() {
-        return shield;
-    }
+    public boolean requiresTarget() { return false; }
+    
+    public int getShield() { return shield; }
 }

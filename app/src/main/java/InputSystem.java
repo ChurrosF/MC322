@@ -4,11 +4,21 @@ import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 
+/**
+ * Sistema responsável por capturar os comandos físicos do teclado e traduzi-los
+ * em ações processáveis (intents) para o GameManager.
+ */
 public class InputSystem {
     private final Screen screen = TerminalManager.getInstance().getScreen();
     private final Action action = new Action();
 
-    
+    /**
+     * Bloqueia o jogo e aguarda que o jogador pressione uma tecla. Avalia o input
+     * com base no estado atual do jogo (se o utilizador está a selecionar uma carta ou um alvo).
+     *
+     * @param state O estado atual da interface (ex: {@link GameState#CHOOSING_CARD}).
+     * @return Um objeto {@link Action} encapsulando a intenção validada do jogador.
+     */
     public Action readInput(GameState state) {
         try { 
             KeyStroke key = screen.readInput();
@@ -24,7 +34,12 @@ public class InputSystem {
         return this.action;
     }
 
-
+    /**
+     * Lida com o processamento de teclas quando o jogador está na fase de escolher uma carta.
+     * Separa a lógica entre teclas especiais (Enter, Esc), números (índice da carta) ou letras.
+     *
+     * @param key A tecla registada pelo Lanterna.
+     */
     private void CardChooseAction(KeyStroke key) {
         if (isKeySpecial(key)) {
             handleSpecialInput(key);
@@ -37,9 +52,14 @@ public class InputSystem {
         }
     }
 
-
+    /**
+     * Lida com o processamento de teclas quando o jogador está na fase de escolher um alvo (inimigo).
+     *
+     * @param key A tecla registada pelo Lanterna.
+     */
     private void TargetChooseAction(KeyStroke key) {
         if (!isKeyNumeric(key)) {
+            // Permite cancelar a seleção e voltar às cartas pressionando ESC
             if (key.getKeyType() == KeyType.Escape) {
                 this.action.setCardUsedIndex(null);
                 this.action.setActionType(Action.ActionType.BACK);
@@ -53,11 +73,14 @@ public class InputSystem {
         TargetingNumericalInput(key);
     }
 
-
+    /**
+     * Processa comandos de teclas alfabéticas específicas do jogo.
+     *
+     * @param key A tecla alfabética pressionada.
+     */
     private void CardChooseAlphabeticInput(KeyStroke key) {
         String inputStr = key.getCharacter().toString();
 
-        
         switch (inputStr.toUpperCase()) {
                 case "Q" -> this.action.setActionType(Action.ActionType.QUIT);
                 case "P" -> this.action.setActionType(Action.ActionType.SKIP);
@@ -65,7 +88,12 @@ public class InputSystem {
         }
     }
 
-
+    /**
+     * Processa teclas numéricas durante a fase de escolha de cartas, mapeando o número
+     * para o índice correspondente na mão do jogador.
+     *
+     * @param key A tecla numérica pressionada.
+     */
     private void CardChooseNumericalInput(KeyStroke key) {
         String inputStr = key.getCharacter().toString();
         int cardInt = Integer.parseInt(inputStr);
@@ -79,7 +107,12 @@ public class InputSystem {
         this.action.setActionType(Action.ActionType.SKIP);
     }
 
-
+    /**
+     * Processa teclas numéricas durante a fase de seleção de alvos, mapeando o número
+     * para o índice do inimigo.
+     *
+     * @param key A tecla numérica pressionada.
+     */
     private void TargetingNumericalInput(KeyStroke key) {
         String inputStr = key.getCharacter().toString();
         int targetInt = Integer.parseInt(inputStr);
@@ -93,7 +126,11 @@ public class InputSystem {
         this.action.setActionType(Action.ActionType.INVALID);
     }
 
-
+    /**
+     * Lida com teclas de controlo especiais do terminal.
+     *
+     * @param key A tecla especial pressionada (ex: Enter, EOF).
+     */
     private void handleSpecialInput(KeyStroke key) {
         switch (key.getKeyType()) {
             case KeyType.Enter -> this.action.setActionType(Action.ActionType.SKIP);
@@ -102,12 +139,22 @@ public class InputSystem {
         }
     }
 
-
+    /**
+     * Verifica se a tecla pressionada é uma tecla especial (não-caractere).
+     *
+     * @param key A tecla a ser verificada.
+     * @return {@code true} se for uma tecla especial.
+     */
     private boolean isKeySpecial(KeyStroke key) {
         return !(key.getKeyType() == KeyType.Character);
     }
 
-
+    /**
+     * Verifica se a tecla pressionada representa um dígito numérico.
+     *
+     * @param key A tecla a ser verificada.
+     * @return {@code true} se a tecla for um número.
+     */
     private boolean isKeyNumeric(KeyStroke key) {
         if (key.getCharacter() != null) {
             return Character.isDigit(key.getCharacter());

@@ -5,17 +5,16 @@ import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
 
-
 /**
- * The rendering engine for the game's user interface.
+ * O motor de renderização para a interface de utilizador do jogo.
  * <p>
- * This class acts as the "View" component in the game's architecture. It is strictly 
- * responsible for reading the state from {@link GameData} and drawing the corresponding 
- * visual elements (ASCII art, UI borders, health bars, and text) onto the terminal screen.
+ * Esta classe atua como o componente "Vista" (View) na arquitetura do jogo. É estritamente 
+ * responsável por ler o estado a partir de {@link GameData} e desenhar os elementos visuais 
+ * correspondentes (arte ASCII, bordas de interface, barras de vida e texto) no ecrã do terminal.
  * </p>
  * <p>
- * <b>Layout System:</b> Positions are generally stored as integer arrays in the 
- * format {@code [line/y, column/x]} to map onto the Lanterna terminal grid.
+ * <b>Sistema de Layout:</b> As posições são geralmente armazenadas como arrays de inteiros no 
+ * formato {@code [linha/y, coluna/x]} para mapeamento na grelha do terminal Lanterna.
  * </p>
  */
 public class Renderer {
@@ -40,21 +39,19 @@ public class Renderer {
     private final int[] HERO_POSITION = RendererConfig.HERO_POSITION;
     private final int[] ENEMIES_POSITION = RendererConfig.ENEMY_POSITION;
     
-    
     // ==========================================
     // LANTERNA GRAPHICS CONTEXT
     // ==========================================
     private final Screen screen = terminalManager.getScreen();
     private final TextGraphics textGraphics = terminalManager.getTextGraphics();
 
-
     /**
-     * Prints a text string at a specific coordinate on the screen.
-     * Supports multiline strings by splitting the text at {@code \n} and 
-     * incrementing the line (Y-axis) for each subsequent substring.
+     * Imprime uma string de texto numa coordenada específica no ecrã.
+     * Suporta strings multilinhas dividindo o texto em {@code \n} e 
+     * incrementando a linha (Eixo Y) para cada substring subsequente.
      *
-     * @param position An array containing {@code [line, column]}.
-     * @param text     The text to be drawn.
+     * @param position Um array contendo {@code [linha, coluna]}.
+     * @param text     O texto a ser desenhado.
      */
     private void placeText(int[] position, String text) {
         int line = position[0];
@@ -67,14 +64,13 @@ public class Renderer {
         }
     }
 
-
     /**
-     * Prints a text string at a specific coordinate using a custom color.
-     * After drawing, resets the foreground color back to standard White to prevent color bleeding.
+     * Imprime uma string de texto numa coordenada específica utilizando uma cor personalizada.
+     * Após desenhar, restaura a cor para o Branco padrão para evitar falhas visuais.
      *
-     * @param position An array containing {@code [line, column]}.
-     * @param text     The text to be drawn.
-     * @param color    The Lanterna {@link TextColor} to apply to the text.
+     * @param position Um array contendo {@code [linha, coluna]}.
+     * @param text     O texto a ser desenhado.
+     * @param color    A cor {@link TextColor} do Lanterna a aplicar ao texto.
      */
     private void placeText(int[] position, String text, TextColor color) {
         textGraphics.setForegroundColor(color);
@@ -82,10 +78,9 @@ public class Renderer {
         textGraphics.setForegroundColor(TextColor.ANSI.WHITE);
     }
 
-
     /**
-     * Draws the outer decorative borders of the game window.
-     * Uses double-line ASCII characters (═, ║, ╔, ╗, ╚, ╝).
+     * Desenha as bordas decorativas externas da janela do jogo.
+     * Utiliza caracteres ASCII de linha dupla (═, ║, ╔, ╗, ╚, ╝).
      */
     private void placeBorders() {
         textGraphics.drawLine(1, 0, WIDTH  - 2, 0, '═');
@@ -100,16 +95,15 @@ public class Renderer {
         textGraphics.putString(WIDTH - 1, HEIGHT - 1, "╝");
     }
 
-
     /**
-     * Generates a visual ASCII health bar string based on current and maximum health.
+     * Gera uma representação visual (String) em arte ASCII de uma barra de vida.
      * <p>
-     * Example Output: {@code Vida: [█████░░░░░] 10/20}
+     * Exemplo de Output: {@code Vida: [█████░░░░░] 10/20}
      * </p>
      *
-     * @param cur_hp Current health points.
-     * @param max_hp Maximum health points.
-     * @return A formatted string representing the health bar.
+     * @param cur_hp Pontos de vida atuais.
+     * @param max_hp Pontos de vida máximos.
+     * @return Uma string formatada representando a barra de vida.
      */
     private String createHpBar(int cur_hp, int max_hp) {
         int white_health_bars = Math.round(((float) cur_hp / max_hp) * 10);
@@ -117,12 +111,11 @@ public class Renderer {
         return hp_bar;
     }
 
-
     /**
-     * Renders the Hero's ASCII sprite, title, and current active status effects.
+     * Renderiza o sprite ASCII do Herói, o seu título e os efeitos de status atualmente ativos.
      *
-     * @param gameData The central data repository containing the hero's state.
-     * @param position The base coordinates {@code [line, column]} to anchor the drawing.
+     * @param gameData O repositório central contendo o estado do herói.
+     * @param position As coordenadas base {@code [linha, coluna]} para ancorar o desenho.
      */
     private void placeHeroSprite(GameData gameData, int[] position) {
         int line = position[0];
@@ -139,15 +132,15 @@ public class Renderer {
         }
     }
 
-
     /**
-     * Renders the Enemy's ASCII sprite, health bar, shield, intended next action, and status effects.
+     * Renderiza o sprite ASCII do Inimigo, a sua barra de vida, escudo, ação pretendida
+     * para o próximo turno e os efeitos de status ativos.
      *
-     * @param gameData The central data repository containing the enemy's state.
-     * @param position The base coordinates {@code [line, column]} to anchor the drawing.
+     * @param enemy    A entidade inimiga a ser desenhada.
+     * @param position As coordenadas base {@code [linha, coluna]} para ancorar o desenho.
+     * @param index    O índice numérico do inimigo na lista (usado para seleção visual).
      */
     private void placeEnemySprite(Enemy enemy, int[] position, int index) {
-        // Places enemy sprite with info
         int line = position[0];
         int column = position[1];
 
@@ -192,7 +185,12 @@ public class Renderer {
         placeText(new int[] {line + 2, column}, ratSprite);
     }
 
-
+    /**
+     * Itera sobre a lista de inimigos vivos e desenha cada um deles no ecrã com o devido espaçamento.
+     *
+     * @param gameData O repositório contendo a lista de inimigos.
+     * @param position A posição inicial ancorada para o primeiro inimigo.
+     */
     private void placeEnemies(GameData gameData, int position[]) {
         ArrayList<Enemy> enemies = gameData.getEnemies();
         for (int i = 0; i < enemies.size(); i++) {
@@ -201,12 +199,11 @@ public class Renderer {
         }
     }
 
-
     /**
-     * Renders the top HUD elements for the hero, including health, shield, energy, 
-     * and the size of the draw/discard piles. Also draws the vertical UI separator.
+     * Renderiza os elementos do HUD superior, incluindo vida, escudo, energia, 
+     * e o tamanho das pilhas de compra e descarte. Desenha também o separador vertical da UI.
      *
-     * @param gameData The data model to extract hero statistics from.
+     * @param gameData O modelo de dados para extrair as estatísticas do herói e baralho.
      */
     private void placeHeroInfo(GameData gameData) {
         // Getting Hero Data
@@ -222,9 +219,6 @@ public class Renderer {
         String energy_bar_sprite = "Energia: " + "■ ".repeat(hero_energy) + hero_energy + "/3";
         String vertical_bar = "║\n".repeat(HEIGHT - 4);
 
-
-        
-
         placeText(HP_BAR_POSITION, hero_hp_bar_sprite, TextColor.ANSI.RED_BRIGHT);
 
         if (hero_shield > 0) {
@@ -233,25 +227,21 @@ public class Renderer {
 
         placeText(ENERGY_BAR_POSITION, energy_bar_sprite, TextColor.ANSI.YELLOW_BRIGHT);
 
-
         if (hero_energy == 0) { 
             placeText(NO_ENERGY_WARNING_POSITION, "| Sem energia!");
         }
-
-        
 
         placeText(BUY_PILE_POSITION, "Pilha de Compra: x" + buy_pile_size);
         placeText(DISCARD_PILE_POSITION, "Pilha de Descarte: x" + discard_pile_size);
         placeText(VERTICAL_BAR_POSITION, vertical_bar);
     }
 
-
     /**
-     * Renders an individual card entry within the player's hand UI.
+     * Renderiza uma entrada individual de carta dentro da lista da mão do jogador.
      *
-     * @param position The coordinates to place the card text.
-     * @param card     The card instance to extract the description from.
-     * @param index    The integer index used for user input (e.g., pressing "1" for the first card).
+     * @param position As coordenadas para posicionar o texto da carta.
+     * @param card     A instância da carta para extrair a descrição.
+     * @param index    O índice numérico utilizado para seleção (ex: pressionar "1").
      */
     private void placeCard(int[] position, Card card, int index) {
         placeText(new int[] {position[0], position[1]}, "(" + (index + 1) + ") " + card.getDescription());
@@ -259,17 +249,15 @@ public class Renderer {
             placeText(new int[] {position[0] + 1, position[1]}, "-".repeat(VERTICAL_BAR_SIZE - 1));
         }
     }
-
     
     /**
-     * Renders the left sidebar containing the player's current hand of cards,
-     * available actions (Skip Turn), and system warnings (Invalid Action).
+     * Renderiza a barra lateral esquerda contendo a mão atual de cartas do jogador,
+     * as opções disponíveis (Passar Turno) e possíveis avisos de erro (Ação Inválida).
      *
-     * @param gameData The data model containing the player's hand array.
+     * @param gameData O modelo de dados contendo o array da mão do jogador.
      */
     private void placeCardUI(GameData gameData) {
         int hand_size = gameData.getPlayerHand().size();
-
         
         placeText(new int[] {DECK_TEXT_LINE - 1, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         placeText(new int[] {DECK_TEXT_LINE, 1}, "               Mão:");
@@ -278,13 +266,11 @@ public class Renderer {
         int start_line = 8;
         int line = 0;
         for (int i = 0; i < hand_size; i++) {
-
             int card_index = gameData.getPlayerHand().get(i);
             Card card = gameData.getPossibleCards()[card_index];
             placeCard(new int[] {line + start_line, 1}, card, i);
             line += 2;
         }
-
 
         placeText(new int[] {HEIGHT - 5, 1}, "=".repeat(VERTICAL_BAR_SIZE - 1));
         placeText(new int[] {HEIGHT - 4, 1}, "(P) Passar Turno (+3 energia)");
@@ -293,12 +279,11 @@ public class Renderer {
         }
     }
 
-
     /**
-     * Orchestrates the rendering of all battle screen components.
-     * Calls individual methods to compose the final frame.
+     * Orquestra a renderização de todos os componentes do ecrã principal de batalha.
+     * Chama métodos individuais para compor a frame final.
      *
-     * @param gameData The snapshot of the current game state to render.
+     * @param gameData O estado do jogo atual a ser renderizado.
      */
     private void placeBattleScreen(GameData gameData) {
         placeHeroSprite(gameData, HERO_POSITION);
@@ -307,7 +292,12 @@ public class Renderer {
         placeCardUI(gameData);
     }
 
-
+    /**
+     * Desenha a barra de contexto na parte inferior do ecrã, guiando o jogador
+     * sobre o que o jogo espera que ele faça (Escolher carta vs Escolher alvo).
+     *
+     * @param state O estado atual da máquina de estados do jogo.
+     */
     private void placeContextBar(GameState state) {
         if (state == GameState.CHOOSING_CARD) {
             placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
@@ -317,12 +307,11 @@ public class Renderer {
         }
     }
 
-
     /**
-     * Resolves the endgame state and prints the corresponding victory or defeat message
-     * to the standard console out (System.out) after the Lanterna screen closes.
+     * Resolve o estado de fim de jogo e imprime a mensagem de vitória ou derrota
+     * correspondente na consola padrão (System.out) após o ecrã do Lanterna ser fechado.
      *
-     * @param gameData The game state containing the final health metrics.
+     * @param gameData O estado do jogo contendo as métricas finais de vida.
      */
     private void drawEndScreen(GameData gameData) {
         // Directly prints end screen
@@ -337,12 +326,13 @@ public class Renderer {
         }
     }
 
-
     /**
-     * The main rendering loop call. Clears the previous frame, builds the new UI 
-     * based on the latest state, pushes it to the display buffer, and checks for game end.
+     * A chamada principal do loop de renderização. Limpa a frame anterior, constrói a nova 
+     * interface baseada no estado mais recente, empurra-a para o buffer do ecrã, e verifica
+     * o fim do jogo.
      *
-     * @param gameData The updated game state to be drawn on the screen.
+     * @param gameData O estado atualizado do jogo a ser desenhado no ecrã.
+     * @param state    O estado de interação atual (escolhendo carta ou alvo).
      */
     public void render(GameData gameData, GameState state) {
         try {

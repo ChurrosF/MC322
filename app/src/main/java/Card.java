@@ -1,69 +1,55 @@
 /**
- * The abstract base class for all playable cards in the game.
+ * A classe base abstrata para todas as cartas jogáveis no jogo.
  * <p>
- * This class establishes the foundational blueprint for any card in the DeckBuilder.
- * It holds the basic attributes shared by all cards (name, description, and energy cost)
- * and forces all specific card types (subclasses) to implement their unique logic 
- * through the <code>useCard</code> method.
+ * Esta classe estabelece a estrutura fundamental para qualquer carta no DeckBuilder.
+ * Ela guarda os atributos básicos compartilhados por todas as cartas (nome, descrição e custo de energia)
+ * e obriga todas as cartas específicas (subclasses) a implementarem sua própria lógica
+ * através do método {@code useCard}.
  * </p>
  */
 public abstract class Card {
     
-    /** The display name of the card. */
+    /** O nome de exibição da carta. */
     protected String name;
     
-    /** The visual text explaining the card's effect to the player. */
+    /** O texto visual que explica o efeito da carta para o jogador na tela. */
     protected String description;
     
-    /** The amount of energy required from the hero to play this card. */
+    /** A quantidade de energia exigida do herói para jogar esta carta. */
     protected int cost;
 
-
+    /**
+     * Construtor base para inicializar os atributos fundamentais da carta.
+     * @param name O nome da carta.
+     * @param cost O custo de energia.
+     */
     public Card(String name, int cost) {
         this.name = name;
         this.cost = cost;
     }
-
     
     /**
-     * Executes the specific effect of the card when played by the hero.
+     * Executa o efeito específico da carta quando jogada pelo herói.
      * <p>
-     * Subclasses must implement this method to define whether the card deals damage,
-     * applies a status effect, or provides a shield. The method should also evaluate
-     * if the hero meets the conditions to play it (such as having enough energy).
+     * Subclasses devem implementar este método para definir se a carta causa dano,
+     * aplica um status, gera escudo, etc. O método também deve avaliar se o herói
+     * cumpre as condições para jogá-la (como possuir energia suficiente).
      * </p>
      *
-     * @param user The {@link Hero} entity that is attempting to play this card.
-     * @return <code>true</code> if the card was successfully used, or <code>false</code> 
-     * if the action failed (e.g., insufficient energy).
+     * @param user   A entidade {@link Hero} que está tentando jogar a carta.
+     * @param target O alvo da carta (pode ser null se a carta não exigir alvo).
+     * @return {@code true} se a carta foi usada com sucesso, ou {@code false} se a ação falhou.
      */
     public abstract boolean useCard(Hero user, Entity target);
 
+    /**
+     * Define se a interface do jogo precisa pedir ao jogador para selecionar um alvo
+     * inimigo antes de usar esta carta.
+     * @return {@code true} se necessitar de alvo, {@code false} caso contrário.
+     */
     public abstract boolean requiresTarget();
-    /**
-     * Retrieves the display name of the card.
-     *
-     * @return The card's name.
-     */
-    public String getName() {
-        return this.name;
-    }
 
-    /**
-     * Retrieves the energy cost required to play the card.
-     *
-     * @return The cost in energy points.
-     */
-    public int getCost() {
-        return this.cost;
-    }
-
-    /**
-     * Retrieves the descriptive text of the card's effect.
-     *
-     * @return The description string.
-     */
-    public String getDescription() {
-        return this.description;
-    }
+    public String getName() { return this.name; }
+    public int getCost() { return this.cost; }
+    public String getDescription() { return this.description; }
 }
