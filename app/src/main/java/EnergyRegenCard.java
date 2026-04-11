@@ -4,7 +4,7 @@ public class EnergyRegenCard extends Card {
     public EnergyRegenCard(String name, int cost, int regenAmount) {
         super(name, cost);
         this.regenAmount = regenAmount;
-        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " DMG:" + this.regenAmount + " CUSTO:" + this.cost;
+        this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " REG:" + this.regenAmount + " CUSTO:" + this.cost;
     }
 
     @Override

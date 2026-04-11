@@ -1,3 +1,10 @@
+/**
+ * Efeito de Status: Veneno (Debuff).
+ * <p>
+ * Danifica a entidade que o possui ao final de cada turno e, em seguida, perde
+ * uma carga (acúmulo). Inspirado na mecânica de Poison do jogo Slay the Spire.
+ * </p>
+ */
 public class PoisonEffect extends StatusEffect {
 
     public PoisonEffect(String name, Entity owner, int amount) {
@@ -6,18 +13,14 @@ public class PoisonEffect extends StatusEffect {
         this.amount = amount;
     }
 
-
     @Override
     public void beNotified(Action action, GameData data) {
-    // Como o slay the spire, quando acaba o turno aplica o dano e depois diminui 1 stack (amount)
+        // Causa dano contínuo apenas no momento em que o turno é encerrado
         if (action.getActionType() == Action.ActionType.SKIP) {
             if (this.amount > 0) {
-
                 this.owner.receiveDamage(this.amount);
                 this.amount--;
             }
         }
     }
 }
-
-

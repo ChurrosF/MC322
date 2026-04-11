@@ -329,7 +329,7 @@ public class Renderer {
         if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
         }
-        else if (!gameData.getEnemies().isEmpty()) {
+        else if (gameData.getEnemies().isEmpty()) {
             System.out.println("\n--- VOCÊ GANHOU! ---\n");
         }
         else {
