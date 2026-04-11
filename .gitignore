@@ -1,6 +1,5 @@
 # Java compiled output
 *.class
-*.jar
 # IntelliJ IDEA
 .idea /
 *.iml
