@@ -25,7 +25,7 @@ O jogo é baseado em turnos, onde você deve derrotar o formidável Grande Rato,
 
 + Vocẽ recebe um deck com 20 cartas, recebendo 5 cartas cada turno para sua hand, que ao final de sua jogada são descartadas.
 + Escolha uma carta dos indices de 1 até 5 por meio do teclado. Existem várias cartas no jogo cada uma com sua função! No final desse README existe uma descrição do que cada um dos indicadores das cartas representa.
-+ Sempre que escolher uma carta que ataque um inimigo, escolha qual inimigo atacar, aperte 1 ou 2 no teclado.
++ Sempre que escolher uma carta que ataque um inimigo, escolha qual inimigo atacar, aperte 1 ou 2 no teclado. Caso desiste de usar a carta que tem alvo, apenas aperte a tecla ESC para voltar atrás.
 + Para recuperar sua energia e acabar seu turno aperte a tecla "P" + Enter 
 
 Patch Notes Version 0.1.4
