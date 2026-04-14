@@ -4,6 +4,7 @@ import Core.GameState;
 import Core.InputSystem;
 import Core.Renderer;
 import Entities.Action;
+import Map.Map;
 
 /**
  * The main entry point for the "Slay the Tuff Rat" application.
@@ -31,6 +32,8 @@ public class App {
      */
     public static void main(String[] args) throws Exception {
         // Initialization of Core Subsystems
+        Map map = new Map(5, 3, 2);
+        map.printMap();
         GameManager gameManager = new GameManager();
         Renderer renderer = new Renderer();
         InputSystem inputSystem = new InputSystem();
