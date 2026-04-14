@@ -6,8 +6,8 @@ import Cards.Card;
 import Cards.EffectCard;
 import Effects.StatusEffect;
 import Entities.Action;
-import Entities.Entity;
 import Entities.Enemy;
+import Entities.Entity;
 import Entities.Hero;
 
 /**
@@ -195,12 +195,22 @@ public class GameManager {
      */
     private void handleEffectCards(Card card) {
         if (!(card instanceof EffectCard effectCard)) return;
-
+        
         StatusEffect effect = effectCard.getEffect();
-
-        if (notSubscribed(effect)) {
-            subscribe(effect);
+        Entity target = effect.getOwner();
+        
+        boolean alreadySubscribed = false;
+        for (StatusEffect activeEffect : effectSubscribers) {
+            if (activeEffect.getClass() == effect.getClass() && activeEffect.getOwner() == target) {
+                alreadySubscribed = true;
+                break;
+            }
         }
+
+        if (!alreadySubscribed) {
+            subscribe(effect); //
+        }
+
     }
 
 

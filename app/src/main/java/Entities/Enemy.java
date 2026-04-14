@@ -83,7 +83,17 @@ public class Enemy extends Entity {
     public void poisonHero(Hero hero, ArrayList<StatusEffect> effectSubscribers) {
         PoisonEffect poisonEffect = new PoisonEffect("Veneno", hero, this.poisonAmount);
         hero.applyEffect(hero, poisonEffect, this.poisonAmount);
-        effectSubscribers.add(poisonEffect);
+        boolean alreadyInGlobalList = false;
+        for (StatusEffect activeEffect : effectSubscribers) {
+        if (activeEffect instanceof PoisonEffect && activeEffect.getOwner() == hero) {
+            alreadyInGlobalList = true;
+            break;
+        }
+    }
+
+        if (!alreadyInGlobalList) {
+            effectSubscribers.add(poisonEffect);
+        }
     }
 
     /** Gera escudo para a própria entidade. */
