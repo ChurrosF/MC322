@@ -1,9 +1,15 @@
+package Core;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
 import com.googlecode.lanterna.screen.Screen;
+
+import Cards.Card;
+import Effects.StatusEffect;
+import Entities.Enemy;
+import Entities.EnemyAction;
 
 
 /**

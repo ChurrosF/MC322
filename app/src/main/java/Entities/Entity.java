@@ -1,4 +1,7 @@
+package Entities;
 import java.util.ArrayList;
+
+import Effects.StatusEffect;
 
 /**
  * Classe base abstrata para todas as entidades vivas no jogo (Herói e Inimigos).

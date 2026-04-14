@@ -1,3 +1,8 @@
+package Cards;
+
+import Entities.Entity;
+import Entities.Hero;
+
 /**
  * The abstract base class for all playable cards in the game.
  * <p>

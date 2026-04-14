@@ -1,3 +1,9 @@
+package Cards;
+import Core.RendererConfig;
+import Effects.ManaEffect;
+import Entities.Entity;
+import Entities.Hero;
+
 /**
  * Representa uma carta que concede bônus de regeneração de mana (energia) ao jogador.
  * <p>
@@ -50,10 +56,7 @@ public class ManaCard extends EffectCard {
             return false;
         }
 
-        // Desconta o custo de energia da carta
         user.setEnergy(user_energy - this.cost);
-
-        // Aplica o efeito no alvo
         target.applyEffect(target, manaEffect, amountToAdd);
 
         return true;

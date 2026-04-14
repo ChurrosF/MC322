@@ -1,3 +1,10 @@
+import Core.GameData;
+import Core.GameManager;
+import Core.GameState;
+import Core.InputSystem;
+import Core.Renderer;
+import Entities.Action;
+
 /**
  * The main entry point for the "Slay the Tuff Rat" application.
  * <p>

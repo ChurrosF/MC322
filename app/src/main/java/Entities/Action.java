@@ -1,3 +1,4 @@
+package Entities;
 /**
  * Represents a discrete action taken by the player during their turn.
  * <p>

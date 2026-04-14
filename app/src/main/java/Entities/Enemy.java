@@ -1,5 +1,9 @@
+package Entities;
 import java.util.ArrayList;
 import java.util.Random;
+
+import Effects.PoisonEffect;
+import Effects.StatusEffect;
 
 /**
  * Representa um inimigo controlado pelo jogo (IA).

@@ -1,3 +1,7 @@
+package Cards;
+
+import Effects.StatusEffect;
+
 public abstract class EffectCard extends Card {
     protected StatusEffect effect;
 

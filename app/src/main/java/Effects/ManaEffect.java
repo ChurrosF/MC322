@@ -1,3 +1,10 @@
+package Effects;
+
+import Core.GameData;
+import Entities.Action;
+import Entities.Entity;
+import Entities.Hero;
+
 /**
  * Efeito de status que fornece energia extra ao dono no início de um novo turno.
  * <p>
@@ -32,14 +39,13 @@ public class ManaEffect extends StatusEffect {
     @Override
     public void beNotified(Action action, GameData data) {
         if (action.getActionType() == Action.ActionType.SKIP) {
-            if (this.amount > 0) {
-                
-                // O próprio efeito injeta a mana extra no dono
+
+            if (this.amount > 0) {    
                 if (this.owner instanceof Hero hero) {
                     hero.setEnergy(hero.getEnergy() + 2);
                 }
                 
-                this.amount--; // Reduz um turno de duração
+                this.amount--;
             }
         }
     }

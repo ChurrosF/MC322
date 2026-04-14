@@ -1,7 +1,18 @@
+package Core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
+
+import Cards.Card;
+import Cards.DamageCard;
+import Cards.EnergyRegenCard;
+import Cards.ManaCard;
+import Cards.PoisonCard;
+import Cards.ShieldCard;
+import Cards.StrengthCard;
+import Entities.Enemy;
+import Entities.Hero;
 
 /**
  * Repositório central para os dados e estado da partida de "Slay the Tuff Rat".
@@ -51,13 +62,13 @@ public final class GameData {
      * a primeira mão de cartas para o herói.
      */
     public GameData() {
-        this.enemies.add(new Enemy("Thug Bat", 20, 0, new int[] {3, 7}));
-        this.enemies.add(new Enemy("Tuff Bat", 10, 0, new int[] {3, 6}));
+        this.enemies.add(new Enemy("Thug Spider", 20, 0, new int[] {3, 7}));
+        this.enemies.add(new Enemy("Tuff Spider", 15, 0, new int[] {3, 6}));
         generateRandomBuyPile();
         buyRoundCards();
     }
 
-    // ... Getters básicos
+    // ... Getters e Setters básicos
     public Hero getHero() { return this.hero; }
     public ArrayList<Integer> getPlayerHand() { return this.playerHand; }
     public ArrayList<Enemy> getEnemies() { return enemies; }

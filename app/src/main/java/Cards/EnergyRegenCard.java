@@ -1,3 +1,11 @@
+package Cards;
+
+
+import Core.RendererConfig;
+import Entities.Entity;
+import Entities.Hero;
+
+
 public class EnergyRegenCard extends Card {
     private final int regenAmount;
 

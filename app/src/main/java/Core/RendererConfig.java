@@ -1,3 +1,4 @@
+package Core;
 public class RendererConfig {
     // ==========================================
     // UI LAYOUT COORDINATES [Line, Column]

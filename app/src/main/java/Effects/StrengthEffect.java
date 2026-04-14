@@ -1,3 +1,11 @@
+package Effects;
+
+import Cards.Card;
+import Cards.DamageCard;
+import Core.GameData;
+import Entities.Action;
+import Entities.Entity;
+
 /**
  * Efeito de Status: Força (Buff).
  * <p>

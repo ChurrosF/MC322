@@ -1,3 +1,9 @@
+package Effects;
+
+import Core.GameData;
+import Entities.Action;
+import Entities.Entity;
+
 /**
  * A classe base abstrata para todos os Efeitos de Status (Buffs e Debuffs).
  * <p>

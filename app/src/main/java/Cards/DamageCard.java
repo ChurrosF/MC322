@@ -1,3 +1,9 @@
+package Cards;
+
+import Core.RendererConfig;
+import Entities.Entity;
+import Entities.Hero;
+
 public class DamageCard extends Card {
     private int baseDamage;
     private int finalDamage;

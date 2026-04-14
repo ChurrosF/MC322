@@ -1,3 +1,8 @@
+package Effects;
+import Core.GameData;
+import Entities.Action;
+import Entities.Entity;
+
 /**
  * Efeito de Status: Veneno (Debuff).
  * <p>

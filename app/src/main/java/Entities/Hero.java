@@ -1,3 +1,5 @@
+package Entities;
+
 /**
  * Representa o personagem controlado pelo jogador.
  * Herda de {@link Entity} e adiciona a mecânica de pontos de energia para o uso de cartas,

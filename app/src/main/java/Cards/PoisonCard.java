@@ -1,3 +1,10 @@
+package Cards;
+
+import Core.RendererConfig;
+import Effects.PoisonEffect;
+import Entities.Entity;
+import Entities.Hero;
+
 public class PoisonCard extends EffectCard {
     private final int amountToAdd;
 

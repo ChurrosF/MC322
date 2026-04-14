@@ -1,3 +1,4 @@
+package Core;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public class TerminalManager {
      */
     public TerminalManager() {
         try {
-            InputStream fontData = getClass().getResourceAsStream("DejaVuSansMono.ttf");
+            InputStream fontData = getClass().getResourceAsStream("../DejaVuSansMono.ttf");
             Font font = Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont(Font.PLAIN, 18f);
 
             SwingTerminalFontConfiguration fontConfiguration = SwingTerminalFontConfiguration.newInstance(font);
@@ -65,7 +66,7 @@ public class TerminalManager {
             this.textGraphics = screen.newTextGraphics();
         }
         catch (FontFormatException | IOException e) {
-            System.err.println("(TerminalManager) Error when creating screen: " + e);
+            System.err.println("(TerminalManager) Error when creating screen. " + e);
         }
     }
 

@@ -1,3 +1,10 @@
+package Cards;
+
+import Core.RendererConfig;
+import Effects.StrengthEffect;
+import Entities.Entity;
+import Entities.Hero;
+
 public class StrengthCard extends EffectCard {
     private final int amountToAdd;
 

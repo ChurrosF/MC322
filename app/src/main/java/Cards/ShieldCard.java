@@ -1,5 +1,12 @@
+package Cards;
+
+import Core.RendererConfig;
+import Entities.Entity;
+import Entities.Hero;
+
+
 public class ShieldCard extends Card {
-    private int shield;
+    private final int shield;
 
 
     public ShieldCard(String name, int cost, int shield) {

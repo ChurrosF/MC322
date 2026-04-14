@@ -1,4 +1,14 @@
+package Core;
+
 import java.util.ArrayList;
+
+import Cards.Card;
+import Cards.EffectCard;
+import Effects.StatusEffect;
+import Entities.Action;
+import Entities.Entity;
+import Entities.Enemy;
+import Entities.Hero;
 
 /**
  * Controlador principal da lógica do jogo (Game Loop e Regras de Batalha).
@@ -37,7 +47,7 @@ public class GameManager {
     public void update(Action action) {
         Action.ActionType actionType = action.getActionType();
 
-        // Reseta a energia base antes de notificar os efeitos
+    
         if (actionType == Action.ActionType.SKIP) {
             this.hero.setEnergy(3);
         }

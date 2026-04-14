@@ -1,8 +1,11 @@
+package Core;
 import java.io.IOException;
 
 import com.googlecode.lanterna.input.KeyStroke;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
+
+import Entities.Action;
 
 /**
  * Sistema responsável por capturar os comandos físicos do teclado e traduzi-los
