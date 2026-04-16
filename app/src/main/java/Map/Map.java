@@ -1,5 +1,7 @@
 package Map;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public final class Map {
@@ -7,7 +9,7 @@ public final class Map {
     private final int maxWidth;
     private final int maxStartRooms;
     private final Room[][] floors;
-    private final Room[] startRooms;
+    private final ArrayList<Room> startRooms;
     private Room bossRoom;
 
 
@@ -15,10 +17,9 @@ public final class Map {
         this.height = height;
         this.maxWidth = maxWidth;
         this.maxStartRooms = maxStartRooms;
-        this.floors = new Room[height][maxWidth];
-        this.startRooms = new Room[maxStartRooms];
-        generateRandomStartFloor();
-        generateMap(height);
+        this.floors = new Room[height][maxWidth]; 
+        this.startRooms = new ArrayList<>();
+        generateMap();
     }
 
 
@@ -37,85 +38,76 @@ public final class Map {
     }
 
 
-    public void generateMap(int height) {
-        for (Room room: this.startRooms) {
-            generateRandomPath(room);
-        }
-    }
-
-
-    public void generateRandomStartFloor() {
+    public void generateMap() {
         Random random = new Random();
+
         for (int i = 0; i < maxStartRooms; i++) {
-            int randomStartRoomIndex = random.nextInt(maxWidth);
-            Room newStartRoom = new Room(1, randomStartRoomIndex);
-            this.startRooms[i] = newStartRoom;
-            this.floors[1][randomStartRoomIndex] = newStartRoom;
+            int randomStartPosition = random.nextInt(maxWidth);
+            Room newStartRoom = new Room(0, randomStartPosition);
+            this.startRooms.add(newStartRoom); 
+            this.floors[0][randomStartPosition] = newStartRoom;
         }
-    }
 
+        Room curRoom;
 
-    public void generateRandomPath(Room curRoom) {
-        Random random = new Random();
-        Room newRoom;
+        for (Room startRoom : this.startRooms) {
 
-        if (curRoom.getCurrentFloor() == this.height) {
-            return;
-        }
-        
-        int[] possibleSpots = new int[3];
-        for (int i = 0; i < 3; i++) {
-            Room possibleRoom = new Room(curRoom.getCurrentFloor() + 1, curRoom.getFloorPosition() - 1 + i);
-            possibleSpots[i] = 0;
-            if (!isPathCrossing(curRoom, possibleRoom)) {
-                possibleSpots[i] = i;
+            curRoom = startRoom;
+            
+            for (int i = 1; i < this.height; i++) {
+                ArrayList<Integer> possibleDirections = new ArrayList<>(List.of(-1, 0, 1));
+
+                int curRoomPosition = curRoom.getFloorPosition();
+
+                if (curRoomPosition - 1 < 0 || checkLeftCross(curRoom)) {possibleDirections.remove(0);}
+                else if (curRoomPosition + 1 >= maxWidth || checkRightCross(curRoom)) {possibleDirections.remove(2);}
+
+                Integer step = possibleDirections.get(random.nextInt(possibleDirections.size()));
+                
+                if (this.floors[i][curRoomPosition + step] == null) {
+                    Room nextRoom = new Room(i, curRoomPosition + step);
+                    this.floors[i][curRoomPosition + step] = nextRoom;
+                    curRoom.getNextRooms().set(step + 1, nextRoom);
+                }
+                else {
+                    curRoom.getNextRooms().set(step + 1, this.floors[i][curRoomPosition + step]);
+                }
+
+                curRoom = this.floors[i][curRoomPosition + step];
             }
         }
+    }
 
-        int spot = possibleSpots[random.nextInt(possibleSpots.length)];
-        curRoom.insert(curRoom, spot);
+    
+    private boolean checkLeftCross(Room room) {
+        int curRoomPosition = room.getFloorPosition();
+        int curRoomHeight = room.getCurrentFloor();
 
-        newRoom = (Room) curRoom.getChildAt(spot);
-        int roomIndex = curRoom.getFloorPosition() - 1 + spot;
-        this.floors[curRoom.getCurrentFloor() + 1][roomIndex] = newRoom; 
-        generateRandomPath(newRoom);
+        if (curRoomPosition - 1 < 0) {
+            return false;
+        }
+
+        if (floors[curRoomHeight][curRoomPosition - 1] == null) {
+            return false;
+        }
+
+        return floors[curRoomHeight][curRoomPosition - 1].hasRightChild();
     }
 
 
-    private boolean isPathCrossingRL(Room room1, Room room2) {
-        if (!room1.getLeftChild().isRoomEqual(room2)) {
-            return false;            
+    private boolean checkRightCross(Room room) {
+        int curRoomPosition = room.getFloorPosition();
+        int curRoomHeight = room.getCurrentFloor();
+
+        if (curRoomPosition + 1 >= maxWidth) {
+            return false;
         }
 
-        Room bottomLeftRoom = this.floors[room1.getCurrentFloor()][room1.getFloorPosition() - 1];
-        Room upperRightRoom = this.floors[room2.getCurrentFloor()][room2.getFloorPosition() + 1];
-        return bottomLeftRoom.getRightChild().isRoomEqual(upperRightRoom);
-    }
-
-
-    private boolean isPathCrossingLR(Room room1, Room room2) {
-        if (!room1.getRightChild().isRoomEqual(room2)) {
-            return false;            
-        }
-        
-        Room bottomRightRoom = this.floors[room1.getCurrentFloor()][room1.getFloorPosition() + 1];
-        Room upperLeftRoom = this.floors[room2.getCurrentFloor()][room2.getFloorPosition() - 1];
-
-        if ((bottomRightRoom == null) || (upperLeftRoom == null)) {
-            return true;
+        if (floors[curRoomHeight][curRoomPosition + 1] == null) {
+            return false;
         }
 
-        return bottomRightRoom.getLeftChild().isRoomEqual(upperLeftRoom);
-    }
-
-
-    private boolean isPathCrossing(Room room1, Room room2) {
-        if (room1.getFloorPosition() == room1.getFloorPosition() - 1) {
-            return isPathCrossingRL(room1, room2);
-        }
-        else {
-            return isPathCrossingLR(room1, room2);
-        }
+        return floors[curRoomHeight][curRoomPosition + 1].hasLeftChild();
     }
 
 
@@ -125,15 +117,12 @@ public final class Map {
 
 
     public void printMap() {
-        for (int i = 0; i < this.height; i++) {
-            for (int j = 0; j < this.maxWidth; j++) {
-                if (this.floors[i][j] != null) {
-                    System.out.println("a");
-                }
-                else {
-                    System.out.println(" ");
-                }
+        for (int i = height - 1; i >= 0; i--) {
+            for (int j = 0; j < maxWidth; j++) {
+                System.out.print(this.floors[i][j] != null ? "[R]" : "   ");
             }
+            System.out.println();
         }
     }
 }
+

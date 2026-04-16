@@ -10,6 +10,7 @@ import Cards.Card;
 import Effects.StatusEffect;
 import Entities.Enemy;
 import Entities.EnemyAction;
+import States.StateType;
 
 
 /**
@@ -307,6 +308,7 @@ public class Renderer {
      * @param gameData The snapshot of the current game state to render.
      */
     private void placeBattleScreen(GameData gameData) {
+        placeBorders();
         placeHeroSprite(gameData, HERO_POSITION);
         placeEnemies(gameData, ENEMIES_POSITION);
         placeHeroInfo(gameData);
@@ -314,8 +316,13 @@ public class Renderer {
     }
 
 
-    private void placeContextBar(GameState state) {
-        if (state == GameState.CHOOSING_CARD) {
+    private void placeMapScreen(GameData gameData) {
+        
+    }
+
+
+    private void placeContextBar(StateType state) {
+        if (state == StateType.BATTLE_CARD) {
             placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
         }
         else {
@@ -330,7 +337,7 @@ public class Renderer {
      *
      * @param gameData The game state containing the final health metrics.
      */
-    private void drawEndScreen(GameData gameData) {
+    private void printEndScreen(GameData gameData) {
         // Directly prints end screen
         if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
@@ -350,20 +357,33 @@ public class Renderer {
      *
      * @param gameData The updated game state to be drawn on the screen.
      */
-    public void render(GameData gameData, GameState state) {
+    public void render(GameData gameData, StateType state) {
         try {
             screen.clear();
             screen.setCursorPosition(null);
-            placeBorders();
-            placeBattleScreen(gameData);
+            
+            
+            switch (state) {
+                case StateType.MAP -> placeMapScreen(gameData);
+                default -> placeBattleScreen(gameData);
+            }
+            
             placeContextBar(state);
             screen.refresh();
+
             if (gameData.isBattleOver()) {
-                drawEndScreen(gameData);
-                screen.close();
+                try (screen) {
+                    printEndScreen(gameData);
+                }
             }  
         }
         catch (IOException e) {
+            System.err.println("(Renderer) Erro na função render - " + e);
         }
+    }
+
+
+    private void placeMapScreen(GameData gameData) {
+       
     }
 }

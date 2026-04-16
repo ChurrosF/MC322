@@ -6,9 +6,10 @@ import Cards.Card;
 import Cards.EffectCard;
 import Effects.StatusEffect;
 import Entities.Action;
-import Entities.Entity;
 import Entities.Enemy;
+import Entities.Entity;
 import Entities.Hero;
+import States.StateType;
 
 /**
  * Controlador principal da lógica do jogo (Game Loop e Regras de Batalha).
@@ -33,7 +34,7 @@ public class GameManager {
     private final ArrayList<Integer> player_hand = data.getPlayerHand();
     
     /** O estado atual da interface/máquina de estados do jogo. */
-    private GameState state = GameState.CHOOSING_CARD;
+    private StateType state = StateType.BATTLE_CARD;
     
     /** Flag que indica se a batalha atual chegou ao fim. */
     private boolean gameEnded = false;
@@ -63,7 +64,7 @@ public class GameManager {
         switch(actionType) {
             case CHOOSE_CARD -> handleCardChoose(action);
             case CHOOSE_TARGET -> handleTargetChoose(action);
-            case BACK -> this.state = GameState.CHOOSING_CARD;
+            case BACK -> this.state = StateType.BATTLE_CARD;
             case SKIP -> turnSkip();
             case QUIT -> this.data.setBattleOver(true);
             case INVALID -> this.data.setInvalidAction(true);
@@ -144,7 +145,7 @@ public class GameManager {
         
         // Se a carta precisar de um alvo, muda o estado do jogo para esperar a escolha
         if (card.requiresTarget()) {
-            this.state = GameState.TARGETING;
+            this.state = StateType.BATTLE_TARGETING;
             return;
         }
 
@@ -168,7 +169,7 @@ public class GameManager {
         Enemy target = data.getEnemies().get(targetIndex);
 
         handleCardUse(action.getCardUsedIndex(), target);
-        this.state = GameState.CHOOSING_CARD; // Retorna ao estado normal
+        this.state = StateType.BATTLE_CARD; // Retorna ao estado normal
         this.data.addBattleRound();
     }
 
@@ -312,9 +313,14 @@ public class GameManager {
 
     /**
      * Recupera o estado atual do sistema de inputs/ações (ex: selecionando carta vs. alvo).
-     * * @return O {@link GameState} atual.
+     * * @return O {@link StateType} atual.
      */
-    public GameState getState() {
+    public StateType getState() {
         return state;
+    }
+
+
+    public void setState(GameState state) {
+        this.state = state;
     }
 }

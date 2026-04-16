@@ -44,7 +44,10 @@ public final class GameData {
 
     private final int buyPileSize = 20;
     private final int handSize = 5;
-    
+
+    private int heroCurrentFloor;
+    private int heroCurrentFloorPosition;
+
     /** Array com todas as instâncias únicas de cartas (Flyweight). */
     private Card[] possible_cards = {lightAttack, heavyAttack, superHeavyAttack, partialDefense, totalDefense, poison, strength, energyRegen, manaCard};
 
@@ -62,6 +65,7 @@ public final class GameData {
      * a primeira mão de cartas para o herói.
      */
     public GameData() {
+        this.heroCurrentFloor = 0;
         this.enemies.add(new Enemy("Thug Spider", 20, 0, new int[] {3, 7}));
         this.enemies.add(new Enemy("Tuff Spider", 15, 0, new int[] {3, 6}));
         generateRandomBuyPile();
@@ -70,17 +74,27 @@ public final class GameData {
 
     // ... Getters e Setters básicos
     public Hero getHero() { return this.hero; }
+    
     public ArrayList<Integer> getPlayerHand() { return this.playerHand; }
     public ArrayList<Enemy> getEnemies() { return enemies; }
-    public ShieldCard getShieldCard() { return this.partialDefense; }
+
     public boolean isBattleOver() { return this.battleOver; }
     public void setBattleOver(boolean gameOver) { this.battleOver = gameOver; }
+
     public int getBattleRounds() { return this.battleRounds; }
     public void addBattleRound() { this.battleRounds += 1; }
+
     public Card[] getPossibleCards() { return possible_cards; }
     public void setPossibleCards(Card[] possible_cards) { this.possible_cards = possible_cards; }
+
     public Stack<Integer> getBuyPile() { return this.buyPile; }
     public Stack<Integer> getDiscardPile() { return this.discardPile; }
+
+    public int getHeroCurrentFloor() { return heroCurrentFloor; }
+    public void setHeroCurrentFloor(int heroCurrentFloor) { this.heroCurrentFloor = heroCurrentFloor; }
+
+    public int getHeroCurrentFloorPosition() { return heroCurrentFloorPosition; }
+    public void setHeroCurrentFloorPosition(int heroCurrentFloorPosition) { this.heroCurrentFloorPosition = heroCurrentFloorPosition; }
     
     /** @return {@code true} se o jogador tentou realizar uma ação bloqueada/inválida. */
     public boolean isActionInvalid() { return invalidAction; }

@@ -6,6 +6,7 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 
 import Entities.Action;
+import States.StateType;
 
 /**
  * Sistema responsável por capturar os comandos físicos do teclado e traduzi-los
@@ -19,15 +20,15 @@ public class InputSystem {
      * Bloqueia o jogo e aguarda que o jogador pressione uma tecla. Avalia o input
      * com base no estado atual do jogo (se o utilizador está a selecionar uma carta ou um alvo).
      *
-     * @param state O estado atual da interface (ex: {@link GameState#CHOOSING_CARD}).
+     * @param state O estado atual da interface (ex: {@link StateType#BATTLE_CARD}).
      * @return Um objeto {@link Action} encapsulando a intenção validada do jogador.
      */
-    public Action readInput(GameState state) {
+    public Action readInput(StateType state) {
         try { 
             KeyStroke key = screen.readInput();
             switch (state) {
-                case GameState.CHOOSING_CARD -> CardChooseAction(key);
-                case GameState.TARGETING -> TargetChooseAction(key);
+                case StateType.BATTLE_CARD -> CardChooseAction(key);
+                case StateType.BATTLE_TARGETING -> TargetChooseAction(key);
             }
         }
         catch (IOException e){

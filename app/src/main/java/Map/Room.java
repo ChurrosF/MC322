@@ -1,14 +1,23 @@
 package Map;
 
-import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-public class Room extends DefaultMutableTreeNode {
+import Entities.Enemy;
+
+public class Room {
     private int currentFloor;
     private int floorPosition;
+    private boolean visited;
+    private final ArrayList<Room> nextRooms;
+    private final ArrayList<Enemy> enemies = new ArrayList<>();
 
     public Room(int currentFloor, int floorPosition) {
         this.currentFloor = currentFloor;
         this.floorPosition = floorPosition;
+        this.visited = false;
+        this.nextRooms = new ArrayList<>(Arrays.asList(null, null, null));
     }
 
 
@@ -26,30 +35,32 @@ public class Room extends DefaultMutableTreeNode {
         return floorPosition;
     }
 
-
+    
     public void setFloorPosition(int floorPosition) {
         this.floorPosition = floorPosition;
     }
-
-
-    public Room getLeftChild() {
-       Room room = (Room) this.getChildAt(0);
-       return room;
+    
+    
+    public List<Room> getNextRooms() {
+        return nextRooms;
     }
 
 
-    public Room getCenterChild() {
-        Room room = (Room) this.getChildAt(1);
-        return room;
+    public boolean hasLeftChild() {
+        return (this.nextRooms.get(0) != null);
     }
 
 
-    public Room getRightChild() {
-        Room room = (Room) this.getChildAt(2);
-        return room;
+    public boolean hasCenterChild() {
+        return (this.nextRooms.get(1) != null);
     }
 
 
+    public boolean hasRightChild() {
+        return (this.nextRooms.get(2) != null);
+    }
+    
+    
     public boolean isRoomEqual(Room room) {
         return this.currentFloor == room.getCurrentFloor() && this.floorPosition == room.getFloorPosition();
     }
