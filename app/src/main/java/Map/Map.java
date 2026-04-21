@@ -1,8 +1,11 @@
 package Map;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
+
+import Entities.Enemy;
 
 public final class Map {
     private final int height;
@@ -19,6 +22,7 @@ public final class Map {
         this.maxStartRooms = maxStartRooms;
         this.floors = new Room[height][maxWidth]; 
         this.startRooms = new ArrayList<>();
+        generateBossRoom();
         generateMap();
     }
 
@@ -38,6 +42,18 @@ public final class Map {
     }
 
 
+    public ArrayList<Room> getStartRooms() {
+        return this.startRooms;
+    }
+
+
+    private void generateBossRoom() {
+        this.bossRoom = new Room(height + 1, 0);
+        this.bossRoom.getEnemies().clear();
+        this.bossRoom.getEnemies().add(new Enemy("Super Tuff Bat", 10, 2, new int[] {3, 8}));
+    }
+
+
     public void generateMap() {
         Random random = new Random();
 
@@ -48,11 +64,13 @@ public final class Map {
             this.floors[0][randomStartPosition] = newStartRoom;
         }
 
+
+        this.startRooms.sort(Comparator.comparing(Room::getFloorPosition));
         Room curRoom;
 
         for (Room startRoom : this.startRooms) {
 
-            curRoom = startRoom;
+            curRoom = this.floors[startRoom.getCurrentFloor()][startRoom.getFloorPosition()];
             
             for (int i = 1; i < this.height; i++) {
                 ArrayList<Integer> possibleDirections = new ArrayList<>(List.of(-1, 0, 1));
@@ -60,7 +78,7 @@ public final class Map {
                 int curRoomPosition = curRoom.getFloorPosition();
 
                 if (curRoomPosition - 1 < 0 || checkLeftCross(curRoom)) {possibleDirections.remove(0);}
-                else if (curRoomPosition + 1 >= maxWidth || checkRightCross(curRoom)) {possibleDirections.remove(2);}
+                if (curRoomPosition + 1 >= maxWidth || checkRightCross(curRoom)) {possibleDirections.remove(possibleDirections.size() - 1);}
 
                 Integer step = possibleDirections.get(random.nextInt(possibleDirections.size()));
                 
@@ -114,15 +132,4 @@ public final class Map {
     public Room getBossRoom() {
         return bossRoom;
     }
-
-
-    public void printMap() {
-        for (int i = height - 1; i >= 0; i--) {
-            for (int j = 0; j < maxWidth; j++) {
-                System.out.print(this.floors[i][j] != null ? "[R]" : "   ");
-            }
-            System.out.println();
-        }
-    }
 }
-

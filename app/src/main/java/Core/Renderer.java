@@ -10,7 +10,8 @@ import Cards.Card;
 import Effects.StatusEffect;
 import Entities.Enemy;
 import Entities.EnemyAction;
-import States.StateType;
+import Map.Map;
+import Map.Room;
 
 
 /**
@@ -178,7 +179,7 @@ public class Renderer {
         placeText(new int[] {line - 7, column - 2}, enemyName + " (" + (index + 1) + ")");
         placeText(new int[] {line - 5, column - 2}, ratHpBarSprite, TextColor.ANSI.RED_BRIGHT);
         if (enemyShield > 0) {
-            placeText(new int[] {line - 5, column + 23}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
+            placeText(new int[] {line - 5, column + 22}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
         }
 
         switch (enemyAction) {
@@ -316,17 +317,145 @@ public class Renderer {
     }
 
 
+/**
+     * Tela do mapa simplificada seguindo a lógica de duplo laço for.
+     */
     private void placeMapScreen(GameData gameData) {
+        placeBorders();
+        Map map = gameData.getMap();
         
+        int currentFloor = gameData.getHeroCurrentFloor();
+        int currentPosition = gameData.getHeroCurrentFloorPosition();
+        
+        boolean mapStarted = isMapStarted(map);
+        ArrayList<Room> possibleNextRooms = getPossibleNextRooms(map, currentFloor, currentPosition, mapStarted);
+        int floorToHighlight = mapStarted ? currentFloor + 1 : 0;
+
+        int startX = (WIDTH - (map.getMaxWidth() * 6)) / 2;
+        int startY = HEIGHT - 5;
+        
+        int choiceCounter = 1;
+
+        for (int i = map.getHeight() - 1; i >= 0; i--) {
+            for (int j = 0; j < map.getMaxWidth(); j++) {
+                Room room = map.getFloors()[i][j];
+                
+                String roomSymbol = "[R]";
+                TextColor roomColor = TextColor.ANSI.WHITE;
+
+                if (room != null) {
+                    if (i == floorToHighlight && possibleNextRooms.contains(room)) {
+                        roomSymbol = "[" + choiceCounter + "]";
+                        choiceCounter++;
+                        roomColor = TextColor.ANSI.YELLOW_BRIGHT;
+                    } 
+                    else if (mapStarted && i == currentFloor && j == currentPosition) {
+                        roomSymbol = "[@]"; 
+                        roomColor = TextColor.ANSI.GREEN_BRIGHT;
+                    } 
+                    else if (room.isVisited()) {
+                        roomColor = TextColor.ANSI.GREEN;
+                    }
+                }
+
+               
+                placeRoomAndPaths(map, room, i, j, startX, startY, roomSymbol, roomColor);
+            }
+        }
+        placeBossRoom(currentFloor);
+    }
+
+    
+    private void placeRoomAndPaths(Map map, Room room, int floorY, int posJ, int startX, int startY, 
+                                   String roomSymbol, TextColor roomColor) {
+        
+        int lineY = startY - (floorY * 2);
+        int colX = startX + (posJ * 6);
+        int pathY = lineY + 1;
+
+        
+        if (room != null) {
+            placeText(new int[]{lineY, colX + 1}, roomSymbol, roomColor);
+        }
+
+     
+        if (floorY > 0) {
+            Room roomBelow = map.getFloors()[floorY - 1][posJ];
+            Room rightRoomBelow = (posJ + 1 < map.getMaxWidth()) ? map.getFloors()[floorY - 1][posJ + 1] : null;
+
+            boolean hasCenter = (roomBelow != null && roomBelow.hasCenterChild());
+            boolean hasRight = (roomBelow != null && roomBelow.hasRightChild());
+            boolean hasLeft = (rightRoomBelow != null && rightRoomBelow.hasLeftChild());
+
+
+            if (hasCenter) {
+                TextColor color = isPathVisited(roomBelow, room) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+                placeText(new int[]{pathY, colX + 2}, "|", color);
+            } 
+            
+            if (hasRight) {
+                Room target = map.getFloors()[floorY][posJ + 1];
+                TextColor color = isPathVisited(roomBelow, target) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+                placeText(new int[]{pathY, colX + 5}, "/", color);
+            } 
+            
+            if (hasLeft) {
+                TextColor color = isPathVisited(rightRoomBelow, room) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+                placeText(new int[]{pathY, colX + 5}, "\\", color);
+            }
+        }
     }
 
 
-    private void placeContextBar(StateType state) {
-        if (state == StateType.BATTLE_CARD) {
-            placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
+    private void placeBossRoom(int currentFloor) {
+        TextColor color = currentFloor == 6 ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        placeText(new int[] {2, WIDTH / 2}, "[BOSS]", color);
+    }
+
+
+    private boolean isMapStarted(Map map) {
+        for (Room startRoom : map.getStartRooms()) {
+            if (startRoom.isVisited()) return true;
         }
-        else {
-            placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA O ALVO ------------------");
+        return false;
+    }
+
+
+    private ArrayList<Room> getPossibleNextRooms(Map map, int curFloor, int curPos, boolean mapStarted) {
+        ArrayList<Room> nextRooms = new ArrayList<>();
+        if (!mapStarted) {
+            nextRooms.addAll(map.getStartRooms());
+        } else {
+            Room currentRoom = map.getFloors()[curFloor][curPos];
+            if (currentRoom != null) {
+                for (Room next : currentRoom.getNextRooms()) {
+                    if (next != null) nextRooms.add(next);
+                }
+            }
+        }
+        return nextRooms;
+    }
+
+
+    private boolean isPathVisited(Room from, Room to) {
+        return (from != null && from.isVisited()) && (to != null && to.isVisited());
+    }
+
+
+    private void placeContextBar(GameState state, GameData data) {
+        if (null != state) switch (state) {
+            case BATTLE_CARD -> placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
+            case BATTLE_TARGETING -> placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA O ALVO ------------------");
+            case MAP -> {
+                if (data.getHeroCurrentFloor() == 6) {
+                     placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 26}, "----- APERTE QUALQUER TECLA PARA ENTRAR NA SALA DO BOSS FINAL -----");
+                }
+                else {
+                    placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA A SALA ------------------");
+                }
+            }
+            default -> {
+            }
         }
     }
 
@@ -338,15 +467,14 @@ public class Renderer {
      * @param gameData The game state containing the final health metrics.
      */
     private void printEndScreen(GameData gameData) {
-        // Directly prints end screen
-        if (!gameData.getHero().isAlive()) {
+        if (gameData.isGameClosed()) {
+            System.out.println("\n--- JOGO ENCERRADO ---\n");
+        }
+        else if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
         }
         else if (gameData.getEnemies().isEmpty()) {
             System.out.println("\n--- VOCÊ GANHOU! ---\n");
-        }
-        else {
-            System.out.println("\n--- JOGO ENCERRADO ---\n");
         }
     }
 
@@ -357,33 +485,32 @@ public class Renderer {
      *
      * @param gameData The updated game state to be drawn on the screen.
      */
-    public void render(GameData gameData, StateType state) {
+    public void render(GameData gameData, GameState state) {
+        if (gameData.isGameOver()) {
+            try {
+                screen.close();
+                printEndScreen(gameData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
         try {
             screen.clear();
             screen.setCursorPosition(null);
             
             
             switch (state) {
-                case StateType.MAP -> placeMapScreen(gameData);
+                case GameState.MAP -> placeMapScreen(gameData);
                 default -> placeBattleScreen(gameData);
             }
             
-            placeContextBar(state);
+            placeContextBar(state, gameData);
             screen.refresh();
-
-            if (gameData.isBattleOver()) {
-                try (screen) {
-                    printEndScreen(gameData);
-                }
-            }  
         }
         catch (IOException e) {
             System.err.println("(Renderer) Erro na função render - " + e);
         }
-    }
-
-
-    private void placeMapScreen(GameData gameData) {
-       
     }
 }

@@ -1,6 +1,6 @@
-package States;
+package Core;
 
-public enum StateType {
+public enum GameState {
     BATTLE_CARD,
     BATTLE_TARGETING,
     MAP

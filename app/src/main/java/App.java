@@ -1,10 +1,9 @@
 import Core.GameData;
 import Core.GameManager;
+import Core.GameState;
 import Core.InputSystem;
 import Core.Renderer;
 import Entities.Action;
-import Map.Map;
-import States.StateType;
 
 /**
  * The main entry point for the "Slay the Tuff Rat" application.
@@ -32,17 +31,15 @@ public class App {
      */
     public static void main(String[] args) throws Exception {
         // Initialization of Core Subsystems
-        Map map = new Map(5, 15, 3);
-        map.printMap();
         GameManager gameManager = new GameManager();
         Renderer renderer = new Renderer();
         InputSystem inputSystem = new InputSystem();
 
         while (true) {
             GameData data = gameManager.getGameData();
-            StateType state = gameManager.getState();
+            GameState state = gameManager.getState();
             renderer.render(data, state);
-            if (gameManager.getGameData().isBattleOver()) {
+            if (data.isGameOver()) {
                 break;
             }
             Action action = inputSystem.readInput(state);
