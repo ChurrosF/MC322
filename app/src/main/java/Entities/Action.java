@@ -20,6 +20,8 @@ public class Action {
 
         CHOOSE_TARGET,
 
+        CHOOSE_ROOM,
+
         BACK,
         
         /** Represents the intent to end the turn early and recover energy. */
@@ -35,7 +37,7 @@ public class Action {
     /** * The index position of the chosen card in the player's hand array. 
      * Only relevant if the action_type is {@link ActionType#CARD}.
      */
-    private Integer CardHandIndex;
+    private Integer inputInt;
 
     private Integer targetIndex;
     
@@ -47,8 +49,8 @@ public class Action {
      *
      * @return The integer index representing the card's position in the hand.
      */
-    public Integer getCardUsedIndex() {
-        return CardHandIndex;
+    public Integer getInputInt() {
+        return inputInt;
     }
 
     /**
@@ -56,8 +58,8 @@ public class Action {
      *
      * @param cardHandIndex The position of the card in the hand array (e.g., 0 for the first card).
      */
-    public void setCardUsedIndex(Integer cardHandIndex) {
-        this.CardHandIndex = cardHandIndex;
+    public void setInputInt(Integer cardHandIndex) {
+        this.inputInt = cardHandIndex;
     }
 
 

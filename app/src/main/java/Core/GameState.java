@@ -1,5 +1,7 @@
 package Core;
+
 public enum GameState {
-    CHOOSING_CARD,
-    TARGETING
+    BATTLE_CARD,
+    BATTLE_TARGETING,
+    MAP
 }

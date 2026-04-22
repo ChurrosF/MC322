@@ -10,6 +10,8 @@ import Cards.Card;
 import Effects.StatusEffect;
 import Entities.Enemy;
 import Entities.EnemyAction;
+import Map.Map;
+import Map.Room;
 
 
 /**
@@ -177,7 +179,7 @@ public class Renderer {
         placeText(new int[] {line - 7, column - 2}, enemyName + " (" + (index + 1) + ")");
         placeText(new int[] {line - 5, column - 2}, ratHpBarSprite, TextColor.ANSI.RED_BRIGHT);
         if (enemyShield > 0) {
-            placeText(new int[] {line - 5, column + 23}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
+            placeText(new int[] {line - 5, column + 22}, shieldCounter, TextColor.ANSI.BLUE_BRIGHT);
         }
 
         switch (enemyAction) {
@@ -307,6 +309,7 @@ public class Renderer {
      * @param gameData The snapshot of the current game state to render.
      */
     private void placeBattleScreen(GameData gameData) {
+        placeBorders();
         placeHeroSprite(gameData, HERO_POSITION);
         placeEnemies(gameData, ENEMIES_POSITION);
         placeHeroInfo(gameData);
@@ -314,12 +317,130 @@ public class Renderer {
     }
 
 
-    private void placeContextBar(GameState state) {
-        if (state == GameState.CHOOSING_CARD) {
-            placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
+/**
+     * Tela do mapa simplificada seguindo a lógica de duplo laço for.
+     */
+    private void placeMapScreen(GameData gameData) {
+        placeBorders();
+
+        Map map = gameData.getMap();
+        int currentFloor = gameData.getHeroCurrentFloor();
+        int currentPosition = gameData.getHeroCurrentFloorPosition();
+        
+        ArrayList<Room> nextRooms = getPossibleNextRooms(map, currentFloor, currentPosition);
+        int nextFloor = currentFloor + 1;
+
+        int startX = 22 ;
+        int startY = HEIGHT - 5;
+        
+        int choiceCounter = 1;
+        
+        for (int i = map.getHeight() - 1; i >= 0; i--) {
+            for (int j = 0; j < map.getMaxWidth(); j++) {
+                Room room = map.getFloors()[i][j];
+                
+                String roomSymbol = "(R)";
+                TextColor roomColor = TextColor.ANSI.WHITE;
+
+                if (room != null) {
+                    if (i == nextFloor && nextRooms.contains(room)) {
+                        roomSymbol = "(" + choiceCounter + ")";
+                        choiceCounter++;
+                        roomColor = TextColor.ANSI.YELLOW_BRIGHT;
+                    } 
+                    else if (i == currentFloor && j == currentPosition) {
+                        roomSymbol = "(A)"; 
+                        roomColor = TextColor.ANSI.BLUE_BRIGHT;
+                    } 
+                    else if (room.isVisited()) {
+                        roomSymbol = "(V)";
+                        roomColor = TextColor.ANSI.GREEN;
+                    }
+                }
+                placeRoomAndPaths(map, room, i, j, startX, startY, roomSymbol, roomColor);
+            }
         }
-        else {
-            placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA O ALVO ------------------");
+        placeBossRoom(currentFloor);
+    }
+
+    
+    private void placeRoomAndPaths(Map map, Room room, int floor, int floorPosition, int startX, int startY, String roomSymbol, TextColor roomColor) {
+    int lineY = startY - (floor * 2);
+    int columnX = startX + (floorPosition * 6);
+
+    if (room == null) {
+        return;
+    }
+    
+    placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
+
+    int pathY = lineY - 1;
+    Room[][] floors = map.getFloors();
+
+    if (room.hasCenterChild()) {
+        Room child = floors[floor + 1][floorPosition];
+        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        placeText(new int[]{pathY, columnX + 2}, "|", color);
+    }
+    if (room.hasRightChild()) {
+        Room child = floors[floor + 1][floorPosition + 1];
+        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        placeText(new int[]{pathY, columnX + 5}, "/", color);
+    }
+    if (room.hasLeftChild()) {
+        Room child = floors[floor + 1][floorPosition - 1];
+        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        
+        placeText(new int[]{pathY, columnX - 1}, "\\", color);
+    }
+}
+
+    private void placeBossRoom(int currentFloor) {
+        TextColor color = currentFloor == 6 ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        placeText(new int[] {2, WIDTH / 2}, "[BOSS]", color);
+    }
+
+
+    private ArrayList<Room> getPossibleNextRooms(Map map, int currentFloor, int currentPosition) {
+        ArrayList<Room> nextRooms = new ArrayList<>();
+
+        if (currentFloor == -1) {
+            nextRooms.addAll(map.getStartRooms());
+            return nextRooms;
+        }
+
+        Room currentRoom = map.getFloors()[currentFloor][currentPosition];
+        if (currentRoom != null) {
+            for (Room next: currentRoom.getNextRooms()) {
+                if (next != null) {
+                    nextRooms.add(next); 
+                }
+            }
+        }
+        
+        return nextRooms;
+    }
+
+
+    private boolean isPathVisited(Room fromRoom, Room toRoom) {
+        return (fromRoom != null && fromRoom.isVisited()) && (toRoom != null && toRoom.isVisited());
+    }
+
+
+    private void placeContextBar(GameState state, GameData data) {
+        if (null != state) switch (state) {
+            case BATTLE_CARD -> placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "------------ ESPERANDO AÇÃO DO JOGADOR ------------");
+            case BATTLE_TARGETING -> placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA O ALVO ------------------");
+            case MAP -> {
+                if (data.getHeroCurrentFloor() == 6) {
+                     placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 26}, "----- APERTE QUALQUER TECLA PARA ENTRAR NA SALA DO BOSS FINAL -----");
+                }
+                else {
+                    placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA A SALA ------------------");
+                }
+            }
+            default -> {
+            }
         }
     }
 
@@ -330,16 +451,15 @@ public class Renderer {
      *
      * @param gameData The game state containing the final health metrics.
      */
-    private void drawEndScreen(GameData gameData) {
-        // Directly prints end screen
-        if (!gameData.getHero().isAlive()) {
+    private void printEndScreen(GameData gameData) {
+        if (gameData.isGameClosed()) {
+            System.out.println("\n--- JOGO ENCERRADO ---\n");
+        }
+        else if (!gameData.getHero().isAlive()) {
             System.out.println("\n--- VOCÊ FOI DERROTADO... ---\n");
         }
         else if (gameData.getEnemies().isEmpty()) {
             System.out.println("\n--- VOCÊ GANHOU! ---\n");
-        }
-        else {
-            System.out.println("\n--- JOGO ENCERRADO ---\n");
         }
     }
 
@@ -351,19 +471,31 @@ public class Renderer {
      * @param gameData The updated game state to be drawn on the screen.
      */
     public void render(GameData gameData, GameState state) {
+        if (gameData.isGameOver()) {
+            try {
+                screen.close();
+                printEndScreen(gameData);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
         try {
             screen.clear();
             screen.setCursorPosition(null);
-            placeBorders();
-            placeBattleScreen(gameData);
-            placeContextBar(state);
+            
+            
+            switch (state) {
+                case GameState.MAP -> placeMapScreen(gameData);
+                default -> placeBattleScreen(gameData);
+            }
+            
+            placeContextBar(state, gameData);
             screen.refresh();
-            if (gameData.isBattleOver()) {
-                drawEndScreen(gameData);
-                screen.close();
-            }  
         }
         catch (IOException e) {
+            System.err.println("(Renderer) Erro na função render - " + e);
         }
     }
 }
