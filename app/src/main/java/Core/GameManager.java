@@ -45,13 +45,15 @@ public class GameManager {
 
 
    public void updateMap(Action action) {
-    if (data.getHeroCurrentFloor() == 6) {
-                    data.setEnemies(data.getMap().getBossRoom().getEnemies());
-                    data.setHeroCurrentFloor(7);
-                    this.state = GameState.BATTLE_CARD;
-                }
 
-                
+    if (data.getHeroCurrentFloor() == 6) {
+        data.setEnemies(data.getMap().getBossRoom().getEnemies());
+        data.setHeroCurrentFloor(7);
+        this.state = GameState.BATTLE_CARD;
+        return;
+    }
+
+
     if (action.getActionType() != Action.ActionType.CHOOSE_ROOM) {
         switch(action.getActionType()) {
             case QUIT -> {
@@ -79,7 +81,7 @@ public class GameManager {
         data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
         data.setEnemies(nextRoom.getEnemies());
         this.state = GameState.BATTLE_CARD;
-        nextRoom.setVisited(true);
+        data.getMap().getFloors()[nextRoom.getCurrentFloor()][nextRoom.getFloorPosition()].setVisited(true);
         return;
     }
 

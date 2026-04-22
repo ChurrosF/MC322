@@ -8,6 +8,8 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+
+    id("jacoco")
 }
 
 repositories {
@@ -17,6 +19,7 @@ repositories {
 
 dependencies {
     // Use JUnit Jupiter for testing.
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation(libs.junit.jupiter)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -41,6 +44,8 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.withType<JavaCompile> {
@@ -51,4 +56,13 @@ tasks.named<JavaExec>("run") {
     standardInput = System.`in`
     jvmArgs("-Dfile.encoding=UTF-8", "-Dsun.stdout.encoding=UTF-8", "-Dsun.stderr.encoding=UTF-8")
     systemProperty("file.encoding", "UTF-8")
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.named<Test>("test")) // Garante que os testes rodaram primeiro
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.required.set(true) // Gera o site HTML para você ver a porcentagem
+    }
 }

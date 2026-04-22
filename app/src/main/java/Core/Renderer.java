@@ -322,43 +322,41 @@ public class Renderer {
      */
     private void placeMapScreen(GameData gameData) {
         placeBorders();
+
         Map map = gameData.getMap();
-        
         int currentFloor = gameData.getHeroCurrentFloor();
         int currentPosition = gameData.getHeroCurrentFloorPosition();
         
-        boolean mapStarted = isMapStarted(map);
-        ArrayList<Room> possibleNextRooms = getPossibleNextRooms(map, currentFloor, currentPosition, mapStarted);
-        int floorToHighlight = mapStarted ? currentFloor + 1 : 0;
+        ArrayList<Room> nextRooms = getPossibleNextRooms(map, currentFloor, currentPosition);
+        int nextFloor = currentFloor + 1;
 
-        int startX = (WIDTH - (map.getMaxWidth() * 6)) / 2;
+        int startX = 22 ;
         int startY = HEIGHT - 5;
         
         int choiceCounter = 1;
-
+        
         for (int i = map.getHeight() - 1; i >= 0; i--) {
             for (int j = 0; j < map.getMaxWidth(); j++) {
                 Room room = map.getFloors()[i][j];
                 
-                String roomSymbol = "[R]";
+                String roomSymbol = "(R)";
                 TextColor roomColor = TextColor.ANSI.WHITE;
 
                 if (room != null) {
-                    if (i == floorToHighlight && possibleNextRooms.contains(room)) {
-                        roomSymbol = "[" + choiceCounter + "]";
+                    if (i == nextFloor && nextRooms.contains(room)) {
+                        roomSymbol = "(" + choiceCounter + ")";
                         choiceCounter++;
                         roomColor = TextColor.ANSI.YELLOW_BRIGHT;
                     } 
-                    else if (mapStarted && i == currentFloor && j == currentPosition) {
-                        roomSymbol = "[@]"; 
-                        roomColor = TextColor.ANSI.GREEN_BRIGHT;
+                    else if (i == currentFloor && j == currentPosition) {
+                        roomSymbol = "(A)"; 
+                        roomColor = TextColor.ANSI.BLUE_BRIGHT;
                     } 
                     else if (room.isVisited()) {
+                        roomSymbol = "(V)";
                         roomColor = TextColor.ANSI.GREEN;
                     }
                 }
-
-               
                 placeRoomAndPaths(map, room, i, j, startX, startY, roomSymbol, roomColor);
             }
         }
@@ -366,46 +364,36 @@ public class Renderer {
     }
 
     
-    private void placeRoomAndPaths(Map map, Room room, int floorY, int posJ, int startX, int startY, 
-                                   String roomSymbol, TextColor roomColor) {
-        
-        int lineY = startY - (floorY * 2);
-        int colX = startX + (posJ * 6);
-        int pathY = lineY + 1;
+    private void placeRoomAndPaths(Map map, Room room, int floor, int floorPosition, int startX, int startY, String roomSymbol, TextColor roomColor) {
+    int lineY = startY - (floor * 2);
+    int columnX = startX + (floorPosition * 6);
 
-        
-        if (room != null) {
-            placeText(new int[]{lineY, colX + 1}, roomSymbol, roomColor);
-        }
-
-     
-        if (floorY > 0) {
-            Room roomBelow = map.getFloors()[floorY - 1][posJ];
-            Room rightRoomBelow = (posJ + 1 < map.getMaxWidth()) ? map.getFloors()[floorY - 1][posJ + 1] : null;
-
-            boolean hasCenter = (roomBelow != null && roomBelow.hasCenterChild());
-            boolean hasRight = (roomBelow != null && roomBelow.hasRightChild());
-            boolean hasLeft = (rightRoomBelow != null && rightRoomBelow.hasLeftChild());
-
-
-            if (hasCenter) {
-                TextColor color = isPathVisited(roomBelow, room) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-                placeText(new int[]{pathY, colX + 2}, "|", color);
-            } 
-            
-            if (hasRight) {
-                Room target = map.getFloors()[floorY][posJ + 1];
-                TextColor color = isPathVisited(roomBelow, target) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-                placeText(new int[]{pathY, colX + 5}, "/", color);
-            } 
-            
-            if (hasLeft) {
-                TextColor color = isPathVisited(rightRoomBelow, room) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-                placeText(new int[]{pathY, colX + 5}, "\\", color);
-            }
-        }
+    if (room == null) {
+        return;
     }
+    
+    placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
 
+    int pathY = lineY - 1;
+    Room[][] floors = map.getFloors();
+
+    if (room.hasCenterChild()) {
+        Room child = floors[floor + 1][floorPosition];
+        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        placeText(new int[]{pathY, columnX + 2}, "|", color);
+    }
+    if (room.hasRightChild()) {
+        Room child = floors[floor + 1][floorPosition + 1];
+        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        placeText(new int[]{pathY, columnX + 5}, "/", color);
+    }
+    if (room.hasLeftChild()) {
+        Room child = floors[floor + 1][floorPosition - 1];
+        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+        
+        placeText(new int[]{pathY, columnX - 1}, "\\", color);
+    }
+}
 
     private void placeBossRoom(int currentFloor) {
         TextColor color = currentFloor == 6 ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
@@ -413,32 +401,29 @@ public class Renderer {
     }
 
 
-    private boolean isMapStarted(Map map) {
-        for (Room startRoom : map.getStartRooms()) {
-            if (startRoom.isVisited()) return true;
-        }
-        return false;
-    }
-
-
-    private ArrayList<Room> getPossibleNextRooms(Map map, int curFloor, int curPos, boolean mapStarted) {
+    private ArrayList<Room> getPossibleNextRooms(Map map, int currentFloor, int currentPosition) {
         ArrayList<Room> nextRooms = new ArrayList<>();
-        if (!mapStarted) {
+
+        if (currentFloor == -1) {
             nextRooms.addAll(map.getStartRooms());
-        } else {
-            Room currentRoom = map.getFloors()[curFloor][curPos];
-            if (currentRoom != null) {
-                for (Room next : currentRoom.getNextRooms()) {
-                    if (next != null) nextRooms.add(next);
+            return nextRooms;
+        }
+
+        Room currentRoom = map.getFloors()[currentFloor][currentPosition];
+        if (currentRoom != null) {
+            for (Room next: currentRoom.getNextRooms()) {
+                if (next != null) {
+                    nextRooms.add(next); 
                 }
             }
         }
+        
         return nextRooms;
     }
 
 
-    private boolean isPathVisited(Room from, Room to) {
-        return (from != null && from.isVisited()) && (to != null && to.isVisited());
+    private boolean isPathVisited(Room fromRoom, Room toRoom) {
+        return (fromRoom != null && fromRoom.isVisited()) && (toRoom != null && toRoom.isVisited());
     }
 
 
