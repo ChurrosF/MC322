@@ -9,6 +9,8 @@ public class Hero extends Entity {
     
     /** A quantidade de energia disponível para jogar cartas neste turno. */
     private int energy;
+    /**  Ouro disponivel*/
+    private int gold;
     
     /** A representação visual (ASCII Art) do herói para o renderizador. */
     private final String hero_sprite = """
@@ -37,9 +39,11 @@ _=/d   ,^\\
         this.maxLife = life;
         this.energy = energy;
         this.shield = shield;
+        this.gold = 0;
     }
 
     public int getEnergy() { return this.energy; }
     public void setEnergy(int energy) { this.energy = energy; }
     public String getHero_sprite() { return hero_sprite; }
+    public int getGold() { return gold; }
 }
