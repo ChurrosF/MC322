@@ -13,6 +13,7 @@ import Cards.ShieldCard;
 import Cards.StrengthCard;
 import Entities.Enemy;
 import Entities.Hero;
+import Map.Map;
 
 /**
  * Repositório central para os dados e estado da partida de "Slay the Tuff Rat".
@@ -28,10 +29,10 @@ import Entities.Hero;
  * </p>
  */
 public final class GameData {
-    private final Hero hero = new Hero("Hero", 20, 3, 0);
-    private final ArrayList<Enemy> enemies = new ArrayList<>();
+    private final Hero hero = new Hero("Hero", 30, 3, 0);
+    private final Map map = new Map(7, 15, 6);
+    private ArrayList<Enemy> enemies = new ArrayList<>();
 
-    // Catálogo global de cartas existentes no jogo
     private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3);
     private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 6);
     private final DamageCard superHeavyAttack = new DamageCard("Bomba Nuclear", 3, 9);
@@ -44,8 +45,10 @@ public final class GameData {
 
     private final int buyPileSize = 20;
     private final int handSize = 5;
-    
-    /** Array com todas as instâncias únicas de cartas (Flyweight). */
+
+    private int heroCurrentFloor;
+    private int heroCurrentFloorPosition;
+
     private Card[] possible_cards = {lightAttack, heavyAttack, superHeavyAttack, partialDefense, totalDefense, poison, strength, energyRegen, manaCard};
 
     private final ArrayList<Integer> playerHand = new ArrayList<>();
@@ -54,6 +57,8 @@ public final class GameData {
 
     private boolean invalidAction = false;
     private boolean battleOver = false;
+    private boolean gameOver = false;
+    private boolean gameClosed = false;
     private int battleRounds = 1;
 
     /**
@@ -62,25 +67,38 @@ public final class GameData {
      * a primeira mão de cartas para o herói.
      */
     public GameData() {
-        this.enemies.add(new Enemy("Thug Spider", 20, 0, new int[] {3, 7}));
-        this.enemies.add(new Enemy("Tuff Spider", 15, 0, new int[] {3, 6}));
+        this.heroCurrentFloor = -1;
         generateRandomBuyPile();
         buyRoundCards();
     }
 
     // ... Getters e Setters básicos
     public Hero getHero() { return this.hero; }
+    
     public ArrayList<Integer> getPlayerHand() { return this.playerHand; }
     public ArrayList<Enemy> getEnemies() { return enemies; }
-    public ShieldCard getShieldCard() { return this.partialDefense; }
+    public void setEnemies(ArrayList<Enemy> enemies) { this.enemies = enemies; }
+
     public boolean isBattleOver() { return this.battleOver; }
     public void setBattleOver(boolean gameOver) { this.battleOver = gameOver; }
+
     public int getBattleRounds() { return this.battleRounds; }
     public void addBattleRound() { this.battleRounds += 1; }
+
     public Card[] getPossibleCards() { return possible_cards; }
     public void setPossibleCards(Card[] possible_cards) { this.possible_cards = possible_cards; }
+
     public Stack<Integer> getBuyPile() { return this.buyPile; }
     public Stack<Integer> getDiscardPile() { return this.discardPile; }
+
+    public int getHeroCurrentFloor() { return heroCurrentFloor; }
+    public void setHeroCurrentFloor(int heroCurrentFloor) { this.heroCurrentFloor = heroCurrentFloor; }
+
+    public int getHeroCurrentFloorPosition() { return heroCurrentFloorPosition; }
+    public void setHeroCurrentFloorPosition(int heroCurrentFloorPosition) { this.heroCurrentFloorPosition = heroCurrentFloorPosition; }
+
+    public Map getMap() { return this.map; }
+    
     
     /** @return {@code true} se o jogador tentou realizar uma ação bloqueada/inválida. */
     public boolean isActionInvalid() { return invalidAction; }
@@ -140,5 +158,22 @@ public final class GameData {
         this.buyPile.addAll(discardPile);
         Collections.shuffle(this.buyPile);
         this.discardPile.clear();
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
+
+    public boolean isGameClosed() {
+        return gameClosed;
+    }
+
+    public void setGameClosed(boolean gameClosed) {
+        this.gameClosed = gameClosed;
     }
 }

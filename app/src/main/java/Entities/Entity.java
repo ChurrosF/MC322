@@ -33,6 +33,9 @@ public abstract class Entity {
             this.shield -= damage;
         }
     }
+    public void heal(int amount) {
+        this.life = Math.min(this.life + amount, this.maxLife);
+    }
 
     public int getShield() { return this.shield; }
     public void setShield(int shield) { this.shield = shield; }

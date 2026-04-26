@@ -39,7 +39,7 @@ public class App {
             GameData data = gameManager.getGameData();
             GameState state = gameManager.getState();
             renderer.render(data, state);
-            if (gameManager.getGameData().isBattleOver()) {
+            if (data.isGameOver()) {
                 break;
             }
             Action action = inputSystem.readInput(state);

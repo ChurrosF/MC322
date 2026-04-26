@@ -26,7 +26,7 @@ public class StrengthEffect extends StatusEffect {
     public void beNotified(Action action, GameData data) {
         // Escuta ativamente a intenção de mirar em um alvo
         if (action.getActionType() == Action.ActionType.CHOOSE_TARGET) {
-            int card_index = action.getCardUsedIndex();
+            int card_index = action.getInputInt();
             int card_type = data.getPlayerHand().get(card_index);
             Card card = data.getPossibleCards()[card_type];
 
