@@ -365,35 +365,35 @@ public class Renderer {
 
     
     private void placeRoomAndPaths(Map map, Room room, int floor, int floorPosition, int startX, int startY, String roomSymbol, TextColor roomColor) {
-    int lineY = startY - (floor * 2);
-    int columnX = startX + (floorPosition * 6);
+        int lineY = startY - (floor * 2);
+        int columnX = startX + (floorPosition * 6);
 
-    if (room == null) {
-        return;
-    }
-    
-    placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
+        if (room == null) {
+            return;
+        }
 
-    int pathY = lineY - 1;
-    Room[][] floors = map.getFloors();
+        placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
 
-    if (room.hasCenterChild()) {
-        Room child = floors[floor + 1][floorPosition];
-        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-        placeText(new int[]{pathY, columnX + 2}, "|", color);
-    }
-    if (room.hasRightChild()) {
-        Room child = floors[floor + 1][floorPosition + 1];
-        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-        placeText(new int[]{pathY, columnX + 5}, "/", color);
-    }
-    if (room.hasLeftChild()) {
-        Room child = floors[floor + 1][floorPosition - 1];
-        TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-        
-        placeText(new int[]{pathY, columnX - 1}, "\\", color);
-    }
-}
+        int pathY = lineY - 1;
+        Room[][] floors = map.getFloors();
+
+        if (room.hasCenterChild()) {
+            Room child = floors[floor + 1][floorPosition];
+            TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+            placeText(new int[]{pathY, columnX + 2}, "|", color);
+        }
+        if (room.hasRightChild()) {
+            Room child = floors[floor + 1][floorPosition + 1];
+            TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+            placeText(new int[]{pathY, columnX + 5}, "/", color);
+        }
+        if (room.hasLeftChild()) {
+            Room child = floors[floor + 1][floorPosition - 1];
+            TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
+            
+            placeText(new int[]{pathY, columnX - 1}, "\\", color);
+        }
+        }
 
     private void placeBossRoom(int currentFloor) {
         TextColor color = currentFloor == 6 ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
