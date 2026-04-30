@@ -1,6 +1,7 @@
 package Core;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 import java.util.Stack;
 
@@ -49,7 +50,8 @@ public final class GameData {
     private int heroCurrentFloor;
     private int heroCurrentFloorPosition;
 
-    private Card[] possible_cards = {lightAttack, heavyAttack, superHeavyAttack, partialDefense, totalDefense, poison, strength, energyRegen, manaCard};
+    private ArrayList<Card> obtainableCards = new ArrayList<>(List.of(superHeavyAttack, totalDefense, energyRegen, manaCard));
+    private ArrayList<Card> currentCards = new ArrayList<>(List.of(lightAttack, heavyAttack, partialDefense, poison, strength));
 
     private final ArrayList<Integer> playerHand = new ArrayList<>();
     private final Stack<Integer> buyPile = new Stack<>();
@@ -85,8 +87,8 @@ public final class GameData {
     public int getBattleRounds() { return this.battleRounds; }
     public void addBattleRound() { this.battleRounds += 1; }
 
-    public Card[] getPossibleCards() { return possible_cards; }
-    public void setPossibleCards(Card[] possible_cards) { this.possible_cards = possible_cards; }
+    public ArrayList<Card> getCurrentCards() { return currentCards; }
+    public void setCurrentCards(ArrayList<Card> possible_cards) { this.currentCards = possible_cards; }
 
     public Stack<Integer> getBuyPile() { return this.buyPile; }
     public Stack<Integer> getDiscardPile() { return this.discardPile; }
@@ -110,7 +112,7 @@ public final class GameData {
     public void generateRandomBuyPile() {
         Random generator = new Random();
         for (int i = 0; i < this.buyPileSize; i++) {
-            int random_card_index = generator.nextInt(0, possible_cards.length);
+            int random_card_index = generator.nextInt(0, currentCards.size());
             this.buyPile.push(random_card_index);  
         }
     }
@@ -175,5 +177,13 @@ public final class GameData {
 
     public void setGameClosed(boolean gameClosed) {
         this.gameClosed = gameClosed;
+    }
+
+    public ArrayList<Card> getObtainableCards() {
+        return obtainableCards;
+    }
+
+    public void setObtainableCards(ArrayList<Card> obtainableCards) {
+        this.obtainableCards = obtainableCards;
     }
 }

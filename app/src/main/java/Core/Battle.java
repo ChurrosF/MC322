@@ -10,7 +10,7 @@ import Entities.Enemy;
 import Entities.Entity;
 import Entities.Hero;
 
-public class Battle {
+public class Battle extends Event {
     /** O repositório central de dados e estado da partida. */
     private final GameData data;
 
@@ -171,7 +171,7 @@ public class Battle {
      */
     private Card getCardFromIndex(int cardIndex) {
         int card_type = this.playerHand.get(cardIndex);
-        return this.data.getPossibleCards()[card_type];
+        return this.data.getCurrentCards().get(card_type);
     }
     
 
@@ -213,6 +213,7 @@ public class Battle {
             }
             gameManager.setState(GameState.MAP);
             hero.setEnergy(3);
+            hero.setMoney(hero.getMoney() + 5);
         }
     }
 

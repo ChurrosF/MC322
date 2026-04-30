@@ -10,8 +10,10 @@ import Cards.Card;
 import Effects.StatusEffect;
 import Entities.Enemy;
 import Entities.EnemyAction;
+import Entities.Hero;
 import Map.Map;
 import Map.Room;
+import Map.RoomType;
 
 
 /**
@@ -230,9 +232,6 @@ public class Renderer {
         String energy_bar_sprite = "Energia: " + "■ ".repeat(hero_energy) + hero_energy + "/3";
         String vertical_bar = "║\n".repeat(HEIGHT - 4);
 
-
-        
-
         placeText(HP_BAR_POSITION, hero_hp_bar_sprite, TextColor.ANSI.RED_BRIGHT);
 
         if (hero_shield > 0) {
@@ -245,8 +244,6 @@ public class Renderer {
         if (hero_energy == 0) { 
             placeText(NO_ENERGY_WARNING_POSITION, "| Sem energia!");
         }
-
-        
 
         placeText(BUY_PILE_POSITION, "Pilha de Compra: x" + buy_pile_size);
         placeText(DISCARD_PILE_POSITION, "Pilha de Descarte: x" + discard_pile_size);
@@ -288,7 +285,7 @@ public class Renderer {
         for (int i = 0; i < hand_size; i++) {
 
             int card_index = gameData.getPlayerHand().get(i);
-            Card card = gameData.getPossibleCards()[card_index];
+            Card card = gameData.getCurrentCards().get(card_index);
             placeCard(new int[] {line + start_line, 1}, card, i);
             line += 2;
         }
@@ -317,11 +314,37 @@ public class Renderer {
     }
 
 
-/**
+    private void placeCampfireScreen(GameData data) {
+        placeBorders();
+        
+        int midY = HEIGHT / 2;
+        int midX = WIDTH / 2;
+
+        String campfireArt = """
+                  ()        
+                 (  )
+                (º  º)
+               (   v  )
+              __________
+              \\________/
+        """;
+
+        placeText(new int[]{midY - 6, midX - 5}, campfireArt);
+        placeText(new int[]{midY + 1, midX - 13}, "Fogueira sorri.");
+        placeText(new int[]{midY + 3, midX - 18}, "Aperter qualquer tecla para Sentir o CALOR (+10 HP)");
+        
+        String hpStatus = "Vida Atual: " + data.getHero().getLife() + "/" + data.getHero().getMaxLife();
+        placeText(new int[]{midY + 5, midX - 8}, hpStatus, TextColor.ANSI.GREEN_BRIGHT);
+    }
+
+
+    /**
      * Tela do mapa simplificada seguindo a lógica de duplo laço for.
      */
     private void placeMapScreen(GameData gameData) {
         placeBorders();
+
+        Hero hero = gameData.getHero();
 
         Map map = gameData.getMap();
         int currentFloor = gameData.getHeroCurrentFloor();
@@ -330,8 +353,8 @@ public class Renderer {
         ArrayList<Room> nextRooms = getPossibleNextRooms(map, currentFloor, currentPosition);
         int nextFloor = currentFloor + 1;
 
-        int startX = 22 ;
-        int startY = HEIGHT - 5;
+        int col = 22 ;
+        int row = HEIGHT - 5;
         
         int choiceCounter = 1;
         
@@ -343,10 +366,20 @@ public class Renderer {
                 TextColor roomColor = TextColor.ANSI.WHITE;
 
                 if (room != null) {
+                    if (room.getType() == RoomType.CAMPFIRE) {
+                        roomSymbol = "(F)";
+                        roomColor = TextColor.ANSI.YELLOW;
+                    }
+
                     if (i == nextFloor && nextRooms.contains(room)) {
                         roomSymbol = "(" + choiceCounter + ")";
                         choiceCounter++;
-                        roomColor = TextColor.ANSI.YELLOW_BRIGHT;
+                        if (room.getType() == RoomType.CAMPFIRE) {
+                            roomColor = TextColor.ANSI.YELLOW_BRIGHT;
+                        } 
+                        else {
+                            roomColor = TextColor.ANSI.CYAN_BRIGHT;
+                        }
                     } 
                     else if (i == currentFloor && j == currentPosition) {
                         roomSymbol = "(A)"; 
@@ -357,10 +390,11 @@ public class Renderer {
                         roomColor = TextColor.ANSI.GREEN;
                     }
                 }
-                placeRoomAndPaths(map, room, i, j, startX, startY, roomSymbol, roomColor);
+                placeRoomAndPaths(map, room, i, j, col, row, roomSymbol, roomColor);
             }
         }
         placeBossRoom(currentFloor);
+        placeText(new int[] {2, WIDTH - 15}, "Dinheiro: " + hero.getMoney() + "$");
     }
 
     
@@ -371,7 +405,6 @@ public class Renderer {
         if (room == null) {
             return;
         }
-
         placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
 
         int pathY = lineY - 1;
@@ -390,10 +423,10 @@ public class Renderer {
         if (room.hasLeftChild()) {
             Room child = floors[floor + 1][floorPosition - 1];
             TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-            
             placeText(new int[]{pathY, columnX - 1}, "\\", color);
         }
         }
+
 
     private void placeBossRoom(int currentFloor) {
         TextColor color = currentFloor == 6 ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
@@ -487,7 +520,8 @@ public class Renderer {
             
             
             switch (state) {
-                case GameState.MAP -> placeMapScreen(gameData);
+                case MAP -> placeMapScreen(gameData);
+                case CAMPFIRE -> placeCampfireScreen(gameData);
                 default -> placeBattleScreen(gameData);
             }
             

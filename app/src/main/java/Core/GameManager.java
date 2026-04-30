@@ -2,6 +2,7 @@ package Core;
 
 import Entities.Action;
 import Map.Room;
+import Map.RoomType;
 
 /**
  * Controlador principal da lógica do jogo (Game Loop e Regras de Batalha).
@@ -22,9 +23,12 @@ public class GameManager {
     private final Battle battleManager;
 
     private boolean gameEnded;
+    private final Campfire campfireManager;
 
     public GameManager() {
         this.battleManager = new Battle(this.data, this);
+
+        this.campfireManager = new Campfire(this.data, this);
     }
 
     /**
@@ -36,6 +40,9 @@ public class GameManager {
         switch(state) {
             case BATTLE_CARD, BATTLE_TARGETING -> {
                 battleManager.update(action);
+            }
+            case CAMPFIRE -> {
+                campfireManager.update(action);
             }
             case MAP -> {
                 updateMap(action);
@@ -109,12 +116,17 @@ public class GameManager {
     }
    
     if (nextRoom != null) {
-        data.setHeroCurrentFloor(currentFloor + 1);
-        data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
+    data.setHeroCurrentFloor(currentFloor + 1);
+    data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
+    nextRoom.setVisited(true);
+    
+    if (nextRoom.getType() == RoomType.CAMPFIRE) {
+        this.setState(GameState.CAMPFIRE);
+    } else {
         data.setEnemies(nextRoom.getEnemies());
-        nextRoom.setVisited(true);
-        this.state = GameState.BATTLE_CARD;
-    } 
+        this.setState(GameState.BATTLE_CARD);
+    }
+}
     else {
         data.setInvalidAction(true);
     }

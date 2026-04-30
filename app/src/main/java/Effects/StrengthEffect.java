@@ -28,7 +28,7 @@ public class StrengthEffect extends StatusEffect {
         if (action.getActionType() == Action.ActionType.CHOOSE_TARGET) {
             int card_index = action.getInputInt();
             int card_type = data.getPlayerHand().get(card_index);
-            Card card = data.getPossibleCards()[card_type];
+            Card card = data.getCurrentCards()[card_type];
 
             // Injeta o bônus de dano na carta do tipo DamageCard ANTES dela calcular o golpe final
             if (card instanceof DamageCard damageCard) {
