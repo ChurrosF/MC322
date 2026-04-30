@@ -28,6 +28,7 @@ public class InputSystem {
             switch (state) {
                 case GameState.BATTLE_CARD -> CardChooseAction(key);
                 case GameState.BATTLE_TARGETING -> TargetChooseAction(key);
+                case GameState.CAMPFIRE -> CampfireAction(key);
                 case GameState.MAP -> RoomChooseAction(key);
             }
             checkGameClose(key);
@@ -162,6 +163,10 @@ public class InputSystem {
             case KeyType.EOF -> this.action.setActionType(Action.ActionType.QUIT);
             default -> this.action.setActionType(Action.ActionType.INVALID);
         }
+    }
+
+    private void CampfireAction(KeyStroke key) {
+        this.action.setActionType(Action.ActionType.SKIP);
     }
 
 

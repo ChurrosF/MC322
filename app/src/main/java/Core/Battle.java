@@ -10,7 +10,7 @@ import Entities.Enemy;
 import Entities.Entity;
 import Entities.Hero;
 
-public class Battle {
+public class Battle extends Event {
     /** O repositório central de dados e estado da partida. */
     private final GameData data;
 
