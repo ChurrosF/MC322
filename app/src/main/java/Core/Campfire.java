@@ -2,7 +2,7 @@ package Core;
 
 import Entities.Action;
 
-public class Campfire {
+public class Campfire extends Event {
     private final GameData data;
     private final GameManager gameManager;
     private final int HEAL_AMOUNT = 10;
