@@ -18,7 +18,7 @@ public class Hero extends Entity {
     |
     + \\
     \\.G_.*=.
-    `(H'/.|
+    `(H'/.\\|
     .>' (_--.
 _=/d   ,^\\
 ~~ \\)-'   '

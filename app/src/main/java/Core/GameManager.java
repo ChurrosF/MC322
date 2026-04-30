@@ -24,6 +24,7 @@ public class GameManager {
 
     private boolean gameEnded;
     private final Campfire campfireManager;
+    private Shop shop = ShopBuilder.buildDefaultShop(data, this);
 
     public GameManager() {
         this.battleManager = new Battle(this.data, this);
@@ -44,8 +45,17 @@ public class GameManager {
             case CAMPFIRE -> {
                 campfireManager.update(action);
             }
+            case SHOP -> {
+                if (this.shop == null) {
+                    this.shop = ShopBuilder.buildDefaultShop(data, this);
+                }
+                shop.update(action);
+                data.setCurrentShop(shop);
+            }
             case MAP -> {
                 updateMap(action);
+            }
+            default -> {
             }
         }
     }
@@ -82,7 +92,17 @@ public class GameManager {
     }
     
     if (currentFloor == -1) {
-        Room nextRoom = data.getMap().getStartRooms().get(roomIndex);
+        Room nextRoom = null;
+        int currentIndex = 0;
+        for (int i = 0; i < data.getMap().getMaxWidth(); i++) {
+            if (data.getMap().getFloors()[0][i] != null) {
+                if (currentIndex == roomIndex) {
+                    nextRoom = data.getMap().getStartRooms().get(currentIndex);
+                    break;
+                }
+                currentIndex++;
+            } 
+        }
         
         data.setHeroCurrentFloor(nextRoom.getCurrentFloor());
         data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
@@ -122,9 +142,13 @@ public class GameManager {
     
     if (nextRoom.getType() == RoomType.CAMPFIRE) {
         this.setState(GameState.CAMPFIRE);
-    } else {
+    } 
+    else if (nextRoom.getType() == RoomType.BATTLE) {
         data.setEnemies(nextRoom.getEnemies());
         this.setState(GameState.BATTLE_CARD);
+    }
+    else {
+        this.setState(GameState.SHOP);
     }
 }
     else {

@@ -4,5 +4,6 @@ public enum GameState {
     BATTLE_CARD,
     BATTLE_TARGETING,
     MAP,
+    SHOP,
     CAMPFIRE
 }

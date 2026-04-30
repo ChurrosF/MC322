@@ -9,8 +9,8 @@ import Entities.Hero;
 public class EnergyRegenCard extends Card {
     private final int regenAmount;
 
-    public EnergyRegenCard(String name, int cost, int regenAmount) {
-        super(name, cost);
+    public EnergyRegenCard(String name, int cost, int regenAmount, int price) {
+        super(name, cost, price);
         this.regenAmount = regenAmount;
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " REG:" + this.regenAmount + " CUSTO:" + this.cost;
     }

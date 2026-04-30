@@ -9,8 +9,8 @@ public class DamageCard extends Card {
     private int finalDamage;
 
 
-    public DamageCard(String name, int cost, int baseDamage) {
-        super(name, cost);
+    public DamageCard(String name, int cost, int price, int baseDamage) {
+        super(name, cost, price);
         this.baseDamage = baseDamage;
         this.finalDamage = this.baseDamage;
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " DMG:" + this.baseDamage + " CUSTO:" + this.cost;

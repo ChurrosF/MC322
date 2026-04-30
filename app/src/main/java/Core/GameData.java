@@ -34,15 +34,15 @@ public final class GameData {
     private final Map map = new Map(7, 15, 6);
     private ArrayList<Enemy> enemies = new ArrayList<>();
 
-    private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 3);
-    private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 6);
-    private final DamageCard superHeavyAttack = new DamageCard("Bomba Nuclear", 3, 9);
-    private final ShieldCard partialDefense = new ShieldCard("Defesa Parcial", 1, 2);
-    private final ShieldCard totalDefense = new ShieldCard("Defesa Total", 2, 5);
-    private final PoisonCard poison = new PoisonCard("Dardo Venenoso", 2, 3);
-    private final StrengthCard strength = new StrengthCard("Focar Ataque", 1, 2);
-    private final EnergyRegenCard energyRegen = new EnergyRegenCard("Ganhar Energia", 0, 1);
-    private final ManaCard manaCard = new ManaCard("Usar Mana", 3, 2);
+    private final DamageCard lightAttack = new DamageCard("Ataque Leve", 1, 2, 3);
+    private final DamageCard heavyAttack = new DamageCard("Ataque Pesado", 2, 4, 6);
+    private final DamageCard superHeavyAttack = new DamageCard("Bomba Nuclear", 3, 10, 9);
+    private final ShieldCard partialDefense = new ShieldCard("Defesa Parcial", 1, 2, 2);
+    private final ShieldCard totalDefense = new ShieldCard("Defesa Total", 2, 5, 5);
+    private final PoisonCard poison = new PoisonCard("Dardo Venenoso", 2, 7, 3);
+    private final StrengthCard strength = new StrengthCard("Focar Ataque", 1, 3, 2);
+    private final EnergyRegenCard energyRegen = new EnergyRegenCard("Ganhar Energia", 0, 1, 3);
+    private final ManaCard manaCard = new ManaCard("Usar Mana", 3, 5, 2);
 
     private final int buyPileSize = 20;
     private final int handSize = 5;
@@ -52,6 +52,8 @@ public final class GameData {
 
     private ArrayList<Card> obtainableCards = new ArrayList<>(List.of(superHeavyAttack, totalDefense, energyRegen, manaCard));
     private ArrayList<Card> currentCards = new ArrayList<>(List.of(lightAttack, heavyAttack, partialDefense, poison, strength));
+
+    private Shop currentShop;
 
     private final ArrayList<Integer> playerHand = new ArrayList<>();
     private final Stack<Integer> buyPile = new Stack<>();
@@ -185,5 +187,13 @@ public final class GameData {
 
     public void setObtainableCards(ArrayList<Card> obtainableCards) {
         this.obtainableCards = obtainableCards;
+    }
+
+    public Shop getCurrentShop() {
+        return currentShop;
+    }
+
+    public void setCurrentShop(Shop currentShop) {
+        this.currentShop = currentShop;
     }
 }

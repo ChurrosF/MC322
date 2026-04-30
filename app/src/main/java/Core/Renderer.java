@@ -329,12 +329,24 @@ public class Renderer {
               \\________/
         """;
 
-        placeText(new int[]{midY - 6, midX - 5}, campfireArt);
-        placeText(new int[]{midY + 1, midX - 13}, "Fogueira sorri.");
-        placeText(new int[]{midY + 3, midX - 18}, "Aperter qualquer tecla para Sentir o CALOR (+10 HP)");
+        placeText(new int[]{midY - 6, midX - 11}, campfireArt);
+        placeText(new int[]{midY + 1, midX - 13}, "A Fogueira sorri para você.");
+        placeText(new int[]{midY + 3, midX - 21}, "Aperte qualquer tecla para sentir o CALOR (+10 HP)");
         
         String hpStatus = "Vida Atual: " + data.getHero().getLife() + "/" + data.getHero().getMaxLife();
         placeText(new int[]{midY + 5, midX - 8}, hpStatus, TextColor.ANSI.GREEN_BRIGHT);
+    }
+
+
+    private void placeShop(GameData data) {
+        placeBorders();
+
+        ArrayList<Card> sellingCards = data.getCurrentShop().getSellingCards();
+        int i = 0;
+        for (Card sellingCard: sellingCards) {
+            placeText(new int[] {5 + (2 * i), 5}, "Carta: " + sellingCard.getName() + " Preço: " + sellingCard.getPrice() + "$");
+            i++;
+        }
     }
 
 
@@ -368,7 +380,11 @@ public class Renderer {
                 if (room != null) {
                     if (room.getType() == RoomType.CAMPFIRE) {
                         roomSymbol = "(F)";
-                        roomColor = TextColor.ANSI.YELLOW;
+                        roomColor = TextColor.ANSI.RED_BRIGHT;
+                    }
+                    else if (room.getType() == RoomType.SHOP) {
+                        roomSymbol = "(S)";
+                        roomColor = TextColor.ANSI.YELLOW_BRIGHT;
                     }
 
                     if (i == nextFloor && nextRooms.contains(room)) {
@@ -472,6 +488,9 @@ public class Renderer {
                     placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA A SALA ------------------");
                 }
             }
+            case SHOP -> {
+                placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- COMPRE UMA CARTA OU SAIA COM ESC ------------------");
+            }
             default -> {
             }
         }
@@ -522,6 +541,7 @@ public class Renderer {
             switch (state) {
                 case MAP -> placeMapScreen(gameData);
                 case CAMPFIRE -> placeCampfireScreen(gameData);
+                case SHOP -> placeShop(gameData);
                 default -> placeBattleScreen(gameData);
             }
             

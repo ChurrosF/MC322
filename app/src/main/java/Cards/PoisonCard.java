@@ -8,8 +8,8 @@ import Entities.Hero;
 public class PoisonCard extends EffectCard {
     private final int amountToAdd;
 
-    public PoisonCard(String name, int cost, int amountToAdd) {
-        super(name, cost);
+    public PoisonCard(String name, int cost, int price, int amountToAdd) {
+        super(name, cost, price);
         this.amountToAdd = amountToAdd;
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length())
         + "|" + " PSN:" + amountToAdd + " CUSTO:" + this.cost;

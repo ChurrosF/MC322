@@ -23,8 +23,8 @@ public class ManaCard extends EffectCard {
      * @param cost        O custo em energia para jogar esta carta.
      * @param amountToAdd A quantidade de turnos que o bônus de mana ficará ativo.
      */
-    public ManaCard(String name, int cost, int amountToAdd) {
-        super(name, cost);
+    public ManaCard(String name, int cost, int price, int amountToAdd) {
+        super(name, cost, price);
         this.amountToAdd = amountToAdd;
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length())
         + "|" + " MANA:" + amountToAdd + " CUSTO:" + this.cost;
