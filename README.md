@@ -28,15 +28,7 @@ O jogo é baseado em turnos, onde você deve derrotar o formidável Grande Rato,
 + Sempre que escolher uma carta que ataque um inimigo, escolha qual inimigo atacar, aperte 1 ou 2 no teclado. Caso desista de usar a carta que tem alvo, apenas aperte a tecla ESC para voltar atrás.
 + Para recuperar sua energia e acabar seu turno aperte a tecla P ou Enter 
 
-Patch Notes Version 0.1.6
-
-Agora com loja e fogueira! A sigla S em cor amarela representa uma loja, na qual você pode comprar novas cartas! A fogueira recupera sua vida e tem sigla F com cor vermelha. Batalhas são representadas com cor branca e sigla R.
-
-# Interface do Jogo
-
-
-![imagem exemplo](/assets/imageREADME.png)
-
+Siglas:
 + DMG: Dano causado
 + SHD: Escudo recebido
 + PSN: Quantidade de veneno infligida
@@ -44,12 +36,25 @@ Agora com loja e fogueira! A sigla S em cor amarela representa uma loja, na qual
 + MANA: Duração do efeito Mana Overflow, que aumenta a energia máxima em 2
 + REG: Quantidade de energia recuperada
 
+Patch Notes Version 0.1.6
+
+Agora com loja e fogueira! A sigla S em cor amarela representa uma loja, na qual você pode comprar novas cartas! A fogueira recupera sua vida e tem sigla F com cor vermelha. Batalhas são representadas com cor branca e sigla R.
+
+# Interface do Luta
+
+![imagem exemplo](/assets/imageREADME.png)
+
+# Interface Mapa
+
+![imagem exemplo](/assets/imageREADME2.png)
 
 # Aviso
-    JAVADOC e Testes foram implementados com ajuda de LLM. Referências para a geração do mapa foram retiradas de algoritmos da geração de mapa do Slay The Spire (https://steamcommunity.com/sharedfiles/filedetails/?id=2830078257).
+    JAVADOC, Testes e código Mermaid para gerar UML foram implementados com ajuda de LLM (IA generativa). Referências para a geração do mapa foram retiradas de algoritmos da geração de mapa do Slay The Spire (https://steamcommunity.com/sharedfiles/filedetails/?id=2830078257).
 
 Nome: Felipe Pedral Cruz de Oliveira RA: 220826
 Nome: Mateus Carioca RA: 282046
+
+# UML
 
 ```mermaid
 classDiagram
