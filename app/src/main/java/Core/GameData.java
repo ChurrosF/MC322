@@ -112,6 +112,7 @@ public final class GameData {
      * Gera o baralho inicial (Pilha de Compra) sorteando cartas do catálogo.
      */
     public void generateRandomBuyPile() {
+        this.buyPile.clear();
         Random generator = new Random();
         for (int i = 0; i < this.buyPileSize; i++) {
             int random_card_index = generator.nextInt(0, currentCards.size());

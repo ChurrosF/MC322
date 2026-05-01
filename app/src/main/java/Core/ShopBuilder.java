@@ -10,6 +10,7 @@ public class ShopBuilder {
         Shop shop = new Shop();
         shop.setData(data);
         shop.setHero(data.getHero());
+        shop.setGameManager(gm);
 
         ArrayList<Card> obtainableCards = new ArrayList<>(data.getObtainableCards());
         ArrayList<Card> sellingCards = new ArrayList<>();

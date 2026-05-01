@@ -19,24 +19,31 @@ public class Shop extends Event {
             ArrayList<Card> obtainableCards = data.getObtainableCards();
 
             int selectedIndex = action.getInputInt();
-            currentCards.add(sellingCards.get(selectedIndex));
-            obtainableCards.remove(sellingCards.get(selectedIndex));
-            sellingCards.remove(selectedIndex);
+            Card boughtCard = sellingCards.get(selectedIndex);
+
+            if (boughtCard.getPrice() <= hero.getMoney()) {
+                obtainableCards.remove(boughtCard);
+                currentCards.add(boughtCard);
+                sellingCards.remove(selectedIndex);
+                hero.setMoney(hero.getMoney() - boughtCard.getPrice());
+            }
         }
         else if (action.getActionType() == Action.ActionType.BACK) {
             gameManager.setState(GameState.MAP);
         }
+        else if (action.getActionType() == Action.ActionType.QUIT) {
+            gameManager.closeGame();
+        }
         else {
             data.setInvalidAction(true);
         }
-
     }
 
 
     public boolean isCardValid(Action action) {
-        int selectedIndex = action.getInputInt() - 1;
+        int selectedIndex = action.getInputInt();
 
-        if (selectedIndex >= this.sellingCards.size()) {
+        if (selectedIndex >= this.sellingCards.size() || selectedIndex < 0 || this.sellingCards.isEmpty()) {
             this.data.setInvalidAction(true);
             return false;
         }
@@ -66,5 +73,10 @@ public class Shop extends Event {
 
     public void setSellingCards(ArrayList<Card> sellingCards) {
         this.sellingCards = sellingCards;
+    }
+
+
+    public void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
     }
 }

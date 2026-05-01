@@ -2,7 +2,6 @@ package Core;
 
 import Entities.Action;
 import Map.Room;
-import Map.RoomType;
 
 /**
  * Controlador principal da lógica do jogo (Game Loop e Regras de Batalha).
@@ -97,7 +96,7 @@ public class GameManager {
         for (int i = 0; i < data.getMap().getMaxWidth(); i++) {
             if (data.getMap().getFloors()[0][i] != null) {
                 if (currentIndex == roomIndex) {
-                    nextRoom = data.getMap().getStartRooms().get(currentIndex);
+                    nextRoom = data.getMap().getFloors()[0][i];
                     break;
                 }
                 currentIndex++;
@@ -140,16 +139,19 @@ public class GameManager {
     data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
     nextRoom.setVisited(true);
     
-    if (nextRoom.getType() == RoomType.CAMPFIRE) {
-        this.setState(GameState.CAMPFIRE);
-    } 
-    else if (nextRoom.getType() == RoomType.BATTLE) {
-        data.setEnemies(nextRoom.getEnemies());
-        this.setState(GameState.BATTLE_CARD);
-    }
-    else {
-        this.setState(GameState.SHOP);
-    }
+    
+    switch (nextRoom.getType()) {
+            case CAMPFIRE -> this.setState(GameState.CAMPFIRE);
+            case BATTLE -> {
+                this.data.setEnemies(nextRoom.getEnemies());
+                this.data.generateRandomBuyPile();
+                this.data.discardHand();
+                this.data.buyRoundCards();
+                this.setState(GameState.BATTLE_CARD);
+            }
+            case SHOP -> this.setState(GameState.SHOP);
+            default -> throw new IllegalArgumentException("Unexpected value: " + nextRoom.getType());
+        }
 }
     else {
         data.setInvalidAction(true);
@@ -167,7 +169,14 @@ public class GameManager {
 
 
     public void setGameOver() {
+        this.data.setGameOver(true);
         this.gameEnded = true;
+    }
+
+
+    public void closeGame() {
+        this.data.setGameClosed(true);
+        this.data.setGameOver(true);
     }
 
 

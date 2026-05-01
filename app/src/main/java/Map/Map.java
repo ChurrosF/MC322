@@ -82,7 +82,7 @@ public final class Map {
 
                 Integer step = possibleDirections.get(random.nextInt(possibleDirections.size()));
 
-                RoomType type = generateRandomRoomType();
+                RoomType type = generateRandomRoomType(i);
 
 
                 if (this.floors[i][curRoomPosition + step] == null) {
@@ -100,14 +100,14 @@ public final class Map {
     }
 
 
-    private RoomType generateRandomRoomType() {
+    private RoomType generateRandomRoomType(int height) {
         Random random = new Random();
         int randomInt = random.nextInt(100);
 
-        if (randomInt < 10) {
+        if (randomInt < 10 && height > 0) {
             return RoomType.CAMPFIRE;
         }
-        else if (randomInt < 20) {
+        else if (randomInt < 17) {
             return RoomType.SHOP;
         }
         return RoomType.BATTLE;        

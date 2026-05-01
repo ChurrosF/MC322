@@ -104,6 +104,9 @@ public class InputSystem {
                 this.action.setInputInt(null);
                 this.action.setActionType(Action.ActionType.BACK);
             }
+            else if (key.getKeyType() == KeyType.EOF || key.getCharacter() == 'q') {
+                this.action.setActionType(Action.ActionType.QUIT);
+            }
             else {
                 this.action.setActionType(Action.ActionType.INVALID);
             }
