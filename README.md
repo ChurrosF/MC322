@@ -28,10 +28,9 @@ O jogo é baseado em turnos, onde você deve derrotar o formidável Grande Rato,
 + Sempre que escolher uma carta que ataque um inimigo, escolha qual inimigo atacar, aperte 1 ou 2 no teclado. Caso desista de usar a carta que tem alvo, apenas aperte a tecla ESC para voltar atrás.
 + Para recuperar sua energia e acabar seu turno aperte a tecla "P" + Enter 
 
-Patch Notes Version 0.1.5
+Patch Notes Version 0.1.6
 
-Agora com um mapa! Tente chegar ao final da dungeon navegando pelo mapa! Ao final dele tente derrotar a Super Tuff Spider e livrar o mundo do mal.
-Use as teclas numéricas para navegar no mapa!
+Agora com loja e fogueira! A sigla S em cor amarela representa uma loja, na qual você pode comprar novas cartas! A fogueira recupera sua vida e tem sigla F com cor vermelha
 
 # Interface do Jogo
 
