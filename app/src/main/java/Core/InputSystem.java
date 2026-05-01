@@ -29,6 +29,7 @@ public class InputSystem {
                 case GameState.BATTLE_CARD -> CardChooseAction(key);
                 case GameState.BATTLE_TARGETING -> TargetChooseAction(key);
                 case GameState.CAMPFIRE -> CampfireAction(key);
+                case GameState.SHOP -> ShopAction(key);
                 case GameState.MAP -> RoomChooseAction(key);
             }
             checkGameClose(key);
@@ -80,14 +81,50 @@ public class InputSystem {
         TargetingNumericalInput(key);
     }
 
+
     private void RoomChooseAction(KeyStroke key) {
         if (!isKeyNumeric(key)) {
-            this.action.setActionType(Action.ActionType.INVALID);
+            if (key.getKeyType() == KeyType.Escape) {
+                this.action.setInputInt(null);
+                this.action.setActionType(Action.ActionType.BACK);
+            }
+            else {
+                this.action.setActionType(Action.ActionType.INVALID);
+            }
         }
         else {
             RoomNumericalInput(key);
         }
     }
+
+
+    private void ShopAction(KeyStroke key) {
+        if (!isKeyNumeric(key)) {
+            if (key.getKeyType() == KeyType.Escape) {
+                this.action.setInputInt(null);
+                this.action.setActionType(Action.ActionType.BACK);
+            }
+            else if (key.getKeyType() == KeyType.EOF || key.getCharacter() == 'q') {
+                this.action.setActionType(Action.ActionType.QUIT);
+            }
+            else {
+                this.action.setActionType(Action.ActionType.INVALID);
+            }
+        }
+        else {
+            ShopNumericalInput(key);
+        }
+    }
+
+
+    private void ShopNumericalInput(KeyStroke key) {
+        String inputStr = key.getCharacter().toString();
+        int cardNumber = Integer.parseInt(inputStr);
+
+        this.action.setActionType(Action.ActionType.BUY_CARD);
+        this.action.setInputInt(cardNumber - 1);
+    }
+
 
 
     private void RoomNumericalInput(KeyStroke key) {
@@ -97,6 +134,9 @@ public class InputSystem {
         this.action.setActionType(Action.ActionType.CHOOSE_ROOM);
         this.action.setInputInt(roomNumber - 1);
     }
+
+
+
 
     /**
      * Processa comandos de teclas alfabéticas específicas do jogo.

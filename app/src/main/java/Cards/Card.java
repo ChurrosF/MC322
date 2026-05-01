@@ -23,10 +23,12 @@ public abstract class Card {
     /** The amount of energy required from the hero to play this card. */
     protected int cost;
 
+    protected int price;
 
-    public Card(String name, int cost) {
+    public Card(String name, int cost, int price) {
         this.name = name;
         this.cost = cost;
+        this.price = price;
     }
 
     
@@ -61,6 +63,11 @@ public abstract class Card {
      */
     public int getCost() {
         return this.cost;
+    }
+
+
+    public int getPrice() {
+        return this.price;
     }
 
     /**

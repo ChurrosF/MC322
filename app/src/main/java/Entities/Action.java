@@ -18,6 +18,8 @@ public class Action {
         /** Represents the intent to play a specific card from the hand. */
         CHOOSE_CARD,
 
+        BUY_CARD,
+
         CHOOSE_TARGET,
 
         CHOOSE_ROOM,

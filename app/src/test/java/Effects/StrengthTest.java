@@ -24,7 +24,7 @@ class StrengthTest {
         str.beNotified(action, data);
 
         // O Ataque Leve tem dano base 3. Com +3 de Força, deve ir para 6.
-        DamageCard attack = (DamageCard) data.getPossibleCards()[0];
+        DamageCard attack = (DamageCard) data.getCurrentCards()[0];
         assertEquals(6, attack.getFinalDamage(), "O dano deve somar a força.");
         assertEquals(2, str.getAmount(), "A força deve gastar 1 acúmulo.");
     }

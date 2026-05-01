@@ -171,7 +171,7 @@ public class Battle extends Event {
      */
     private Card getCardFromIndex(int cardIndex) {
         int card_type = this.playerHand.get(cardIndex);
-        return this.data.getPossibleCards()[card_type];
+        return this.data.getCurrentCards().get(card_type);
     }
     
 
@@ -213,6 +213,7 @@ public class Battle extends Event {
             }
             gameManager.setState(GameState.MAP);
             hero.setEnergy(3);
+            hero.setMoney(hero.getMoney() + 5);
         }
     }
 

@@ -81,8 +81,10 @@ public final class Map {
                 if (curRoomPosition + 1 >= maxWidth || checkRightCross(curRoom)) {possibleDirections.remove(possibleDirections.size() - 1);}
 
                 Integer step = possibleDirections.get(random.nextInt(possibleDirections.size()));
-                // Ter a chance aleatória de 10% de ter uma fogueira
-                RoomType type = (random.nextInt(100) < 10) ? RoomType.CAMPFIRE : RoomType.BATTLE;
+
+                RoomType type = generateRandomRoomType(i);
+
+
                 if (this.floors[i][curRoomPosition + step] == null) {
                     Room nextRoom = new Room(i, curRoomPosition + step, type);
                     this.floors[i][curRoomPosition + step] = nextRoom;
@@ -95,6 +97,20 @@ public final class Map {
                 curRoom = this.floors[i][curRoomPosition + step];
             }
         }
+    }
+
+
+    private RoomType generateRandomRoomType(int height) {
+        Random random = new Random();
+        int randomInt = random.nextInt(100);
+
+        if (randomInt < 10 && height > 0) {
+            return RoomType.CAMPFIRE;
+        }
+        else if (randomInt < 17) {
+            return RoomType.SHOP;
+        }
+        return RoomType.BATTLE;        
     }
 
     

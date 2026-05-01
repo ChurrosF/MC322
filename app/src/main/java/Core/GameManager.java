@@ -2,7 +2,6 @@ package Core;
 
 import Entities.Action;
 import Map.Room;
-import Map.RoomType;
 
 /**
  * Controlador principal da lógica do jogo (Game Loop e Regras de Batalha).
@@ -24,6 +23,7 @@ public class GameManager {
 
     private boolean gameEnded;
     private final Campfire campfireManager;
+    private Shop shop = ShopBuilder.buildDefaultShop(data, this);
 
     public GameManager() {
         this.battleManager = new Battle(this.data, this);
@@ -44,8 +44,17 @@ public class GameManager {
             case CAMPFIRE -> {
                 campfireManager.update(action);
             }
+            case SHOP -> {
+                if (this.shop == null) {
+                    this.shop = ShopBuilder.buildDefaultShop(data, this);
+                }
+                shop.update(action);
+                data.setCurrentShop(shop);
+            }
             case MAP -> {
                 updateMap(action);
+            }
+            default -> {
             }
         }
     }
@@ -82,7 +91,17 @@ public class GameManager {
     }
     
     if (currentFloor == -1) {
-        Room nextRoom = data.getMap().getStartRooms().get(roomIndex);
+        Room nextRoom = null;
+        int currentIndex = 0;
+        for (int i = 0; i < data.getMap().getMaxWidth(); i++) {
+            if (data.getMap().getFloors()[0][i] != null) {
+                if (currentIndex == roomIndex) {
+                    nextRoom = data.getMap().getFloors()[0][i];
+                    break;
+                }
+                currentIndex++;
+            } 
+        }
         
         data.setHeroCurrentFloor(nextRoom.getCurrentFloor());
         data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
@@ -120,12 +139,19 @@ public class GameManager {
     data.setHeroCurrentFloorPosition(nextRoom.getFloorPosition());
     nextRoom.setVisited(true);
     
-    if (nextRoom.getType() == RoomType.CAMPFIRE) {
-        this.setState(GameState.CAMPFIRE);
-    } else {
-        data.setEnemies(nextRoom.getEnemies());
-        this.setState(GameState.BATTLE_CARD);
-    }
+    
+    switch (nextRoom.getType()) {
+            case CAMPFIRE -> this.setState(GameState.CAMPFIRE);
+            case BATTLE -> {
+                this.data.setEnemies(nextRoom.getEnemies());
+                this.data.generateRandomBuyPile();
+                this.data.discardHand();
+                this.data.buyRoundCards();
+                this.setState(GameState.BATTLE_CARD);
+            }
+            case SHOP -> this.setState(GameState.SHOP);
+            default -> throw new IllegalArgumentException("Unexpected value: " + nextRoom.getType());
+        }
 }
     else {
         data.setInvalidAction(true);
@@ -143,7 +169,14 @@ public class GameManager {
 
 
     public void setGameOver() {
+        this.data.setGameOver(true);
         this.gameEnded = true;
+    }
+
+
+    public void closeGame() {
+        this.data.setGameClosed(true);
+        this.data.setGameOver(true);
     }
 
 

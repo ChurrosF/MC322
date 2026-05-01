@@ -10,6 +10,7 @@ import Cards.Card;
 import Effects.StatusEffect;
 import Entities.Enemy;
 import Entities.EnemyAction;
+import Entities.Hero;
 import Map.Map;
 import Map.Room;
 import Map.RoomType;
@@ -284,7 +285,7 @@ public class Renderer {
         for (int i = 0; i < hand_size; i++) {
 
             int card_index = gameData.getPlayerHand().get(i);
-            Card card = gameData.getPossibleCards()[card_index];
+            Card card = gameData.getCurrentCards().get(card_index);
             placeCard(new int[] {line + start_line, 1}, card, i);
             line += 2;
         }
@@ -328,12 +329,27 @@ public class Renderer {
               \\________/
         """;
 
-        placeText(new int[]{midY - 6, midX - 5}, campfireArt);
-        placeText(new int[]{midY + 1, midX - 13}, "Fogueira sorri.");
-        placeText(new int[]{midY + 3, midX - 18}, "Aperter qualquer tecla para Sentir o CALOR (+10 HP)");
+        placeText(new int[]{midY - 6, midX - 11}, campfireArt);
+        placeText(new int[]{midY + 1, midX - 13}, "A Fogueira sorri para você.");
+        placeText(new int[]{midY + 3, midX - 21}, "Aperte qualquer tecla para sentir o CALOR (+10 HP)");
         
         String hpStatus = "Vida Atual: " + data.getHero().getLife() + "/" + data.getHero().getMaxLife();
         placeText(new int[]{midY + 5, midX - 8}, hpStatus, TextColor.ANSI.GREEN_BRIGHT);
+    }
+
+
+    private void placeShop(GameData data) {
+        placeBorders();
+        placeText(new int[] {2, WIDTH / 2 - 30}, "=============================== LOJA ===============================");
+
+        ArrayList<Card> sellingCards = data.getCurrentShop().getSellingCards();
+        int i = 0;
+        for (Card sellingCard: sellingCards) {
+            placeText(new int[] {6 + (2 * i), 10}, "-- (" + (i + 1) + ") " + "Carta: " + sellingCard.getName());
+            placeText(new int[] {6 + (2 * i), 40}, " Preço: " + sellingCard.getPrice() + "$", TextColor.ANSI.YELLOW_BRIGHT);
+            i++;
+        }
+        placeText(new int[] {2, WIDTH - 15}, "Dinheiro: " + data.getHero().getMoney() + "$", TextColor.ANSI.YELLOW_BRIGHT);
     }
 
 
@@ -343,6 +359,8 @@ public class Renderer {
     private void placeMapScreen(GameData gameData) {
         placeBorders();
 
+        Hero hero = gameData.getHero();
+
         Map map = gameData.getMap();
         int currentFloor = gameData.getHeroCurrentFloor();
         int currentPosition = gameData.getHeroCurrentFloorPosition();
@@ -350,8 +368,8 @@ public class Renderer {
         ArrayList<Room> nextRooms = getPossibleNextRooms(map, currentFloor, currentPosition);
         int nextFloor = currentFloor + 1;
 
-        int startX = 22 ;
-        int startY = HEIGHT - 5;
+        int col = 22 ;
+        int row = HEIGHT - 5;
         
         int choiceCounter = 1;
         
@@ -365,16 +383,28 @@ public class Renderer {
                 if (room != null) {
                     if (room.getType() == RoomType.CAMPFIRE) {
                         roomSymbol = "(F)";
-                        roomColor = TextColor.ANSI.YELLOW;
+                        roomColor = TextColor.ANSI.RED_BRIGHT;
+                    }
+                    else if (room.getType() == RoomType.SHOP) {
+                        roomSymbol = "(S)";
+                        roomColor = TextColor.ANSI.YELLOW_BRIGHT;
                     }
 
                     if (i == nextFloor && nextRooms.contains(room)) {
                         roomSymbol = "(" + choiceCounter + ")";
                         choiceCounter++;
-                        if (room.getType() == RoomType.CAMPFIRE) {
-                            roomColor = TextColor.ANSI.YELLOW_BRIGHT;
-                        } else {
-                            roomColor = TextColor.ANSI.CYAN_BRIGHT;
+                        if (null != room.getType()) switch (room.getType()) {
+                            case CAMPFIRE:
+                                roomColor = TextColor.ANSI.RED_BRIGHT;
+                                break;
+                            case BATTLE:
+                                roomColor = TextColor.ANSI.CYAN_BRIGHT;
+                                break;
+                            case SHOP:
+                                roomColor = TextColor.ANSI.YELLOW_BRIGHT;
+                                break;
+                            default:
+                                break;
                         }
                     } 
                     else if (i == currentFloor && j == currentPosition) {
@@ -386,10 +416,11 @@ public class Renderer {
                         roomColor = TextColor.ANSI.GREEN;
                     }
                 }
-                placeRoomAndPaths(map, room, i, j, startX, startY, roomSymbol, roomColor);
+                placeRoomAndPaths(map, room, i, j, col, row, roomSymbol, roomColor);
             }
         }
         placeBossRoom(currentFloor);
+        placeText(new int[] {2, WIDTH - 15}, "Dinheiro: " + hero.getMoney() + "$");
     }
 
     
@@ -400,7 +431,6 @@ public class Renderer {
         if (room == null) {
             return;
         }
-        
         placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
 
         int pathY = lineY - 1;
@@ -419,10 +449,10 @@ public class Renderer {
         if (room.hasLeftChild()) {
             Room child = floors[floor + 1][floorPosition - 1];
             TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-            
             placeText(new int[]{pathY, columnX - 1}, "\\", color);
         }
     }
+
 
     private void placeBossRoom(int currentFloor) {
         TextColor color = currentFloor == 6 ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
@@ -467,6 +497,9 @@ public class Renderer {
                 else {
                     placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 24}, "----------------- ESCOLHA A SALA ------------------");
                 }
+            }
+            case SHOP -> {
+                placeText(new int [] {HEIGHT - 2, WIDTH / 2 - 29}, "----------------- COMPRE UMA CARTA OU SAIA COM ESC ------------------");
             }
             default -> {
             }
@@ -518,6 +551,7 @@ public class Renderer {
             switch (state) {
                 case MAP -> placeMapScreen(gameData);
                 case CAMPFIRE -> placeCampfireScreen(gameData);
+                case SHOP -> placeShop(gameData);
                 default -> placeBattleScreen(gameData);
             }
             

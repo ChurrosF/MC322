@@ -17,9 +17,9 @@ class GameDataExtraTest {
         data.setInvalidAction(true);
         assertTrue(data.isActionInvalid());
 
-        Card[] cards = data.getPossibleCards();
-        data.setPossibleCards(cards);
-        assertNotNull(data.getPossibleCards());
+        Card[] cards = data.getCurrentCards();
+        data.setCurrentCards(cards);
+        assertNotNull(data.getCurrentCards());
         assertNotNull(data.getHero());
     }
 }

@@ -9,8 +9,8 @@ public class ShieldCard extends Card {
     private final int shield;
 
 
-    public ShieldCard(String name, int cost, int shield) {
-        super(name, cost);
+    public ShieldCard(String name, int cost, int price, int shield) {
+        super(name, cost, price);
         this.shield = shield;
         this.description = this.name + " ".repeat(RendererConfig.VERTICAL_BAR_SIZE - 21 - this.name.length()) + "|" + " SHD:" + this.shield + " CUSTO:" + this.cost;
     }

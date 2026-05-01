@@ -21,7 +21,7 @@ public class Room {
         this.visited = false;
         this.nextRooms = new ArrayList<>(Arrays.asList(null, null, null));
         
-        if (this.type != RoomType.CAMPFIRE) {
+        if (this.type == RoomType.BATTLE) {
             this.enemies.add(new Enemy("Thug Spider", 2, 0, new int[] {1, 4}));
             this.enemies.add(new Enemy("Tuff Spider", 2, 0, new int[] {2, 5}));
         }
