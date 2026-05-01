@@ -366,12 +366,13 @@ public class Renderer {
         int currentPosition = gameData.getHeroCurrentFloorPosition();
         
         ArrayList<Room> nextRooms = getPossibleNextRooms(map, currentFloor, currentPosition);
-        int nextFloor = currentFloor + 1;
 
+        int choiceCounter = 1;
+        
         int col = 22 ;
         int row = HEIGHT - 5;
         
-        int choiceCounter = 1;
+        int nextFloor = currentFloor + 1;
         
         for (int i = map.getHeight() - 1; i >= 0; i--) {
             for (int j = 0; j < map.getMaxWidth(); j++) {
@@ -394,17 +395,11 @@ public class Renderer {
                         roomSymbol = "(" + choiceCounter + ")";
                         choiceCounter++;
                         if (null != room.getType()) switch (room.getType()) {
-                            case CAMPFIRE:
-                                roomColor = TextColor.ANSI.RED_BRIGHT;
-                                break;
-                            case BATTLE:
-                                roomColor = TextColor.ANSI.CYAN_BRIGHT;
-                                break;
-                            case SHOP:
-                                roomColor = TextColor.ANSI.YELLOW_BRIGHT;
-                                break;
-                            default:
-                                break;
+                            case CAMPFIRE -> roomColor = TextColor.ANSI.RED_BRIGHT;
+                            case BATTLE -> roomColor = TextColor.ANSI.CYAN_BRIGHT;
+                            case SHOP -> roomColor = TextColor.ANSI.YELLOW_BRIGHT;
+                            default -> {
+                            }
                         }
                     } 
                     else if (i == currentFloor && j == currentPosition) {
@@ -426,12 +421,12 @@ public class Renderer {
     
     private void placeRoomAndPaths(Map map, Room room, int floor, int floorPosition, int startX, int startY, String roomSymbol, TextColor roomColor) {
         int lineY = startY - (floor * 2);
-        int columnX = startX + (floorPosition * 6);
+        int columnX = startX + (floorPosition * 5);
 
         if (room == null) {
             return;
         }
-        placeText(new int[]{lineY, columnX + 1}, roomSymbol, roomColor);
+        placeText(new int[]{lineY, columnX}, roomSymbol, roomColor);
 
         int pathY = lineY - 1;
         Room[][] floors = map.getFloors();
@@ -439,17 +434,17 @@ public class Renderer {
         if (room.hasCenterChild()) {
             Room child = floors[floor + 1][floorPosition];
             TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-            placeText(new int[]{pathY, columnX + 2}, "|", color);
+            placeText(new int[]{pathY, columnX + 1}, "|", color);
         }
         if (room.hasRightChild()) {
             Room child = floors[floor + 1][floorPosition + 1];
             TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-            placeText(new int[]{pathY, columnX + 5}, "/", color);
+            placeText(new int[]{pathY, columnX + 4}, "/", color);
         }
         if (room.hasLeftChild()) {
             Room child = floors[floor + 1][floorPosition - 1];
             TextColor color = isPathVisited(room, child) ? TextColor.ANSI.GREEN : TextColor.ANSI.WHITE;
-            placeText(new int[]{pathY, columnX - 1}, "\\", color);
+            placeText(new int[]{pathY, columnX - 2}, "\\", color);
         }
     }
 
