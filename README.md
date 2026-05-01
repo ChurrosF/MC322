@@ -39,6 +39,8 @@ Siglas:
 Patch Notes Version 0.1.6
 
 Agora com loja e fogueira! A sigla S em cor amarela representa uma loja, na qual você pode comprar novas cartas! A fogueira recupera sua vida e tem sigla F com cor vermelha. Batalhas são representadas com cor branca e sigla R.
+A loja foi implementada por meio do design pattern Builder (https://refactoring.guru/design-patterns/builder)
+A fogueira foi implementada por meio do design pattern MVC (https://www.geeksforgeeks.org/system-design/mvc-design-pattern/)
 
 # Interface do Luta
 
